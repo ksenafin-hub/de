@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deutsch A1</title>
+<meta name="theme-color" content="#E1E5DD">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper:#E1E5DD; --card:#F3F5EF; --ink:#17242B; --ink-soft:#5C6A66;
+    --rule:#BAC2B7; --stamp:#4E2E78; --signal:#9C2B23;
+    --pad:clamp(16px,4vw,32px);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;padding:clamp(10px,3vw,36px);background:var(--paper);
+    background-image:
+      repeating-linear-gradient(38deg,#0000 0 2px,#17242b09 2px 3px),
+      repeating-linear-gradient(-38deg,#0000 0 2px,#17242b09 2px 3px);
+    color:var(--ink);font-family:"Source Serif 4",Georgia,serif;
+    -webkit-text-size-adjust:100%;
+  }
+  .card{max-width:640px;margin:0 auto;background:var(--card);
+    border:1px solid var(--rule);box-shadow:0 8px 28px #17242b14}
+  .microprint{font-family:"Barlow Semi Condensed",sans-serif;font-size:5px;
+    letter-spacing:.18em;color:#17242b40;padding:4px var(--pad) 0;
+    white-space:nowrap;overflow:hidden;user-select:none}
+  header{padding:6px var(--pad) 20px;border-bottom:1px solid var(--rule)}
+  .eyebrow{font-family:"Barlow Semi Condensed",sans-serif;font-size:12px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft)}
+  h1{font-family:"Barlow Semi Condensed",sans-serif;font-weight:600;letter-spacing:.03em;
+    text-transform:uppercase;font-size:clamp(34px,10vw,54px);line-height:.92;margin:.14em 0 .18em}
+
+  .countdown{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .days{font-family:"IBM Plex Mono",monospace;font-size:30px;font-variant-numeric:tabular-nums;
+    color:var(--stamp);line-height:1}
+  .days.tight{color:var(--signal)}
+  .cd-label{font-size:14px;color:var(--ink-soft)}
+
+  a.row{display:grid;grid-template-columns:32px 1fr auto;gap:12px;align-items:center;
+    padding:16px var(--pad);border-bottom:1px solid #bac2b766;text-decoration:none;color:inherit;
+    border-left:3px solid transparent}
+  a.row:hover{background:#4e2e780d;border-left-color:var(--stamp)}
+  a.row:focus-visible{outline:2px solid var(--stamp);outline-offset:-2px}
+  .n{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft)}
+  .t{font-size:18px;font-weight:600;margin:0}
+  .d{font-size:13.5px;color:var(--ink-soft);margin:3px 0 0;line-height:1.4}
+  .arrow{font-size:18px;color:var(--stamp)}
+  a.row.missing{opacity:.42;pointer-events:none}
+  a.row.missing .arrow{font-family:"Barlow Semi Condensed",sans-serif;font-size:10px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+  .strip{display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+    padding:11px var(--pad);border-bottom:1px solid var(--rule);
+    font-family:"Barlow Semi Condensed",sans-serif;font-size:12px;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)}
+  .strip button{font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.1em;
+    text-transform:uppercase;margin-left:auto;padding:6px 13px;cursor:pointer;
+    background:var(--stamp);color:#fff;border:0}
+  .strip button.off{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--rule);flex:none}
+  .dot.ok{background:var(--stamp)}
+  .dot.bad{background:var(--signal)}
+  footer{padding:15px var(--pad);font-size:12.5px;color:var(--ink-soft);line-height:1.5}
+</style>
+
+<div class="card">
+  <div class="microprint">GOETHEZERTIFIKAT·A1·STARTDEUTSCH1·GOETHEZERTIFIKAT·A1·STARTDEUTSCH1·GOETHEZERTIFIKAT·A1·STARTDEUTSCH1·GOETHEZERTIFIKAT·A1·STARTDEUTSCH1·</div>
+
+  <header>
+    <div class="eyebrow">Goethe-Zertifikat A1</div>
+    <h1>Deutsch</h1>
+    <div class="countdown">
+      <span class="days" id="days">—</span>
+      <span class="cd-label" id="cdLabel">до экзамена, 1 октября</span>
+    </div>
+  </header>
+
+  <div class="strip">
+    <span class="dot" id="dot"></span>
+    <span id="txt">Прогресс только на этом устройстве</span>
+    <button id="btn">Ввести пароль</button>
+  </div>
+
+  <a class="row" href="woerter-a1.html" data-check>
+    <span class="n">01</span>
+    <span><p class="t">Wörter A1</p><p class="d">634 слова из списка Goethe, интервальное повторение</p></span>
+    <span class="arrow">→</span>
+  </a>
+
+  <a class="row" href="vorstellung-a1.html" data-check>
+    <span class="n">02</span>
+    <span><p class="t">Sprechkarte</p><p class="d">Устная часть: визитка, буквы, телефон, таймер</p></span>
+    <span class="arrow">→</span>
+  </a>
+
+  <a class="row" href="leben-in-deutschland.html" data-check>
+    <span class="n">03</span>
+    <span><p class="t">Leben in Deutschland</p><p class="d">310 вопросов, симулятор теста</p></span>
+    <span class="arrow">→</span>
+  </a>
+
+  <footer>
+    Добавьте на домашний экран: в Safari — «Поделиться» → «На экран «Домой»»,
+    в Chrome — меню → «Добавить на главный экран».
+  </footer>
+</div>
+
+<script src="app-config.js"></script>
+<script src="progress.js"></script>
+<script>
+  // обратный отсчёт
+  (function(){
+    const exam = new Date(2026, 9, 1);           // 1 октября
+    const now = new Date();
+    const d = Math.ceil((exam - now) / 86400000);
+    const el = document.getElementById('days');
+    if (d > 0) {
+      el.textContent = d;
+      el.classList.toggle('tight', d <= 14);
+      const a = d % 10, b = d % 100;
+      const word = (a === 1 && b !== 11) ? 'день'
+        : ((a >= 2 && a <= 4) && !(b >= 12 && b <= 14)) ? 'дня' : 'дней';
+      document.getElementById('cdLabel').textContent = word + ' до экзамена, 1 октября';
+    } else {
+      el.textContent = '—';
+      document.getElementById('cdLabel').textContent = 'экзамен позади';
+    }
+  })();
+
+  // гасим ссылки на ещё не загруженные тренажёры
+  document.querySelectorAll('a.row[data-check]').forEach(a => {
+    fetch(a.getAttribute('href'), { method: 'HEAD' })
+      .then(r => { if (!r.ok) throw 0; })
+      .catch(() => {
+        a.classList.add('missing');
+        a.querySelector('.arrow').textContent = 'нет файла';
+      });
+  });
+
+  // общий доступ к прогрессу: открывается один раз, действует на всех тренажёрах
+  (function () {
+    const dot = document.getElementById('dot');
+    const txt = document.getElementById('txt');
+    const btn = document.getElementById('btn');
+    if (!window.Progress || !window.APP) { btn.hidden = true; return; }
+
+    const LABEL = {
+      opening:  'открываю',
+      synced:   'включена на всех тренажёрах',
+      offline:  'нет связи',
+      expired:  'доступ истёк, обновите app-config.js',
+      conflict: 'расхождение'
+    };
+
+    Progress.init(Object.assign({}, window.APP, { path: 'sprechkarte.json' }));
+    Progress.on(state => {
+      txt.textContent = LABEL[state] || state;
+      dot.className = 'dot' + (state === 'synced' ? ' ok'
+        : (state === 'expired' || state === 'conflict') ? ' bad' : '');
+    });
+
+    const saved = () => { try { return !!localStorage.getItem('dt:s'); } catch (e) { return false; } };
+
+    function connected() {
+      btn.textContent = 'Отключить';
+      btn.classList.add('off');
+      btn.onclick = () => { Progress.forget(); location.reload(); };
+    }
+
+    if (saved()) { connected(); Progress.start(false); }
+    else btn.onclick = () => Progress.start(false).then(() => { if (saved()) connected(); });
+  })();
+</script>

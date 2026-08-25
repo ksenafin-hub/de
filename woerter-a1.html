@@ -1,0 +1,3007 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wörter A1 — тренажёр немецких слов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Spectral:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#12151c;--card:#1a1f2a;--card2:#222939;--line:#2c3547;
+  --text:#edf1f7;--mut:#8f9cb1;
+  --acc:#f2c94c;--accDim:#7a621c;
+  --der:#6aa9ff;--die:#ff7d95;--das:#4fce8d;
+  --ok:#3fbf7f;--bad:#e5606c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.45;min-height:100vh}
+button{font:inherit;color:inherit}
+.serif{font-family:'Spectral',Georgia,serif}
+header{padding:18px 16px 4px;max-width:640px;margin:0 auto}
+.wm{font-size:27px;font-weight:600;letter-spacing:.3px}
+.wm b{color:var(--acc);font-weight:600}
+.wmSub{color:var(--mut);font-size:12.5px;margin-top:2px}
+#tabs{position:sticky;top:0;z-index:10;background:var(--bg);display:flex;gap:4px;overflow-x:auto;padding:10px 12px;max-width:640px;margin:0 auto;scrollbar-width:none}
+#tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;background:none;border:1px solid transparent;color:var(--mut);padding:7px 13px;border-radius:99px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px}
+.tab.act{color:var(--text);background:var(--card);border-color:var(--line)}
+.badge{background:var(--acc);color:#1a1405;border-radius:99px;font-size:11px;font-weight:800;padding:1px 7px}
+main{max-width:640px;margin:0 auto;padding:8px 16px 90px}
+.pageT{font-size:20px;font-weight:800;margin:10px 0 12px}
+.eyebrow{color:var(--mut);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.hero{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 18px;text-align:center;margin:8px 0 14px}
+.heroN{font-size:56px;font-weight:800;line-height:1.1;margin-top:6px}
+.heroSub{color:var(--mut);margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 14px;margin:0 0 12px}
+.card.warn{border-color:#5a4620;background:#241f14;color:#e8d9a8;font-size:14px}
+.cardT{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mut);margin:2px 0 10px}
+.cardT.left{text-align:left;margin-top:16px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.row.head{margin:8px 0 4px}
+.row.gap{margin-bottom:10px}
+.grow{flex:1 1 auto;min-width:0}
+.sel{background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 10px;font:inherit;font-size:14px;max-width:100%}
+.sel.full{width:100%;margin-bottom:10px}
+.btn{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px 16px;font-weight:600;font-size:15px;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.acc{background:var(--acc);border-color:var(--acc);color:#1a1405}
+.btn.big{width:100%;padding:14px;font-size:16px;margin-top:6px}
+.btn.danger{border-color:#5c3138;color:#ff9aa4}
+.icoBtn{background:var(--card2);border:1px solid var(--line);border-radius:10px;width:38px;height:38px;flex:0 0 auto;cursor:pointer;font-size:16px;display:inline-flex;align-items:center;justify-content:center}
+.bigPlay{background:var(--card2);border:1px solid var(--line);border-radius:99px;width:84px;height:84px;font-size:34px;cursor:pointer;margin:8px auto 6px;display:flex;align-items:center;justify-content:center}
+.mut{color:var(--mut)}
+.sm{font-size:13px;margin-top:8px}
+.xs{font-size:10.5px}
+.center{text-align:center}
+.trio{display:flex;text-align:center}
+.trio>div{flex:1}
+.trio b{display:block;font-size:24px;font-weight:800}
+.trio span{color:var(--mut);font-size:12.5px}
+.trio.wide{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 8px;margin-bottom:12px}
+.art{font-weight:600}
+.a-der{color:var(--der)}.a-die{color:var(--die)}.a-das{color:var(--das)}
+.catGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.catCard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.cIco{font-size:20px}
+.cName{font-weight:600;font-size:14px}
+.cNum{color:var(--mut);font-size:12px}
+.pbar{position:relative;display:block;height:5px;border-radius:99px;background:#2a3141;overflow:hidden;margin-top:7px;width:100%}
+.pbar i{position:absolute;left:0;top:0;bottom:0;background:var(--accDim);border-radius:99px}
+.pbar i.pm{background:var(--acc)}
+.wlist{margin-top:10px}
+.wrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #1f2532}
+.wmain{flex:1;min-width:0}
+.wde{font-size:17px}
+.wru{color:var(--mut);font-size:13.5px}
+.chip.adv{opacity:.7}
+.chip .lvl{font-size:9.5px;font-weight:700;letter-spacing:.08em;margin-left:5px;
+  padding:1px 4px;border-radius:6px;background:#9C2B23;color:#fff;vertical-align:middle}
+.prepBox{text-align:center;padding:20px 8px 10px}
+.prepBig{font-size:40px;font-weight:600;letter-spacing:.02em}
+.prepSent{font-size:21px;line-height:1.5}
+.prepSent .gap{font-weight:700;border-bottom:2px solid currentColor;padding:0 4px}
+.prepTag{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut,#888);margin-bottom:8px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}
+.opt{font-size:17px;padding:15px 10px;border-radius:10px;cursor:pointer;
+  border:1.5px solid var(--line,#999);background:var(--bg2,#fff);color:inherit}
+.opt.good{border-color:#2c7a4b;background:#2c7a4b22}
+.opt.bad{border-color:#b3382f;background:#b3382f22}
+.rangeRow{display:flex;gap:12px;margin:8px 0 10px;flex-wrap:wrap}
+.rangeRow label{font-size:13px;color:var(--mut,#888);display:flex;align-items:center;gap:6px}
+.rangeRow input{width:92px;font-size:16px;padding:7px 9px;border-radius:8px;
+  border:1.5px solid var(--line,#999);background:var(--bg2,#fff);color:inherit}
+.numBox{text-align:center;padding:22px 10px 6px}
+.numBig{font-size:62px;font-weight:700;letter-spacing:.04em;line-height:1}
+.numPlay{font-size:46px;background:none;border:0;cursor:pointer;padding:6px 14px}
+.numInp{width:100%;box-sizing:border-box;font-size:22px;text-align:center;padding:13px;
+  margin:12px 0;border-radius:10px;border:1.5px solid var(--line,#999);
+  background:var(--bg2,#fff);color:inherit}
+.typoBox{margin:10px 0;padding:9px 11px;border-radius:8px;background:#0003;font-size:13.5px;
+  display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+.typoBox .btn{margin:0;font-size:12.5px;padding:6px 11px}
+.srch{width:100%;box-sizing:border-box;font-size:16px;padding:10px 12px;margin-bottom:10px;
+  border:1.5px solid var(--line,#999);background:var(--bg2,#fff);color:inherit;border-radius:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.chip{font-size:12.5px;padding:6px 11px;border-radius:14px;cursor:pointer;
+  border:1px solid var(--line,#999);background:transparent;color:inherit}
+.chip.on{background:#4E2E78;border-color:#4E2E78;color:#fff}
+.wrow.slim{padding-top:7px;padding-bottom:7px}
+.accOk{color:#2c7a4b;font-weight:600;font-size:12px}
+.accBad{color:#b3382f;font-weight:600;font-size:12px}
+.tier{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;
+  padding:1px 6px;border-radius:9px;vertical-align:middle;margin-left:6px}
+.t1{background:#4E2E78;color:#fff}.t2{background:#7a5aa8;color:#fff}
+.t3{background:#c9bcdd;color:#241436}.t4{background:#e2dcec;color:#4a3a5c}
+.t5{background:#eceaf0;color:#7b7488}
+.wnote{color:#6f7d93;font-size:12px;margin-top:1px}
+.wnote.exI{font-style:italic;color:#8391a8}
+.exRuI{font-style:normal;color:#66738a}
+.exB{display:flex;gap:9px;align-items:flex-start;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:9px 10px;margin-top:10px;text-align:left}
+.exB .icoBtn{width:30px;height:30px;font-size:13px}
+.exTxt{min-width:0}
+.exDe{font-size:15.5px}
+.exRu{color:var(--mut);font-size:12.5px;margin-top:1px}
+.conjW{margin-top:7px}
+.conjBtn{background:none;border:none;color:var(--acc);font-size:12.5px;font-weight:600;padding:2px 0;cursor:pointer}
+.conjT{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-top:6px;text-align:left}
+.conjT.open{margin-top:10px}
+.cgrid{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:3px 8px;font-size:13.5px;align-items:baseline}
+.cgrid span{color:var(--mut);font-size:11.5px;text-align:right}
+.cgrid b{font-weight:600;overflow-wrap:anywhere}
+.cperf{font-size:12.5px;color:#a9b4c6;margin-top:7px}
+.cperf.mut2{color:#7e8ba0;margin-top:3px}
+.box.mini{min-width:27px;height:20px;font-size:10px;border-radius:6px;padding:0 3px}
+.tri{display:flex;flex-direction:column;gap:3px;flex:0 0 auto}
+.stG{display:grid;grid-template-columns:58px repeat(7,1fr);gap:6px 3px;align-items:center;text-align:center}
+.stL{font-size:11.5px;color:var(--mut);text-align:left}
+.stC{font-size:12.5px;font-variant-numeric:tabular-nums}
+.stC.dim0{color:#39425a}
+.box.hb{margin:0 auto}
+.box{flex:0 0 auto;min-width:26px;height:26px;padding:0 4px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+.b0{background:#2a3141;color:#7b8699}
+.b1{background:#4c2830;color:#ff98a2}
+.b2{background:#4d3524;color:#ffb26b}
+.b3{background:#4a3d1c;color:#f2c94c}
+.b4{background:#2f4526;color:#a8d97c}
+.b5{background:#1f4636;color:#5fd8a2}
+.b6{background:#173f44;color:#54cfd8}
+.tGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.tCard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.tCard b{font-size:13.5px}
+.tCard span{color:var(--mut);font-size:11.5px}
+.tCard.sel{border-color:var(--acc);background:#241f10}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.chip{background:var(--card);border:1px solid var(--line);color:var(--mut);border-radius:99px;padding:6px 11px;font-size:13px;cursor:pointer}
+.chip.on{color:var(--text);border-color:var(--acc);background:#241f10}
+.ckRow{display:flex;align-items:center;gap:8px;font-size:14.5px;margin:4px 0 12px;cursor:pointer}
+.lbl{display:block;font-size:13px;color:var(--mut);margin:8px 0 5px}
+input[type=range].full{width:100%;margin-bottom:6px;accent-color:var(--acc)}
+.io{width:100%;height:96px;background:var(--card2);border:1px solid var(--line);border-radius:10px;color:var(--text);font-size:12px;padding:8px;margin-top:10px;font-family:ui-monospace,monospace}
+.brow{display:flex;align-items:center;gap:10px;margin:7px 0}
+.brow.sm .blbl{font-size:12.5px}
+.blbl{flex:0 0 44%;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btrack{flex:1;height:7px;border-radius:99px;background:#2a3141;overflow:hidden;position:relative}
+.btrack i{position:absolute;left:0;top:0;bottom:0;background:var(--acc);border-radius:99px}
+.bval{flex:0 0 auto;font-size:12px;color:var(--mut);font-variant-numeric:tabular-nums}
+.bval.err{color:var(--bad)}
+.boxRow{display:flex;gap:4px;text-align:center}
+.boxCol{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.boxCol b{font-size:16px}
+.actRow{display:flex;align-items:flex-end;gap:4px;height:96px}
+.actCol{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}
+.actBar{width:100%;max-width:22px;background:var(--acc);border-radius:4px 4px 2px 2px}
+.actCol span{font-size:9.5px;color:var(--mut)}
+.shead{display:flex;align-items:center;gap:10px;margin:10px 0 6px}
+.sbar{flex:1;height:6px;border-radius:99px;background:#2a3141;overflow:hidden;position:relative}
+.sbar i{position:absolute;left:0;top:0;bottom:0;background:var(--acc);border-radius:99px;transition:width .25s}
+.scount{font-size:12.5px;color:var(--mut);font-variant-numeric:tabular-nums}
+.stitle{text-align:center;color:var(--mut);font-size:12.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin:8px 0 4px}
+.qde{text-align:center;font-size:34px;font-weight:600;margin:18px 0 8px}
+.qru{text-align:center;font-size:24px;font-weight:600;margin:20px 0 10px}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.opt{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:16px;text-align:left;cursor:pointer}
+.opt .key{flex:0 0 auto;width:22px;height:22px;border-radius:6px;background:var(--card2);color:var(--mut);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.opt.ok{border-color:var(--ok);background:#132b21}
+.opt.bad{border-color:var(--bad);background:#2e181c}
+.opt.dim{opacity:.5}
+.opt:disabled{cursor:default}
+.wwrap{margin-top:14px}
+.winp{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;color:var(--text);font-size:19px;padding:13px 14px;outline:none}
+.winp:focus{border-color:var(--acc)}
+.uml{display:flex;gap:6px;margin-top:8px}
+.uch{flex:0 0 auto;width:44px;height:44px;background:var(--card);border:1px solid var(--line);border-radius:10px;font-size:18px;cursor:pointer}
+.uml .btn{flex:1}
+.fb{border-radius:14px;padding:14px;margin-top:14px;border:1px solid}
+.fb.okB{border-color:#245a41;background:#12271e}
+.fb.badB{border-color:#5c2a31;background:#291418}
+.fbT{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.okB .fbT{color:var(--ok)}
+.badB .fbT{color:var(--bad)}
+.fbW{font-size:26px;font-weight:600;margin-top:6px}
+.fbR{color:var(--mut);margin-top:2px}
+.fbM{color:#a9b4c6;font-size:13.5px;margin-top:5px}
+.fbM.hl{color:var(--acc)}
+.sum{text-align:center;padding-top:16px}
+.lcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 16px;text-align:center;margin:10px 0 14px}
+.lde{font-size:36px;font-weight:600;margin:10px 0 2px}
+.lru{font-size:19px;margin-top:6px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(80px);background:#0c0e13;border:1px solid var(--line);color:var(--text);padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;transition:.25s;z-index:50;max-width:90vw;text-align:center}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+@media (min-width:520px){.catGrid{grid-template-columns:1fr 1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wm serif">Wörter <b>A1</b></div>
+  <div class="wmSub">немецкие слова · озвучка · интервальные повторения</div>
+</header>
+<nav id="tabs">
+  <button class="tab act" data-v="review">Повтор<span id="dueBadge" class="badge" style="display:none"></span></button>
+  <button class="tab" data-v="words">Слова</button>
+  <button class="tab" data-v="train">Тренировка</button>
+  <button class="tab" data-v="num">Числа</button>
+  <button class="tab" data-v="prep">Предлоги</button>
+  <button class="tab" data-v="stats">Статистика</button>
+  <button class="tab" data-v="set">Настройки</button>
+</nav>
+<main id="view"></main>
+<div id="toast"></div>
+<script src="app-config.js"></script>
+<script src="progress.js"></script>
+<script>
+'use strict';
+/* ================= ДАННЫЕ ================= */
+var CATS={
+  greet:["👋","Приветствия и фразы"],
+  core:["🔤","Частые слова"],
+  time:["🕐","Время"],
+  cal:["📅","Дни и месяцы"],
+  fam:["👪","Семья и люди"],
+  food:["🥨","Еда и напитки"],
+  home:["🏠","Дом и квартира"],
+  city:["🚌","Город и транспорт"],
+  work:["💼","Работа и профессии"],
+  study:["📚","Учёба и язык"],
+  body:["🩺","Тело и здоровье"],
+  cloth:["👕","Одежда"],
+  nat:["🌳","Природа и погода"],
+  col:["🎨","Цвета"],
+  verb:["⚙️","Глаголы"],
+  adj:["🌗","Прилагательные"],
+  free:["🎉","Свободное время"],
+  shop:["💶","Покупки и деньги"],
+  pron:["👤","Местоимения"]
+};
+/* [артикль, слово, мн.число, перевод, категория, примечание] */
+var W=[
+["","Hallo","","привет","greet",""],
+["","Guten Morgen","","доброе утро","greet",""],
+["","Guten Tag","","добрый день","greet",""],
+["","Guten Abend","","добрый вечер","greet",""],
+["","Gute Nacht","","спокойной ночи","greet",""],
+["","Tschüss","","пока","greet",""],
+["","Auf Wiedersehen","","до свидания","greet",""],
+["","danke","","спасибо","greet","danke schön — большое спасибо"],
+["","bitte","","пожалуйста","greet","также ответ на danke: не за что"],
+["","Entschuldigung","","извините","greet","также: die Entschuldigung — извинение"],
+["","Es tut mir leid.","","мне жаль, извините","greet",""],
+["","ja","","да","greet",""],
+["","nein","","нет","greet",""],
+["","Wie geht es dir?","","как у тебя дела?","greet","вежливо: Wie geht es Ihnen?"],
+["","willkommen","","добро пожаловать","greet",""],
+["","Alles Gute!","","всего хорошего!","greet",""],
+["","Viel Glück!","","удачи!","greet",""],
+["","wer","","кто","core",""],
+["","ich","","я","pron","Akk: mich · Dat: mir"],
+["","du","","ты","pron","Akk: dich · Dat: dir"],
+["","er","","он","pron","Akk: ihn · Dat: ihm"],
+["","sie","","она; они","pron","Akk: sie · Dat: ihr (ей) / ihnen (им)"],
+["","es","","оно","pron","Akk: es · Dat: ihm"],
+["","wir","","мы","pron","Akk и Dat: uns"],
+["","ihr","","вы (мн., неформально)","pron","Akk и Dat: euch"],
+["","Sie","","Вы (вежливая форма)","pron","Akk: Sie · Dat: Ihnen · всегда с большой буквы"],
+["","mich","","меня (Akkusativ)","pron","от ich"],
+["","mir","","мне (Dativ)","pron","от ich"],
+["","dich","","тебя (Akkusativ)","pron","от du"],
+["","dir","","тебе (Dativ)","pron","от du"],
+["","ihn","","его (Akkusativ)","pron","от er"],
+["","ihm","","ему (Dativ)","pron","от er и es"],
+["","uns","","нас, нам","pron","от wir, одна форма на два падежа"],
+["","euch","","вас, вам","pron","от ihr, одна форма на два падежа"],
+["","ihnen","","им (Dativ)","pron","от sie (они); с большой буквы Ihnen — Вам"],
+["","mein","","мой, моя, моё","pron","meine перед женским и множественным"],
+["","dein","","твой, твоя, твоё","pron","deine перед женским и множественным"],
+["","man","","безличное «люди, обычно»","core","глагол в форме er/sie/es"],
+["","mehr","","больше","core","сравнительная степень от viel"],
+["","wieder","","снова, опять","core",""],
+["","bald","","скоро","core",""],
+["","was","","что","core",""],
+["","wo","","где","core",""],
+["","wohin","","куда","core",""],
+["","woher","","откуда","core",""],
+["","wann","","когда","core",""],
+["","wie","","как","core",""],
+["","warum","","почему","core",""],
+["","wie viel","","сколько","core",""],
+["","welcher","","какой, который","core","welche, welches"],
+["","und","","и","core",""],
+["","oder","","или","core",""],
+["","aber","","но","core",""],
+["","nicht","","не (отрицание)","core",""],
+["","kein","","никакой, не (с существительным)","core","keine"],
+["","auch","","тоже, также","core",""],
+["","sehr","","очень","core",""],
+["","viel","","много","core",""],
+["","wenig","","мало","core",""],
+["","nur","","только","core",""],
+["","alles","","всё","core",""],
+["","nichts","","ничего","core",""],
+["","etwas","","что-то; немного","core",""],
+["","immer","","всегда","core",""],
+["","oft","","часто","core",""],
+["","manchmal","","иногда","core",""],
+["","nie","","никогда","core",""],
+["","schon","","уже","core",""],
+["","noch","","ещё","core",""],
+["","hier","","здесь","core",""],
+["","dort","","там","core",""],
+["","zusammen","","вместе","core",""],
+["","gern","","охотно, с удовольствием","core","Ich trinke gern Tee. — я люблю пить чай"],
+["","genau","","точно, именно","core",""],
+["","natürlich","","конечно","core",""],
+["","leider","","к сожалению","core",""],
+["","vielleicht","","может быть","core",""],
+["die","Zeit","","время","time",""],
+["der","Tag","Tage","день","time",""],
+["die","Woche","Wochen","неделя","time",""],
+["der","Monat","Monate","месяц","time",""],
+["das","Jahr","Jahre","год","time",""],
+["die","Stunde","Stunden","час (60 минут)","time",""],
+["die","Minute","Minuten","минута","time",""],
+["die","Uhr","Uhren","часы (прибор); час (при времени)","time","Wie spät ist es? — который час?"],
+["der","Morgen","","утро","time",""],
+["der","Mittag","","полдень","time",""],
+["der","Nachmittag","","вторая половина дня","time",""],
+["der","Abend","Abende","вечер","time",""],
+["die","Nacht","Nächte","ночь","time",""],
+["","heute","","сегодня","time",""],
+["","morgen","","завтра","time","не путать: der Morgen — утро"],
+["","gestern","","вчера","time",""],
+["","jetzt","","сейчас","time",""],
+["","später","","позже","time",""],
+["","früh","","рано; ранний","time",""],
+["","spät","","поздно; поздний","time",""],
+["der","Montag","","понедельник","cal",""],
+["der","Dienstag","","вторник","cal",""],
+["der","Mittwoch","","среда","cal",""],
+["der","Donnerstag","","четверг","cal",""],
+["der","Freitag","","пятница","cal",""],
+["der","Samstag","","суббота","cal","на севере Германии также: Sonnabend"],
+["der","Sonntag","","воскресенье","cal",""],
+["das","Wochenende","Wochenenden","выходные","cal",""],
+["der","Januar","","январь","cal",""],
+["der","Februar","","февраль","cal",""],
+["der","März","","март","cal",""],
+["der","April","","апрель","cal",""],
+["der","Mai","","май","cal",""],
+["der","Juni","","июнь","cal",""],
+["der","Juli","","июль","cal",""],
+["der","August","","август","cal",""],
+["der","September","","сентябрь","cal",""],
+["der","Oktober","","октябрь","cal",""],
+["der","November","","ноябрь","cal",""],
+["der","Dezember","","декабрь","cal",""],
+["die","Familie","Familien","семья","fam",""],
+["die","Eltern","","родители","fam","только мн. ч."],
+["der","Vater","Väter","отец","fam",""],
+["die","Mutter","Mütter","мать","fam",""],
+["der","Sohn","Söhne","сын","fam",""],
+["die","Tochter","Töchter","дочь","fam",""],
+["der","Bruder","Brüder","брат","fam",""],
+["die","Schwester","Schwestern","сестра","fam",""],
+["das","Kind","Kinder","ребёнок","fam",""],
+["das","Baby","Babys","младенец","fam",""],
+["der","Mann","Männer","мужчина; муж","fam",""],
+["die","Frau","Frauen","женщина; жена; госпожа","fam",""],
+["der","Herr","Herren","господин (обращение)","fam",""],
+["der","Junge","Jungen","мальчик","fam",""],
+["das","Mädchen","Mädchen","девочка","fam",""],
+["der","Freund","Freunde","друг","fam",""],
+["die","Freundin","Freundinnen","подруга","fam",""],
+["die","Großmutter","Großmütter","бабушка","fam","разговорно: die Oma"],
+["der","Großvater","Großväter","дедушка","fam","разговорно: der Opa"],
+["der","Mensch","Menschen","человек","fam",""],
+["die","Leute","","люди","fam","только мн. ч."],
+["der","Name","Namen","имя, фамилия","fam",""],
+["","ledig","","холост, не замужем","fam",""],
+["","verheiratet","","женат, замужем","fam",""],
+["das","Brot","Brote","хлеб","food",""],
+["das","Brötchen","Brötchen","булочка","food",""],
+["die","Butter","","сливочное масло","food",""],
+["der","Käse","","сыр","food",""],
+["die","Wurst","Würste","колбаса, сосиска","food",""],
+["das","Fleisch","","мясо","food",""],
+["der","Fisch","Fische","рыба","food",""],
+["das","Ei","Eier","яйцо","food",""],
+["die","Milch","","молоко","food",""],
+["der","Zucker","","сахар","food",""],
+["das","Salz","","соль","food",""],
+["der","Apfel","Äpfel","яблоко","food",""],
+["die","Banane","Bananen","банан","food",""],
+["die","Orange","Orangen","апельсин","food",""],
+["die","Kartoffel","Kartoffeln","картофелина","food","обычно во мн. ч.: Kartoffeln"],
+["die","Tomate","Tomaten","помидор","food",""],
+["der","Salat","","салат","food",""],
+["die","Suppe","Suppen","суп","food",""],
+["der","Reis","","рис","food",""],
+["die","Nudeln","","макароны, лапша","food","только мн. ч."],
+["der","Kuchen","Kuchen","пирог, кекс","food",""],
+["die","Schokolade","","шоколад","food",""],
+["das","Eis","","мороженое; лёд","food",""],
+["das","Wasser","","вода","food",""],
+["der","Saft","Säfte","сок","food",""],
+["der","Kaffee","","кофе","food",""],
+["der","Tee","","чай","food",""],
+["das","Bier","","пиво","food",""],
+["der","Wein","","вино","food",""],
+["das","Obst","","фрукты","food",""],
+["das","Gemüse","","овощи","food",""],
+["das","Frühstück","","завтрак","food",""],
+["das","Mittagessen","","обед","food",""],
+["das","Abendessen","","ужин","food",""],
+["der","Hunger","","голод","food","Ich habe Hunger. — я голоден"],
+["der","Durst","","жажда","food","Ich habe Durst. — я хочу пить"],
+["das","Haus","Häuser","дом","home",""],
+["die","Wohnung","Wohnungen","квартира","home",""],
+["das","Zimmer","Zimmer","комната","home",""],
+["die","Küche","Küchen","кухня","home",""],
+["das","Bad","Bäder","ванная","home",""],
+["das","Schlafzimmer","Schlafzimmer","спальня","home",""],
+["das","Wohnzimmer","Wohnzimmer","гостиная","home",""],
+["der","Tisch","Tische","стол","home",""],
+["der","Stuhl","Stühle","стул","home",""],
+["das","Bett","Betten","кровать","home",""],
+["der","Schrank","Schränke","шкаф","home",""],
+["das","Sofa","Sofas","диван","home",""],
+["die","Tür","Türen","дверь","home",""],
+["das","Fenster","Fenster","окно","home",""],
+["die","Lampe","Lampen","лампа","home",""],
+["der","Fernseher","Fernseher","телевизор","home",""],
+["der","Kühlschrank","Kühlschränke","холодильник","home",""],
+["die","Dusche","Duschen","душ","home",""],
+["die","Toilette","Toiletten","туалет","home",""],
+["der","Schlüssel","Schlüssel","ключ","home",""],
+["die","Treppe","Treppen","лестница","home",""],
+["der","Garten","Gärten","сад","home",""],
+["der","Balkon","Balkone","балкон","home",""],
+["die","Miete","","арендная плата","home",""],
+["die","Adresse","Adressen","адрес","home",""],
+["","zu Hause","","дома","home",""],
+["","nach Hause","","домой","home",""],
+["die","Stadt","Städte","город","city",""],
+["das","Dorf","Dörfer","деревня","city",""],
+["das","Land","Länder","страна; сельская местность","city",""],
+["die","Straße","Straßen","улица","city",""],
+["der","Platz","Plätze","площадь; место","city",""],
+["der","Weg","Wege","путь, дорога","city",""],
+["der","Bahnhof","Bahnhöfe","вокзал","city",""],
+["der","Flughafen","Flughäfen","аэропорт","city",""],
+["die","Haltestelle","Haltestellen","остановка","city",""],
+["der","Bus","Busse","автобус","city",""],
+["der","Zug","Züge","поезд","city",""],
+["die","U-Bahn","","метро","city",""],
+["die","Straßenbahn","","трамвай","city",""],
+["das","Auto","Autos","машина","city",""],
+["das","Fahrrad","Fahrräder","велосипед","city",""],
+["das","Taxi","Taxis","такси","city",""],
+["das","Flugzeug","Flugzeuge","самолёт","city",""],
+["die","Fahrkarte","Fahrkarten","билет (на транспорт)","city",""],
+["die","Post","","почта","city",""],
+["die","Bank","Banken","банк","city","die Bank, Bänke — скамейка"],
+["der","Supermarkt","Supermärkte","супермаркет","city",""],
+["das","Geschäft","Geschäfte","магазин","city",""],
+["das","Restaurant","Restaurants","ресторан","city",""],
+["das","Café","Cafés","кафе","city",""],
+["das","Hotel","Hotels","отель","city",""],
+["das","Kino","Kinos","кинотеатр","city",""],
+["das","Krankenhaus","Krankenhäuser","больница","city",""],
+["die","Apotheke","Apotheken","аптека","city",""],
+["die","Kirche","Kirchen","церковь","city",""],
+["der","Pass","Pässe","паспорт","city",""],
+["","links","","налево, слева","city",""],
+["","rechts","","направо, справа","city",""],
+["","geradeaus","","прямо (о направлении)","city",""],
+["","weit","","далеко; далёкий","city",""],
+["die","Arbeit","","работа","work",""],
+["der","Beruf","Berufe","профессия","work",""],
+["das","Büro","Büros","офис","work",""],
+["die","Firma","Firmen","фирма","work",""],
+["der","Chef","Chefs","начальник","work",""],
+["der","Kollege","Kollegen","коллега","work",""],
+["der","Lehrer","Lehrer","учитель","work",""],
+["die","Lehrerin","Lehrerinnen","учительница","work",""],
+["der","Arzt","Ärzte","врач","work",""],
+["die","Ärztin","Ärztinnen","врач (женщина)","work",""],
+["der","Verkäufer","Verkäufer","продавец","work",""],
+["der","Student","Studenten","студент","work",""],
+["der","Schüler","Schüler","ученик","work",""],
+["der","Termin","Termine","запись, назначенная встреча","work",""],
+["der","Job","Jobs","работа, подработка","work",""],
+["die","Schule","Schulen","школа","study",""],
+["der","Kurs","Kurse","курс","study",""],
+["die","Sprache","Sprachen","язык","study",""],
+["","Deutsch","","немецкий язык","study","auf Deutsch — по-немецки"],
+["","Russisch","","русский язык","study",""],
+["","Englisch","","английский язык","study",""],
+["das","Wort","Wörter","слово","study",""],
+["der","Satz","Sätze","предложение, фраза","study",""],
+["die","Frage","Fragen","вопрос","study",""],
+["die","Antwort","Antworten","ответ","study",""],
+["das","Buch","Bücher","книга","study",""],
+["das","Heft","Hefte","тетрадь","study",""],
+["der","Stift","Stifte","ручка, карандаш","study","der Kugelschreiber — шариковая ручка"],
+["das","Papier","","бумага","study",""],
+["die","Prüfung","Prüfungen","экзамен","study",""],
+["die","Aufgabe","Aufgaben","задание","study",""],
+["die","Hausaufgabe","Hausaufgaben","домашнее задание","study",""],
+["das","Beispiel","Beispiele","пример","study","zum Beispiel (z. B.) — например"],
+["das","Formular","Formulare","бланк, формуляр","study",""],
+["die","Nummer","Nummern","номер","study",""],
+["der","Kopf","Köpfe","голова","body",""],
+["das","Haar","Haare","волосы","body",""],
+["das","Auge","Augen","глаз","body",""],
+["das","Ohr","Ohren","ухо","body",""],
+["die","Nase","Nasen","нос","body",""],
+["der","Mund","","рот","body",""],
+["der","Zahn","Zähne","зуб","body",""],
+["der","Hals","","шея; горло","body",""],
+["die","Hand","Hände","кисть, рука","body",""],
+["der","Arm","Arme","рука (от плеча)","body",""],
+["der","Finger","Finger","палец","body",""],
+["das","Bein","Beine","нога","body",""],
+["der","Fuß","Füße","стопа, ступня","body",""],
+["der","Bauch","","живот","body",""],
+["der","Rücken","","спина","body",""],
+["das","Herz","","сердце","body",""],
+["der","Schmerz","Schmerzen","боль","body","Ich habe Kopfschmerzen. — у меня болит голова"],
+["","krank","","больной","body",""],
+["","gesund","","здоровый","body",""],
+["","müde","","усталый","body",""],
+["die","Kleidung","","одежда","cloth",""],
+["das","Hemd","Hemden","рубашка","cloth",""],
+["das","T-Shirt","T-Shirts","футболка","cloth",""],
+["der","Pullover","Pullover","свитер","cloth",""],
+["die","Jacke","Jacken","куртка","cloth",""],
+["der","Mantel","Mäntel","пальто","cloth",""],
+["die","Hose","Hosen","брюки","cloth","в немецком — ед. ч."],
+["der","Rock","Röcke","юбка","cloth",""],
+["das","Kleid","Kleider","платье","cloth",""],
+["der","Schuh","Schuhe","ботинок, туфля","cloth",""],
+["die","Socke","Socken","носок","cloth",""],
+["die","Mütze","Mützen","шапка","cloth",""],
+["die","Brille","Brillen","очки","cloth","в немецком — ед. ч."],
+["die","Tasche","Taschen","сумка; карман","cloth",""],
+["das","Wetter","","погода","nat",""],
+["die","Sonne","","солнце","nat",""],
+["der","Regen","","дождь","nat",""],
+["der","Schnee","","снег","nat",""],
+["der","Wind","","ветер","nat",""],
+["die","Wolke","Wolken","облако","nat",""],
+["der","Himmel","","небо","nat",""],
+["","Es regnet.","","идёт дождь","nat",""],
+["","warm","","тёплый","nat",""],
+["","kalt","","холодный","nat",""],
+["","heiß","","жаркий, горячий","nat",""],
+["der","Baum","Bäume","дерево","nat",""],
+["die","Blume","Blumen","цветок","nat",""],
+["der","Wald","Wälder","лес","nat",""],
+["der","Berg","Berge","гора","nat",""],
+["der","See","Seen","озеро","nat","die See — море"],
+["das","Meer","","море","nat",""],
+["der","Fluss","Flüsse","река","nat",""],
+["das","Tier","Tiere","животное","nat",""],
+["der","Hund","Hunde","собака","nat",""],
+["die","Katze","Katzen","кошка","nat",""],
+["der","Vogel","Vögel","птица","nat",""],
+["","rot","","красный","col",""],
+["","blau","","синий, голубой","col",""],
+["","grün","","зелёный","col",""],
+["","gelb","","жёлтый","col",""],
+["","schwarz","","чёрный","col",""],
+["","weiß","","белый","col",""],
+["","grau","","серый","col",""],
+["","braun","","коричневый","col",""],
+["","orange","","оранжевый","col",""],
+["","rosa","","розовый","col",""],
+["","lila","","фиолетовый","col",""],
+["","hell","","светлый","col",""],
+["","dunkel","","тёмный","col",""],
+["","sein","","быть","verb","ich bin, er ist"],
+["","haben","","иметь","verb","er hat"],
+["","werden","","становиться","verb","er wird"],
+["","machen","","делать","verb",""],
+["","gehen","","идти, ходить","verb",""],
+["","kommen","","приходить, приезжать","verb",""],
+["","fahren","","ехать","verb","er fährt"],
+["","fliegen","","лететь","verb",""],
+["","laufen","","бежать","verb","разговорно также: идти пешком; er läuft"],
+["","bleiben","","оставаться","verb",""],
+["","wohnen","","проживать, жить (по адресу)","verb",""],
+["","leben","","жить (существовать)","verb",""],
+["","heißen","","зваться, называться","verb","Ich heiße… — меня зовут…"],
+["","sprechen","","разговаривать, говорить","verb","er spricht"],
+["","sagen","","сказать, говорить (что-либо)","verb",""],
+["","fragen","","спрашивать","verb",""],
+["","antworten","","отвечать","verb",""],
+["","sehen","","видеть","verb","er sieht"],
+["","hören","","слышать, слушать","verb",""],
+["","lesen","","читать","verb","er liest"],
+["","schreiben","","писать","verb",""],
+["","lernen","","учить, учиться","verb",""],
+["","verstehen","","понимать","verb",""],
+["","wissen","","знать (факт)","verb","ich weiß, er weiß"],
+["","kennen","","знать, быть знакомым","verb",""],
+["","denken","","думать","verb",""],
+["","glauben","","полагать, верить","verb",""],
+["","essen","","есть, кушать","verb","er isst"],
+["","trinken","","пить","verb",""],
+["","kochen","","готовить (еду)","verb",""],
+["","schlafen","","спать","verb","er schläft"],
+["","aufstehen","","вставать (с постели)","verb","er steht auf"],
+["","arbeiten","","работать","verb",""],
+["","kaufen","","покупать","verb",""],
+["","einkaufen","","делать покупки","verb","er kauft ein"],
+["","kosten","","стоить","verb","Was kostet das? — сколько это стоит?"],
+["","bezahlen","","оплачивать","verb",""],
+["","brauchen","","нуждаться","verb",""],
+["","suchen","","искать","verb",""],
+["","finden","","находить","verb",""],
+["","nehmen","","брать","verb","er nimmt"],
+["","geben","","давать","verb","er gibt"],
+["","helfen","","помогать","verb","er hilft"],
+["","zeigen","","показывать","verb",""],
+["","öffnen","","открывать","verb",""],
+["","schließen","","закрывать","verb",""],
+["","beginnen","","начинать(ся)","verb",""],
+["","warten","","ждать","verb",""],
+["","spielen","","играть","verb",""],
+["","lieben","","любить (кого-либо)","verb",""],
+["","mögen","","любить (что-либо)","verb","ich mag"],
+["","möchten","","хотел(а) бы","verb","ich möchte"],
+["","können","","мочь, уметь","verb","ich kann"],
+["","müssen","","быть должным, быть вынужденным","verb","ich muss"],
+["","wollen","","хотеть","verb","ich will"],
+["","dürfen","","мочь (иметь разрешение)","verb","ich darf"],
+["","sollen","","следует, надо (по указанию)","verb","ich soll"],
+["","schwimmen","","плавать","verb",""],
+["","tanzen","","танцевать","verb",""],
+["","singen","","петь","verb",""],
+["","sitzen","","сидеть","verb",""],
+["","stehen","","стоять","verb",""],
+["","liegen","","лежать","verb",""],
+["","wiederholen","","повторять","verb",""],
+["","buchstabieren","","произносить по буквам","verb",""],
+["","bedeuten","","значить, означать","verb","Was bedeutet das? — что это значит?"],
+["","groß","","большой; высокий (о росте)","adj",""],
+["","klein","","маленький","adj",""],
+["","gut","","хороший; хорошо","adj",""],
+["","schlecht","","плохой; плохо","adj",""],
+["","neu","","новый","adj",""],
+["","alt","","старый","adj","Wie alt bist du? — сколько тебе лет?"],
+["","jung","","молодой","adj",""],
+["","schön","","красивый, прекрасный","adj",""],
+["","lang","","длинный","adj",""],
+["","kurz","","короткий","adj",""],
+["","schnell","","быстрый","adj",""],
+["","langsam","","медленный","adj","Langsamer, bitte! — помедленнее, пожалуйста!"],
+["","teuer","","дорогой","adj",""],
+["","billig","","дешёвый","adj",""],
+["","leicht","","лёгкий (не тяжёлый)","adj",""],
+["","schwer","","тяжёлый; трудный","adj",""],
+["","einfach","","простой, несложный","adj",""],
+["","richtig","","правильный","adj",""],
+["","falsch","","неправильный","adj",""],
+["","laut","","громкий","adj",""],
+["","leise","","тихий","adj",""],
+["","voll","","полный","adj",""],
+["","leer","","пустой","adj",""],
+["","sauber","","чистый","adj",""],
+["","schmutzig","","грязный","adj",""],
+["","glücklich","","счастливый","adj",""],
+["","traurig","","грустный","adj",""],
+["","wichtig","","важный","adj",""],
+["","interessant","","интересный","adj",""],
+["","langweilig","","скучный","adj",""],
+["","nett","","милый, приятный","adj",""],
+["","frei","","свободный","adj",""],
+["","lecker","","вкусный","adj",""],
+["","fertig","","готовый (завершённый)","adj",""],
+["die","Freizeit","","свободное время","free",""],
+["das","Hobby","Hobbys","хобби","free",""],
+["die","Musik","","музыка","free",""],
+["der","Film","Filme","фильм","free",""],
+["der","Sport","","спорт","free",""],
+["der","Fußball","","футбол","free",""],
+["das","Spiel","Spiele","игра","free",""],
+["die","Reise","Reisen","путешествие","free",""],
+["der","Urlaub","","отпуск","free",""],
+["das","Foto","Fotos","фотография","free",""],
+["der","Computer","Computer","компьютер","free",""],
+["das","Handy","Handys","мобильный телефон","free",""],
+["das","Internet","","интернет","free",""],
+["die","Party","Partys","вечеринка","free",""],
+["das","Geschenk","Geschenke","подарок","free",""],
+["der","Geburtstag","Geburtstage","день рождения","free",""],
+["der","Brief","Briefe","письмо","free",""],
+["die","E-Mail","E-Mails","электронное письмо","free",""],
+["das","Geld","","деньги","shop",""],
+["der","Euro","","евро","shop",""],
+["der","Cent","","цент","shop",""],
+["der","Preis","Preise","цена","shop",""],
+["der","Markt","Märkte","рынок","shop",""],
+["die","Kasse","Kassen","касса","shop",""],
+["die","Rechnung","Rechnungen","счёт (к оплате)","shop",""],
+["","geöffnet","","открыто","shop","также: offen"],
+["","geschlossen","","закрыто","shop",""],
+["","Herzlichen Glückwunsch!","","поздравляю!","greet","например: zum Geburtstag — с днём рождения"],
+["","Guten Appetit!","","приятного аппетита!","greet",""],
+["","Bis bald!","","до скорого!","greet",""],
+["","Schönes Wochenende!","","хороших выходных!","greet",""],
+["","Wie bitte?","","как, простите? (просьба повторить)","greet",""],
+["","Achtung!","","внимание!, осторожно!","greet",""],
+["","dann","","потом, затем","core",""],
+["","zuerst","","сначала","core",""],
+["","zurück","","назад, обратно","core",""],
+["","sofort","","сразу, немедленно","core",""],
+["","endlich","","наконец","core",""],
+["","gleich","","сейчас, скоро","core",""],
+["","fast","","почти","core",""],
+["","ganz","","совсем, целиком","core",""],
+["","genug","","достаточно","core",""],
+["","wirklich","","действительно, правда","core",""],
+["","lieber","","лучше, охотнее (предпочтение)","core","Ich trinke lieber Tee. — я предпочитаю чай"],
+["","allein","","один, в одиночку","core",""],
+["","selten","","редко","core",""],
+["","erst","","только, лишь (о времени)","core","erst um zehn — только в десять"],
+["","früher","","раньше","core",""],
+["","oben","","наверху","core",""],
+["","unten","","внизу","core",""],
+["der","Vormittag","","первая половина дня","time",""],
+["der","Anfang","","начало","time",""],
+["das","Ende","","конец","time",""],
+["das","Datum","","дата, число","time",""],
+["die","Pause","Pausen","перерыв, пауза","time",""],
+["der","Nachbar","Nachbarn","сосед","fam",""],
+["der","Gast","Gäste","гость","fam",""],
+["die","Person","Personen","персона, лицо","fam","für zwei Personen — на двоих"],
+["das","Getränk","Getränke","напиток","food",""],
+["die","Flasche","Flaschen","бутылка","food",""],
+["das","Glas","Gläser","стакан, бокал","food",""],
+["die","Tasse","Tassen","чашка","food",""],
+["der","Teller","Teller","тарелка","food",""],
+["der","Löffel","Löffel","ложка","food",""],
+["die","Gabel","Gabeln","вилка","food",""],
+["das","Messer","Messer","нож","food",""],
+["die","Speisekarte","Speisekarten","меню","food",""],
+["das","Stück","Stücke","кусок; штука","food","ein Stück Kuchen — кусок пирога"],
+["das","Licht","","свет","home",""],
+["der","Müll","","мусор","home",""],
+["der","Aufzug","Aufzüge","лифт","home",""],
+["der","Stock","Stockwerke","этаж","home","erster Stock — по-русски второй этаж (счёт с нуля)"],
+["das","Bild","Bilder","картина; изображение","home",""],
+["das","Radio","Radios","радио","home",""],
+["das","Telefon","Telefone","телефон","home",""],
+["die","Bäckerei","Bäckereien","пекарня, булочная","city",""],
+["das","Zentrum","Zentren","центр","city",""],
+["das","Rathaus","Rathäuser","ратуша, мэрия","city",""],
+["die","Brücke","Brücken","мост","city",""],
+["die","Ampel","Ampeln","светофор","city",""],
+["die","Ecke","Ecken","угол","city","an der Ecke — на углу"],
+["der","Eingang","Eingänge","вход","city",""],
+["der","Ausgang","Ausgänge","выход","city",""],
+["der","Fahrplan","Fahrpläne","расписание транспорта","city",""],
+["die","Verspätung","Verspätungen","опоздание, задержка","city","Der Zug hat Verspätung. — поезд опаздывает"],
+["das","Schwimmbad","Schwimmbäder","бассейн","city",""],
+["der","Strand","Strände","пляж","city",""],
+["das","Ausland","","заграница","city","im Ausland — за границей"],
+["der","Ausflug","Ausflüge","экскурсия, поездка","city",""],
+["die","Polizei","","полиция","city",""],
+["der","Unfall","Unfälle","авария, несчастный случай","city",""],
+["der","Führerschein","Führerscheine","водительские права","city",""],
+["das","Gepäck","","багаж","city",""],
+["der","Koffer","Koffer","чемодан","city",""],
+["das","Doppelzimmer","Doppelzimmer","двухместный номер","city","das Einzelzimmer — одноместный"],
+["der","Ausweis","Ausweise","удостоверение личности","city",""],
+["der","Kellner","Kellner","официант","work",""],
+["die","Anmeldung","Anmeldungen","запись, регистрация","work",""],
+["die","Information","Informationen","информация; справочная","work",""],
+["das","Problem","Probleme","проблема","work",""],
+["die","Hilfe","","помощь","work",""],
+["die","Zeitung","Zeitungen","газета","study",""],
+["die","Zahl","Zahlen","число, цифра","study",""],
+["das","Fieber","","температура, жар","body",""],
+["das","Medikament","Medikamente","лекарство","body",""],
+["das","Rezept","Rezepte","рецепт","body","от врача; также кулинарный"],
+["die","Farbe","Farben","цвет","col",""],
+["","Es schneit.","","идёт снег","nat",""],
+["das","Fest","Feste","праздник","free",""],
+["die","Karte","Karten","открытка; карта","free",""],
+["die","Briefmarke","Briefmarken","почтовая марка","free",""],
+["das","Lied","Lieder","песня","free",""],
+["die","Nachricht","Nachrichten","сообщение, новость","free",""],
+["das","Sonderangebot","Sonderangebote","акция, спецпредложение","shop",""],
+["die","Größe","Größen","размер","shop",""],
+["","dick","","толстый","adj",""],
+["","dünn","","тонкий, худой","adj",""],
+["","klar","","ясный; понятно","adj","Alles klar! — всё понятно!"],
+["","letzte","","последний","adj",""],
+["","nächste","","следующий","adj",""],
+["","lustig","","весёлый, смешной","adj",""],
+["","pünktlich","","пунктуальный, вовремя","adj",""],
+["","ruhig","","спокойный","adj",""],
+["","toll","","отличный, классный","adj",""],
+["","verboten","","запрещено","adj",""],
+["","zufrieden","","довольный","adj",""],
+["","süß","","сладкий; милый","adj",""],
+["","satt","","сытый","adj",""],
+["","günstig","","выгодный, недорогой","adj",""],
+["","kostenlos","","бесплатный","adj",""],
+["","besetzt","","занято (место, туалет, линия)","adj",""],
+["","kaputt","","сломанный","adj",""],
+["","anfangen","","начинать(ся); приступать","verb","= beginnen; er fängt an"],
+["","aufhören","","прекращать(ся), переставать","verb","hört auf"],
+["","anrufen","","звонить (по телефону)","verb","ruft an: Ich rufe dich an."],
+["","ankommen","","прибывать","verb","kommt an"],
+["","abfahren","","отправляться, отъезжать","verb","er fährt ab"],
+["","einsteigen","","садиться (в транспорт)","verb","steigt ein"],
+["","aussteigen","","выходить (из транспорта)","verb","steigt aus"],
+["","umsteigen","","делать пересадку","verb","steigt um"],
+["","einladen","","приглашать","verb","er lädt ein"],
+["","mitbringen","","приносить с собой","verb","bringt mit"],
+["","mitnehmen","","брать с собой","verb","er nimmt mit"],
+["","fernsehen","","смотреть телевизор","verb","er sieht fern"],
+["","ausfüllen","","заполнять (бланк)","verb","füllt aus"],
+["","abholen","","забирать; встречать (напр., с вокзала)","verb","holt ab"],
+["","anziehen","","надевать","verb","zieht an"],
+["","bekommen","","получать","verb",""],
+["","bestellen","","заказывать","verb",""],
+["","besuchen","","навещать, посещать","verb",""],
+["","bringen","","приносить, привозить","verb",""],
+["","buchen","","бронировать (билет, поездку)","verb",""],
+["","dauern","","длиться","verb",""],
+["","duschen","","принимать душ","verb",""],
+["","erklären","","объяснять","verb",""],
+["","feiern","","праздновать","verb",""],
+["","frühstücken","","завтракать","verb",""],
+["","gefallen","","нравиться (производить впечатление)","verb","er gefällt; Das gefällt mir. — мне это нравится"],
+["","gehören","","принадлежать","verb",""],
+["","heiraten","","жениться, выходить замуж","verb",""],
+["","holen","","сходить за, принести","verb",""],
+["","kennenlernen","","знакомиться","verb","lernt kennen"],
+["","lachen","","смеяться","verb",""],
+["","parken","","парковаться","verb",""],
+["","passieren","","случаться, происходить","verb","Was ist passiert? — что случилось?"],
+["","probieren","","пробовать","verb",""],
+["","rauchen","","курить","verb",""],
+["","reisen","","путешествовать","verb",""],
+["","reparieren","","чинить, ремонтировать","verb",""],
+["","reservieren","","резервировать (столик, номер)","verb",""],
+["","schenken","","дарить","verb",""],
+["","schicken","","отправлять, посылать","verb",""],
+["","schmecken","","быть вкусным, нравиться на вкус","verb","Es schmeckt mir. — мне вкусно"],
+["","treffen","","встречать(ся)","verb","er trifft; wir treffen uns"],
+["","üben","","упражняться, тренироваться","verb",""],
+["","übernachten","","ночевать","verb",""],
+["","unterschreiben","","подписывать","verb",""],
+["","vergessen","","забывать","verb","er vergisst"],
+["","verkaufen","","продавать","verb",""],
+["","verdienen","","зарабатывать","verb",""],
+["","waschen","","мыть, стирать","verb","er wäscht"],
+["","wechseln","","менять, обменивать","verb",""],
+["","wehtun","","болеть (о части тела)","verb","tut weh: Mein Kopf tut weh."],
+["","wünschen","","желать","verb",""],
+["","putzen","","чистить, убирать","verb",""],
+["","telefonieren","","говорить по телефону","verb",""],
+["","spazieren gehen","","гулять, идти на прогулку","verb",""]
+];
+/* примеры употребления: ключ = артикль + слово */
+var EX={
+"Hallo":["Hallo, ich bin Anna.","Привет, я Анна."],
+"Guten Morgen":["Guten Morgen, Herr Braun!","Доброе утро, господин Браун!"],
+"Guten Tag":["Guten Tag, wie geht es Ihnen?","Добрый день, как ваши дела?"],
+"Guten Abend":["Guten Abend, kommen Sie rein!","Добрый вечер, входите!"],
+"Gute Nacht":["Gute Nacht, schlaf gut!","Спокойной ночи, спи сладко!"],
+"Tschüss":["Tschüss, bis morgen!","Пока, до завтра!"],
+"Auf Wiedersehen":["Auf Wiedersehen, Frau Klein!","До свидания, госпожа Кляйн!"],
+"danke":["Danke für die Hilfe!","Спасибо за помощь!"],
+"bitte":["Einen Kaffee, bitte.","Один кофе, пожалуйста."],
+"Entschuldigung":["Entschuldigung, wo ist der Bahnhof?","Извините, где вокзал?"],
+"Es tut mir leid.":["Es tut mir leid, ich bin spät.","Извините, я опоздал."],
+"ja":["Ja, gern!","Да, с удовольствием!"],
+"nein":["Nein, danke.","Нет, спасибо."],
+"Wie geht es dir?":["Wie geht es dir? — Gut, danke.","Как дела? — Хорошо, спасибо."],
+"willkommen":["Willkommen in Berlin!","Добро пожаловать в Берлин!"],
+"Alles Gute!":["Alles Gute zum Geburtstag!","С днём рождения!"],
+"Viel Glück!":["Viel Glück bei der Prüfung!","Удачи на экзамене!"],
+"wer":["Wer ist das?","Кто это?"],
+"was":["Was machst du?","Что ты делаешь?"],
+"wo":["Wo wohnst du?","Где ты живёшь?"],
+"wohin":["Wohin fährst du?","Куда ты едешь?"],
+"woher":["Woher kommst du?","Откуда ты?"],
+"wann":["Wann beginnt der Kurs?","Когда начинается курс?"],
+"wie":["Wie heißt du?","Как тебя зовут?"],
+"warum":["Warum lernst du Deutsch?","Почему ты учишь немецкий?"],
+"wie viel":["Wie viel kostet das?","Сколько это стоит?"],
+"welcher":["Welcher Bus fährt zum Zentrum?","Какой автобус едет в центр?"],
+"und":["Anna und Max kommen heute.","Анна и Макс придут сегодня."],
+"oder":["Kaffee oder Tee?","Кофе или чай?"],
+"aber":["Ich komme, aber später.","Я приду, но позже."],
+"nicht":["Ich verstehe das nicht.","Я этого не понимаю."],
+"kein":["Ich habe keine Zeit.","У меня нет времени."],
+"auch":["Ich lerne auch Deutsch.","Я тоже учу немецкий."],
+"sehr":["Das ist sehr gut.","Это очень хорошо."],
+"viel":["Er arbeitet viel.","Он много работает."],
+"wenig":["Wir haben wenig Zeit.","У нас мало времени."],
+"nur":["Das kostet nur zwei Euro.","Это стоит всего два евро."],
+"alles":["Alles ist gut.","Всё хорошо."],
+"nichts":["Ich sehe nichts.","Я ничего не вижу."],
+"etwas":["Möchtest du etwas trinken?","Хочешь что-нибудь выпить?"],
+"immer":["Er kommt immer pünktlich.","Он всегда приходит вовремя."],
+"oft":["Wir kochen oft zusammen.","Мы часто готовим вместе."],
+"manchmal":["Manchmal gehe ich zu Fuß.","Иногда я хожу пешком."],
+"nie":["Ich trinke nie Kaffee.","Я никогда не пью кофе."],
+"schon":["Er ist schon zu Hause.","Он уже дома."],
+"noch":["Ich brauche noch fünf Minuten.","Мне нужно ещё пять минут."],
+"hier":["Hier ist mein Ausweis.","Вот моё удостоверение."],
+"dort":["Dort ist die Haltestelle.","Там остановка."],
+"zusammen":["Wir lernen zusammen.","Мы учимся вместе."],
+"mit":["Ich fahre mit dem Bus.","Я еду на автобусе."],
+"ohne":["Kaffee ohne Zucker, bitte.","Кофе без сахара, пожалуйста."],
+"gern":["Ich schwimme gern.","Я люблю плавать."],
+"genau":["Ja, genau!","Да, именно!"],
+"natürlich":["Natürlich helfe ich dir.","Конечно, я тебе помогу."],
+"leider":["Leider habe ich keine Zeit.","К сожалению, у меня нет времени."],
+"vielleicht":["Vielleicht kommt er morgen.","Может быть, он придёт завтра."],
+"null":["Null Grad — es ist kalt.","Ноль градусов — холодно."],
+"eins":["Eins, zwei, drei — los!","Раз, два, три — начали!"],
+"zwei":["Zwei Kaffee, bitte.","Два кофе, пожалуйста."],
+"drei":["Wir sind drei Personen.","Нас трое."],
+"vier":["Das Zimmer hat vier Fenster.","В комнате четыре окна."],
+"fünf":["Der Bus kommt in fünf Minuten.","Автобус придёт через пять минут."],
+"sechs":["Ich stehe um sechs auf.","Я встаю в шесть."],
+"sieben":["Die Woche hat sieben Tage.","В неделе семь дней."],
+"acht":["Der Kurs beginnt um acht.","Курс начинается в восемь."],
+"neun":["Das Kind ist neun Jahre alt.","Ребёнку девять лет."],
+"zehn":["Das kostet zehn Euro.","Это стоит десять евро."],
+"elf":["Es ist schon elf Uhr.","Уже одиннадцать часов."],
+"zwölf":["Um zwölf esse ich Mittag.","В двенадцать я обедаю."],
+"dreizehn":["Sie ist dreizehn Jahre alt.","Ей тринадцать лет."],
+"vierzehn":["In vierzehn Tagen habe ich Urlaub.","Через две недели у меня отпуск."],
+"fünfzehn":["Die Pause dauert fünfzehn Minuten.","Перерыв длится пятнадцать минут."],
+"sechzehn":["Mein Bruder ist sechzehn.","Моему брату шестнадцать."],
+"siebzehn":["Der Zug fährt um siebzehn Uhr.","Поезд отправляется в семнадцать часов."],
+"achtzehn":["Sie ist achtzehn Jahre alt.","Ей восемнадцать лет."],
+"neunzehn":["Die Fahrkarte kostet neunzehn Euro.","Билет стоит девятнадцать евро."],
+"zwanzig":["Ich bin in zwanzig Minuten da.","Я буду через двадцать минут."],
+"dreißig":["Er ist dreißig Jahre alt.","Ему тридцать лет."],
+"vierzig":["Meine Mutter ist vierzig.","Моей маме сорок."],
+"fünfzig":["Das Hemd kostet fünfzig Euro.","Рубашка стоит пятьдесят евро."],
+"hundert":["Hundert Gramm Käse, bitte.","Сто граммов сыра, пожалуйста."],
+"tausend":["Die Miete kostet tausend Euro.","Аренда стоит тысячу евро."],
+"die Zeit":["Hast du morgen Zeit?","У тебя есть завтра время?"],
+"in":["Ich wohne in Berlin.","Я живу в Берлине."],
+"an":["Das Bild hängt an der Wand.","Картина висит на стене."],
+"auf":["Das Buch liegt auf dem Tisch.","Книга лежит на столе."],
+"vor":["Wir treffen uns vor dem Kino.","Встречаемся перед кинотеатром."],
+"hinter":["Der Garten ist hinter dem Haus.","Сад за домом."],
+"neben":["Die Bank ist neben der Post.","Банк рядом с почтой."],
+"über":["Die Lampe hängt über dem Tisch.","Лампа висит над столом."],
+"unter":["Die Katze schläft unter dem Bett.","Кошка спит под кроватью."],
+"zwischen":["Die Apotheke ist zwischen Bank und Café.","Аптека между банком и кафе."],
+"aus":["Ich komme aus Russland.","Я из России."],
+"bei":["Ich wohne bei meiner Schwester.","Я живу у сестры."],
+"nach":["Ich fahre nach Berlin.","Я еду в Берлин."],
+"seit":["Ich lerne seit einem Jahr Deutsch.","Я учу немецкий год."],
+"von":["Das ist das Auto von meinem Vater.","Это машина моего отца."],
+"zu":["Ich gehe zum Arzt.","Я иду к врачу."],
+"ab":["Ab Montag arbeite ich.","С понедельника я работаю."],
+"für":["Das ist ein Geschenk für dich.","Это подарок для тебя."],
+"um":["Der Kurs beginnt um acht Uhr.","Курс начинается в восемь."],
+"durch":["Wir gehen durch den Park.","Мы идём через парк."],
+"gegen":["Ich komme gegen sechs.","Я приду около шести."],
+"bis":["Ich arbeite bis Freitag.","Я работаю до пятницы."],
+"ich":["Ich komme aus Russland.","Я из России."],
+"du":["Wie heißt du?","Как тебя зовут?"],
+"er":["Er wohnt in Berlin.","Он живёт в Берлине."],
+"sie":["Sie arbeitet hier.","Она здесь работает."],
+"es":["Es regnet heute.","Сегодня идёт дождь."],
+"wir":["Wir lernen Deutsch.","Мы учим немецкий."],
+"ihr":["Wo wohnt ihr?","Где вы живёте?"],
+"Sie":["Wie heißen Sie?","Как Вас зовут?"],
+"mich":["Verstehst du mich?","Ты меня понимаешь?"],
+"mir":["Kannst du mir helfen?","Можешь мне помочь?"],
+"dich":["Ich sehe dich.","Я тебя вижу."],
+"dir":["Wie geht es dir?","Как у тебя дела?"],
+"ihn":["Ich kenne ihn gut.","Я хорошо его знаю."],
+"ihm":["Ich gebe ihm das Buch.","Я даю ему книгу."],
+"uns":["Besuch uns morgen!","Навести нас завтра!"],
+"euch":["Ich schreibe euch.","Я вам напишу."],
+"ihnen":["Ich danke ihnen.","Я их благодарю."],
+"mein":["Mein Name ist Sascha.","Меня зовут Саша."],
+"dein":["Ist das dein Auto?","Это твоя машина?"],
+"man":["Hier spricht man Deutsch.","Здесь говорят по-немецки."],
+"mehr":["Ich brauche mehr Zeit.","Мне нужно больше времени."],
+"wieder":["Bis morgen wieder!","До завтра!"],
+"bald":["Bis bald!","До скорого!"],
+"der Tag":["Welcher Tag ist heute?","Какой сегодня день?"],
+"die Woche":["Nächste Woche habe ich frei.","На следующей неделе я свободен."],
+"der Monat":["Der Kurs dauert einen Monat.","Курс длится месяц."],
+"das Jahr":["Das Jahr hat zwölf Monate.","В году двенадцать месяцев."],
+"die Stunde":["Der Film dauert zwei Stunden.","Фильм идёт два часа."],
+"die Minute":["Eine Minute, bitte!","Минуту, пожалуйста!"],
+"die Uhr":["Es ist zehn Uhr.","Сейчас десять часов."],
+"der Morgen":["Am Morgen trinke ich Kaffee.","Утром я пью кофе."],
+"der Mittag":["Am Mittag esse ich Suppe.","В полдень я ем суп."],
+"der Nachmittag":["Am Nachmittag lerne ich Deutsch.","Во второй половине дня я учу немецкий."],
+"der Abend":["Am Abend sehe ich fern.","Вечером я смотрю телевизор."],
+"die Nacht":["In der Nacht schlafe ich.","Ночью я сплю."],
+"heute":["Heute ist Sonntag.","Сегодня воскресенье."],
+"morgen":["Morgen habe ich einen Termin.","Завтра у меня запись."],
+"gestern":["Gestern war ich im Kino.","Вчера я был в кино."],
+"jetzt":["Ich muss jetzt gehen.","Мне нужно сейчас идти."],
+"später":["Wir sprechen später.","Поговорим позже."],
+"früh":["Ich stehe früh auf.","Я встаю рано."],
+"spät":["Es ist schon spät.","Уже поздно."],
+"der Montag":["Am Montag beginnt der Kurs.","В понедельник начинается курс."],
+"der Dienstag":["Am Dienstag habe ich Deutsch.","Во вторник у меня немецкий."],
+"der Mittwoch":["Am Mittwoch gehe ich einkaufen.","В среду я иду за покупками."],
+"der Donnerstag":["Am Donnerstag kommt meine Mutter.","В четверг приезжает моя мама."],
+"der Freitag":["Am Freitag arbeite ich nicht.","В пятницу я не работаю."],
+"der Samstag":["Am Samstag ist der Markt offen.","В субботу рынок открыт."],
+"der Sonntag":["Am Sonntag schlafe ich lange.","В воскресенье я долго сплю."],
+"das Wochenende":["Am Wochenende fahren wir ans Meer.","На выходных мы едем к морю."],
+"der Januar":["Im Januar schneit es oft.","В январе часто идёт снег."],
+"der Februar":["Der Februar ist kurz.","Февраль короткий."],
+"der März":["Im März beginnt der Frühling.","В марте начинается весна."],
+"der April":["Im April regnet es viel.","В апреле часто идёт дождь."],
+"der Mai":["Im Mai ist es warm.","В мае тепло."],
+"der Juni":["Im Juni habe ich Geburtstag.","В июне у меня день рождения."],
+"der Juli":["Im Juli haben wir Urlaub.","В июле у нас отпуск."],
+"der August":["Im August ist es heiß.","В августе жарко."],
+"der September":["Im September beginnt die Schule.","В сентябре начинается школа."],
+"der Oktober":["Im Oktober ist die Prüfung.","В октябре экзамен."],
+"der November":["Im November ist es grau.","В ноябре серо."],
+"der Dezember":["Im Dezember feiern wir Weihnachten.","В декабре мы празднуем Рождество."],
+"die Familie":["Meine Familie wohnt in Russland.","Моя семья живёт в России."],
+"die Eltern":["Meine Eltern kommen zu Besuch.","Мои родители приезжают в гости."],
+"der Vater":["Mein Vater kocht gern.","Мой отец любит готовить."],
+"die Mutter":["Meine Mutter heißt Olga.","Мою маму зовут Ольга."],
+"der Sohn":["Ihr Sohn ist fünf Jahre alt.","Её сыну пять лет."],
+"die Tochter":["Unsere Tochter geht zur Schule.","Наша дочь ходит в школу."],
+"der Bruder":["Mein Bruder ist Student.","Мой брат — студент."],
+"die Schwester":["Meine Schwester hat zwei Kinder.","У моей сестры двое детей."],
+"das Kind":["Das Kind spielt im Garten.","Ребёнок играет в саду."],
+"das Baby":["Das Baby schläft.","Младенец спит."],
+"der Mann":["Mein Mann arbeitet im Büro.","Мой муж работает в офисе."],
+"die Frau":["Meine Frau lernt auch Deutsch.","Моя жена тоже учит немецкий."],
+"der Herr":["Guten Tag, Herr Schmidt!","Добрый день, господин Шмидт!"],
+"der Junge":["Der Junge spielt Fußball.","Мальчик играет в футбол."],
+"das Mädchen":["Das Mädchen liest ein Buch.","Девочка читает книгу."],
+"der Freund":["Mein Freund hilft mir oft.","Мой друг часто мне помогает."],
+"die Freundin":["Meine Freundin wohnt in Berlin.","Моя подруга живёт в Берлине."],
+"die Großmutter":["Meine Großmutter backt Kuchen.","Моя бабушка печёт пироги."],
+"der Großvater":["Mein Großvater liest die Zeitung.","Мой дедушка читает газету."],
+"der Mensch":["Viele Menschen lernen Deutsch.","Многие люди учат немецкий."],
+"die Leute":["Die Leute warten auf den Bus.","Люди ждут автобус."],
+"der Name":["Wie ist Ihr Name?","Как ваше имя?"],
+"ledig":["Er ist noch ledig.","Он ещё не женат."],
+"verheiratet":["Wir sind seit zwei Jahren verheiratet.","Мы женаты два года."],
+"das Brot":["Das Brot ist frisch.","Хлеб свежий."],
+"das Brötchen":["Zwei Brötchen, bitte.","Две булочки, пожалуйста."],
+"die Butter":["Ich esse Brot mit Butter.","Я ем хлеб с маслом."],
+"der Käse":["Der Käse kommt aus Frankreich.","Сыр из Франции."],
+"die Wurst":["Die Wurst schmeckt gut.","Колбаса вкусная."],
+"das Fleisch":["Ich esse kein Fleisch.","Я не ем мясо."],
+"der Fisch":["Heute gibt es Fisch mit Reis.","Сегодня рыба с рисом."],
+"das Ei":["Zum Frühstück esse ich ein Ei.","На завтрак я ем яйцо."],
+"die Milch":["Kaffee mit Milch, bitte.","Кофе с молоком, пожалуйста."],
+"der Zucker":["Ohne Zucker, bitte.","Без сахара, пожалуйста."],
+"das Salz":["Gib mir bitte das Salz.","Передай мне, пожалуйста, соль."],
+"der Apfel":["Der Apfel ist rot.","Яблоко красное."],
+"die Banane":["Die Banane ist gelb.","Банан жёлтый."],
+"die Orange":["Die Orange ist süß.","Апельсин сладкий."],
+"die Kartoffel":["Wir kochen heute Kartoffeln.","Сегодня мы варим картошку."],
+"die Tomate":["Die Tomaten sind aus Spanien.","Помидоры из Испании."],
+"der Salat":["Zum Mittag esse ich Salat.","На обед я ем салат."],
+"die Suppe":["Die Suppe ist heiß.","Суп горячий."],
+"der Reis":["Reis mit Gemüse, bitte.","Рис с овощами, пожалуйста."],
+"die Nudeln":["Die Kinder essen gern Nudeln.","Дети любят макароны."],
+"der Kuchen":["Der Kuchen schmeckt super.","Пирог очень вкусный."],
+"die Schokolade":["Ich kaufe Schokolade für dich.","Я куплю тебе шоколад."],
+"das Eis":["Im Sommer esse ich Eis.","Летом я ем мороженое."],
+"das Wasser":["Ein Glas Wasser, bitte.","Стакан воды, пожалуйста."],
+"der Saft":["Der Saft ist kalt.","Сок холодный."],
+"der Kaffee":["Ich trinke morgens Kaffee.","По утрам я пью кофе."],
+"der Tee":["Möchtest du Tee mit Zitrone?","Хочешь чай с лимоном?"],
+"das Bier":["Ein Bier, bitte.","Одно пиво, пожалуйста."],
+"der Wein":["Der Wein kommt aus Italien.","Вино из Италии."],
+"das Obst":["Obst ist gesund.","Фрукты полезны."],
+"das Gemüse":["Wir kaufen Gemüse auf dem Markt.","Мы покупаем овощи на рынке."],
+"das Frühstück":["Das Frühstück ist fertig.","Завтрак готов."],
+"das Mittagessen":["Um eins gibt es Mittagessen.","В час — обед."],
+"das Abendessen":["Zum Abendessen gibt es Fisch.","На ужин рыба."],
+"der Hunger":["Ich habe großen Hunger.","Я очень голоден."],
+"der Durst":["Hast du Durst?","Хочешь пить?"],
+"das Haus":["Unser Haus hat einen Garten.","У нашего дома есть сад."],
+"die Wohnung":["Die Wohnung hat drei Zimmer.","В квартире три комнаты."],
+"das Zimmer":["Mein Zimmer ist klein.","Моя комната маленькая."],
+"die Küche":["Die Küche ist neu.","Кухня новая."],
+"das Bad":["Das Bad ist rechts.","Ванная справа."],
+"das Schlafzimmer":["Das Schlafzimmer ist ruhig.","Спальня тихая."],
+"das Wohnzimmer":["Wir sitzen im Wohnzimmer.","Мы сидим в гостиной."],
+"der Tisch":["Das Buch liegt auf dem Tisch.","Книга лежит на столе."],
+"der Stuhl":["Der Stuhl ist frei.","Стул свободен."],
+"das Bett":["Ich gehe ins Bett.","Я иду спать."],
+"der Schrank":["Die Jacke ist im Schrank.","Куртка в шкафу."],
+"das Sofa":["Die Katze schläft auf dem Sofa.","Кошка спит на диване."],
+"die Tür":["Die Tür ist offen.","Дверь открыта."],
+"das Fenster":["Ich öffne das Fenster.","Я открываю окно."],
+"die Lampe":["Die Lampe ist kaputt.","Лампа сломана."],
+"der Fernseher":["Der Fernseher ist neu.","Телевизор новый."],
+"der Kühlschrank":["Die Milch ist im Kühlschrank.","Молоко в холодильнике."],
+"die Dusche":["Die Dusche ist kalt.","Душ холодный."],
+"die Toilette":["Wo ist die Toilette?","Где туалет?"],
+"der Schlüssel":["Ich suche meinen Schlüssel.","Я ищу свой ключ."],
+"die Treppe":["Die Treppe ist links.","Лестница слева."],
+"der Garten":["Die Kinder spielen im Garten.","Дети играют в саду."],
+"der Balkon":["Wir frühstücken auf dem Balkon.","Мы завтракаем на балконе."],
+"die Miete":["Die Miete ist hoch.","Аренда высокая."],
+"die Adresse":["Wie ist Ihre Adresse?","Какой у вас адрес?"],
+"zu Hause":["Ich bin heute zu Hause.","Я сегодня дома."],
+"nach Hause":["Wir gehen jetzt nach Hause.","Мы сейчас идём домой."],
+"die Stadt":["Berlin ist eine große Stadt.","Берлин — большой город."],
+"das Dorf":["Meine Oma wohnt in einem Dorf.","Моя бабушка живёт в деревне."],
+"das Land":["Deutschland ist ein schönes Land.","Германия — красивая страна."],
+"die Straße":["In welcher Straße wohnst du?","На какой улице ты живёшь?"],
+"der Platz":["Ist dieser Platz frei?","Это место свободно?"],
+"der Weg":["Der Weg zum Bahnhof ist kurz.","Путь до вокзала короткий."],
+"der Bahnhof":["Wir treffen uns am Bahnhof.","Встречаемся на вокзале."],
+"der Flughafen":["Das Taxi fährt zum Flughafen.","Такси едет в аэропорт."],
+"die Haltestelle":["Die Haltestelle ist um die Ecke.","Остановка за углом."],
+"der Bus":["Der Bus kommt gleich.","Автобус сейчас придёт."],
+"der Zug":["Der Zug hat Verspätung.","Поезд опаздывает."],
+"die U-Bahn":["Ich fahre mit der U-Bahn.","Я езжу на метро."],
+"die Straßenbahn":["Die Straßenbahn fährt zum Zentrum.","Трамвай едет в центр."],
+"das Auto":["Wir haben kein Auto.","У нас нет машины."],
+"das Fahrrad":["Ich fahre mit dem Fahrrad zur Arbeit.","Я езжу на работу на велосипеде."],
+"das Taxi":["Wir nehmen ein Taxi.","Мы возьмём такси."],
+"das Flugzeug":["Das Flugzeug landet um acht.","Самолёт садится в восемь."],
+"die Fahrkarte":["Eine Fahrkarte nach Potsdam, bitte.","Один билет до Потсдама, пожалуйста."],
+"die Post":["Die Post ist heute geschlossen.","Почта сегодня закрыта."],
+"die Bank":["Ich muss zur Bank gehen.","Мне нужно в банк."],
+"der Supermarkt":["Der Supermarkt ist bis acht offen.","Супермаркет открыт до восьми."],
+"das Geschäft":["Das Geschäft öffnet um neun.","Магазин открывается в девять."],
+"das Restaurant":["Wir essen heute im Restaurant.","Сегодня мы едим в ресторане."],
+"das Café":["Wir sitzen im Café.","Мы сидим в кафе."],
+"das Hotel":["Das Hotel liegt im Zentrum.","Отель находится в центре."],
+"das Kino":["Gehen wir ins Kino?","Пойдём в кино?"],
+"das Krankenhaus":["Sie liegt im Krankenhaus.","Она лежит в больнице."],
+"die Apotheke":["Die Apotheke ist neben der Post.","Аптека рядом с почтой."],
+"die Kirche":["Die Kirche ist sehr alt.","Церковь очень старая."],
+"der Pass":["Hier ist mein Pass.","Вот мой паспорт."],
+"links":["Das Café ist links.","Кафе слева."],
+"rechts":["Gehen Sie hier rechts!","Поверните здесь направо!"],
+"geradeaus":["Fahren Sie immer geradeaus!","Езжайте всё время прямо!"],
+"weit":["Ist es weit bis zum Bahnhof?","Далеко до вокзала?"],
+"die Arbeit":["Ich fahre um acht zur Arbeit.","В восемь я еду на работу."],
+"der Beruf":["Was sind Sie von Beruf?","Кто вы по профессии?"],
+"das Büro":["Ich arbeite im Büro.","Я работаю в офисе."],
+"die Firma":["Die Firma ist klein.","Фирма маленькая."],
+"der Chef":["Mein Chef ist nett.","Мой начальник приятный."],
+"der Kollege":["Meine Kollegen helfen mir.","Коллеги мне помогают."],
+"der Lehrer":["Der Lehrer erklärt die Grammatik.","Учитель объясняет грамматику."],
+"die Lehrerin":["Unsere Lehrerin kommt aus Wien.","Наша учительница из Вены."],
+"der Arzt":["Ich habe einen Termin beim Arzt.","У меня запись к врачу."],
+"die Ärztin":["Die Ärztin ist sehr freundlich.","Врач очень доброжелательная."],
+"der Verkäufer":["Der Verkäufer ist sehr nett.","Продавец очень любезный."],
+"der Student":["Mein Sohn ist Student.","Мой сын — студент."],
+"der Schüler":["Die Schüler lernen Englisch.","Ученики учат английский."],
+"der Termin":["Ich habe morgen einen Termin.","У меня завтра запись."],
+"der Job":["Sie sucht einen neuen Job.","Она ищет новую работу."],
+"die Schule":["Die Kinder gehen zur Schule.","Дети ходят в школу."],
+"der Kurs":["Der Kurs beginnt um neun.","Курс начинается в девять."],
+"die Sprache":["Deutsch ist eine schwere Sprache.","Немецкий — трудный язык."],
+"Deutsch":["Ich lerne Deutsch.","Я учу немецкий."],
+"Russisch":["Wir sprechen zu Hause Russisch.","Дома мы говорим по-русски."],
+"Englisch":["Sprechen Sie Englisch?","Вы говорите по-английски?"],
+"das Wort":["Was bedeutet dieses Wort?","Что значит это слово?"],
+"der Satz":["Lesen Sie den Satz laut!","Прочитайте предложение вслух!"],
+"die Frage":["Ich habe eine Frage.","У меня вопрос."],
+"die Antwort":["Die Antwort ist richtig.","Ответ правильный."],
+"das Buch":["Das Buch ist interessant.","Книга интересная."],
+"das Heft":["Schreiben Sie das ins Heft!","Запишите это в тетрадь!"],
+"der Stift":["Hast du einen Stift für mich?","У тебя есть для меня ручка?"],
+"das Papier":["Ich brauche ein Blatt Papier.","Мне нужен лист бумаги."],
+"die Prüfung":["Die Prüfung ist am ersten Oktober.","Экзамен первого октября."],
+"die Aufgabe":["Die Aufgabe ist leicht.","Задание лёгкое."],
+"die Hausaufgabe":["Ich mache meine Hausaufgaben.","Я делаю домашнее задание."],
+"das Beispiel":["Geben Sie ein Beispiel!","Приведите пример!"],
+"das Formular":["Füllen Sie das Formular aus!","Заполните бланк!"],
+"die Nummer":["Wie ist Ihre Telefonnummer?","Какой у вас номер телефона?"],
+"der Kopf":["Mein Kopf tut weh.","У меня болит голова."],
+"das Haar":["Sie hat lange Haare.","У неё длинные волосы."],
+"das Auge":["Er hat blaue Augen.","У него голубые глаза."],
+"das Ohr":["Der Hund hat große Ohren.","У собаки большие уши."],
+"die Nase":["Meine Nase läuft.","У меня насморк (течёт нос)."],
+"der Mund":["Öffnen Sie den Mund!","Откройте рот!"],
+"der Zahn":["Mein Zahn tut weh.","У меня болит зуб."],
+"der Hals":["Mein Hals tut weh.","У меня болит горло."],
+"die Hand":["Wasch dir die Hände!","Помой руки!"],
+"der Arm":["Mein rechter Arm tut weh.","У меня болит правая рука."],
+"der Finger":["Die Hand hat fünf Finger.","На руке пять пальцев."],
+"das Bein":["Sie hat lange Beine.","У неё длинные ноги."],
+"der Fuß":["Ich gehe zu Fuß.","Я иду пешком."],
+"der Bauch":["Mein Bauch tut weh.","У меня болит живот."],
+"der Rücken":["Mein Rücken tut weh.","У меня болит спина."],
+"das Herz":["Mein Herz ist gesund.","Моё сердце здоровое."],
+"der Schmerz":["Ich habe starke Schmerzen.","У меня сильные боли."],
+"krank":["Ich bin krank und bleibe zu Hause.","Я болею и остаюсь дома."],
+"gesund":["Gemüse ist gesund.","Овощи полезны для здоровья."],
+"müde":["Ich bin müde und gehe schlafen.","Я устал и иду спать."],
+"die Kleidung":["Ich kaufe neue Kleidung.","Я покупаю новую одежду."],
+"das Hemd":["Das Hemd ist weiß.","Рубашка белая."],
+"das T-Shirt":["Das T-Shirt kostet zehn Euro.","Футболка стоит десять евро."],
+"der Pullover":["Der Pullover ist warm.","Свитер тёплый."],
+"die Jacke":["Nimm eine Jacke mit!","Возьми с собой куртку!"],
+"der Mantel":["Im Winter trage ich einen Mantel.","Зимой я ношу пальто."],
+"die Hose":["Die Hose ist zu lang.","Брюки слишком длинные."],
+"der Rock":["Der Rock ist kurz.","Юбка короткая."],
+"das Kleid":["Das Kleid ist sehr schön.","Платье очень красивое."],
+"der Schuh":["Die Schuhe sind neu.","Ботинки новые."],
+"die Socke":["Wo sind meine Socken?","Где мои носки?"],
+"die Mütze":["Es ist kalt, nimm die Mütze!","Холодно, возьми шапку!"],
+"die Brille":["Ich suche meine Brille.","Я ищу свои очки."],
+"die Tasche":["Die Tasche ist schwer.","Сумка тяжёлая."],
+"das Wetter":["Das Wetter ist heute schön.","Погода сегодня хорошая."],
+"die Sonne":["Die Sonne scheint.","Светит солнце."],
+"der Regen":["Ich mag keinen Regen.","Я не люблю дождь."],
+"der Schnee":["Im Winter liegt hier Schnee.","Зимой здесь лежит снег."],
+"der Wind":["Der Wind ist stark.","Ветер сильный."],
+"die Wolke":["Am Himmel sind viele Wolken.","На небе много облаков."],
+"der Himmel":["Der Himmel ist blau.","Небо голубое."],
+"Es regnet.":["Heute regnet es den ganzen Tag.","Сегодня весь день идёт дождь."],
+"warm":["Heute ist es warm.","Сегодня тепло."],
+"kalt":["Das Wasser ist kalt.","Вода холодная."],
+"heiß":["Vorsicht, die Suppe ist heiß!","Осторожно, суп горячий!"],
+"der Baum":["Der Baum ist hoch.","Дерево высокое."],
+"die Blume":["Ich schenke ihr Blumen.","Я дарю ей цветы."],
+"der Wald":["Wir gehen im Wald spazieren.","Мы гуляем в лесу."],
+"der Berg":["Die Berge sind schön.","Горы красивые."],
+"der See":["Im Sommer schwimmen wir im See.","Летом мы плаваем в озере."],
+"das Meer":["Das Meer ist heute ruhig.","Море сегодня спокойное."],
+"der Fluss":["Die Spree ist ein Fluss in Berlin.","Шпрее — река в Берлине."],
+"das Tier":["Welche Tiere magst du?","Каких животных ты любишь?"],
+"der Hund":["Der Hund spielt im Park.","Собака играет в парке."],
+"die Katze":["Unsere Katze schläft viel.","Наша кошка много спит."],
+"der Vogel":["Die Vögel singen am Morgen.","Птицы поют по утрам."],
+"rot":["Die Ampel ist rot.","Светофор красный."],
+"blau":["Das Meer ist blau.","Море синее."],
+"grün":["Die Ampel ist grün — wir gehen.","Светофор зелёный — идём."],
+"gelb":["Die Banane ist gelb.","Банан жёлтый."],
+"schwarz":["Ich trinke den Kaffee schwarz.","Я пью чёрный кофе."],
+"weiß":["Der Schnee ist weiß.","Снег белый."],
+"grau":["Der Himmel ist heute grau.","Небо сегодня серое."],
+"braun":["Die Schuhe sind braun.","Ботинки коричневые."],
+"orange":["Die Jacke ist orange.","Куртка оранжевая."],
+"rosa":["Das Kleid ist rosa.","Платье розовое."],
+"lila":["Die Blume ist lila.","Цветок фиолетовый."],
+"hell":["Das Zimmer ist hell.","Комната светлая."],
+"dunkel":["Im Winter wird es früh dunkel.","Зимой рано темнеет."],
+"sein":["Ich bin aus Russland.","Я из России."],
+"haben":["Wir haben eine Katze.","У нас есть кошка."],
+"werden":["Es wird kalt.","Становится холодно."],
+"machen":["Was machst du am Wochenende?","Что ты делаешь на выходных?"],
+"gehen":["Wir gehen in den Park.","Мы идём в парк."],
+"kommen":["Wann kommst du nach Hause?","Когда ты придёшь домой?"],
+"fahren":["Wir fahren nach Hamburg.","Мы едем в Гамбург."],
+"fliegen":["Sie fliegt morgen nach Moskau.","Завтра она летит в Москву."],
+"laufen":["Das Kind läuft schnell.","Ребёнок быстро бегает."],
+"bleiben":["Heute bleibe ich zu Hause.","Сегодня я остаюсь дома."],
+"wohnen":["Ich wohne in Berlin.","Я живу в Берлине."],
+"leben":["Meine Eltern leben in Russland.","Мои родители живут в России."],
+"heißen":["Ich heiße Alexander.","Меня зовут Александр."],
+"sprechen":["Sprechen Sie bitte langsam!","Говорите, пожалуйста, медленно!"],
+"sagen":["Wie sagt man das auf Deutsch?","Как это сказать по-немецки?"],
+"fragen":["Darf ich etwas fragen?","Можно кое-что спросить?"],
+"antworten":["Bitte antworten Sie auf Deutsch!","Пожалуйста, отвечайте по-немецки!"],
+"sehen":["Ich sehe dich nicht.","Я тебя не вижу."],
+"hören":["Ich höre gern Musik.","Я люблю слушать музыку."],
+"lesen":["Er liest ein Buch.","Он читает книгу."],
+"schreiben":["Ich schreibe eine E-Mail.","Я пишу электронное письмо."],
+"lernen":["Wir lernen Deutsch zusammen.","Мы учим немецкий вместе."],
+"verstehen":["Ich verstehe die Frage nicht.","Я не понимаю вопрос."],
+"wissen":["Ich weiß es nicht.","Я этого не знаю."],
+"kennen":["Kennst du diesen Mann?","Ты знаешь этого мужчину?"],
+"denken":["Ich denke oft an dich.","Я часто думаю о тебе."],
+"glauben":["Ich glaube, er kommt morgen.","Думаю, он придёт завтра."],
+"essen":["Was isst du zum Frühstück?","Что ты ешь на завтрак?"],
+"trinken":["Ich trinke viel Wasser.","Я пью много воды."],
+"kochen":["Meine Frau kocht sehr gut.","Моя жена очень хорошо готовит."],
+"schlafen":["Das Baby schläft schon.","Малыш уже спит."],
+"aufstehen":["Ich stehe um sieben auf.","Я встаю в семь."],
+"arbeiten":["Er arbeitet bei einer Firma.","Он работает в фирме."],
+"kaufen":["Ich kaufe Brot und Milch.","Я покупаю хлеб и молоко."],
+"einkaufen":["Samstags kaufen wir ein.","По субботам мы делаем покупки."],
+"kosten":["Was kostet die Fahrkarte?","Сколько стоит билет?"],
+"bezahlen":["Ich möchte bezahlen, bitte.","Я хотел бы расплатиться."],
+"brauchen":["Ich brauche deine Hilfe.","Мне нужна твоя помощь."],
+"suchen":["Wir suchen eine Wohnung.","Мы ищем квартиру."],
+"finden":["Ich finde meine Brille nicht.","Я не могу найти очки."],
+"nehmen":["Ich nehme den Bus.","Я поеду на автобусе."],
+"geben":["Geben Sie mir bitte den Stift!","Дайте мне, пожалуйста, ручку!"],
+"helfen":["Kannst du mir helfen?","Можешь мне помочь?"],
+"zeigen":["Zeigen Sie mir bitte den Weg!","Покажите мне, пожалуйста, дорогу!"],
+"öffnen":["Öffnen Sie bitte die Tür!","Откройте, пожалуйста, дверь!"],
+"schließen":["Wir schließen um achtzehn Uhr.","Мы закрываемся в восемнадцать часов."],
+"beginnen":["Der Film beginnt um acht.","Фильм начинается в восемь."],
+"warten":["Wir warten auf den Bus.","Мы ждём автобус."],
+"spielen":["Die Kinder spielen Fußball.","Дети играют в футбол."],
+"lieben":["Ich liebe dich.","Я тебя люблю."],
+"mögen":["Ich mag Schokolade.","Я люблю шоколад."],
+"möchten":["Ich möchte einen Kaffee.","Я хотел бы кофе."],
+"können":["Ich kann gut schwimmen.","Я хорошо умею плавать."],
+"müssen":["Ich muss jetzt arbeiten.","Мне нужно сейчас работать."],
+"wollen":["Wir wollen nach Spanien fahren.","Мы хотим поехать в Испанию."],
+"dürfen":["Hier darf man nicht rauchen.","Здесь нельзя курить."],
+"sollen":["Du sollst mehr Wasser trinken.","Тебе следует пить больше воды."],
+"schwimmen":["Er schwimmt jeden Morgen.","Он плавает каждое утро."],
+"tanzen":["Sie tanzt sehr gern.","Она очень любит танцевать."],
+"singen":["Wir singen ein Lied.","Мы поём песню."],
+"sitzen":["Wir sitzen am Fenster.","Мы сидим у окна."],
+"stehen":["Er steht an der Haltestelle.","Он стоит на остановке."],
+"liegen":["Berlin liegt in Deutschland.","Берлин находится в Германии."],
+"wiederholen":["Wiederholen Sie bitte den Satz!","Повторите, пожалуйста, предложение!"],
+"buchstabieren":["Buchstabieren Sie bitte Ihren Namen!","Продиктуйте ваше имя по буквам!"],
+"bedeuten":["Was bedeutet dieses Wort?","Что означает это слово?"],
+"groß":["Die Wohnung ist groß.","Квартира большая."],
+"klein":["Das Dorf ist klein.","Деревня маленькая."],
+"gut":["Das ist eine gute Idee!","Это хорошая идея!"],
+"schlecht":["Das Wetter ist heute schlecht.","Погода сегодня плохая."],
+"neu":["Ist das Auto neu?","Машина новая?"],
+"alt":["Wie alt sind Sie?","Сколько вам лет?"],
+"jung":["Sie ist noch jung.","Она ещё молода."],
+"schön":["Berlin ist eine schöne Stadt.","Берлин — красивый город."],
+"lang":["Der Weg ist lang.","Путь длинный."],
+"kurz":["Die Hose ist zu kurz.","Брюки слишком короткие."],
+"schnell":["Der Zug ist schnell.","Поезд быстрый."],
+"langsam":["Sprechen Sie bitte langsamer!","Говорите, пожалуйста, помедленнее!"],
+"teuer":["Das Hotel ist zu teuer.","Отель слишком дорогой."],
+"billig":["Auf dem Markt ist Obst billig.","На рынке фрукты дешёвые."],
+"leicht":["Die Tasche ist leicht.","Сумка лёгкая."],
+"schwer":["Der Koffer ist sehr schwer.","Чемодан очень тяжёлый."],
+"einfach":["Die Aufgabe ist einfach.","Задание простое."],
+"richtig":["Die Antwort ist richtig.","Ответ правильный."],
+"falsch":["Die Nummer ist falsch.","Номер неправильный."],
+"laut":["Die Musik ist zu laut.","Музыка слишком громкая."],
+"leise":["Bitte sei leise, das Baby schläft!","Тише, пожалуйста, малыш спит!"],
+"voll":["Der Bus ist voll.","Автобус полный."],
+"leer":["Der Kühlschrank ist leer.","Холодильник пустой."],
+"sauber":["Die Küche ist sauber.","Кухня чистая."],
+"schmutzig":["Meine Schuhe sind schmutzig.","Мои ботинки грязные."],
+"glücklich":["Ich bin sehr glücklich.","Я очень счастлив."],
+"traurig":["Warum bist du traurig?","Почему ты грустишь?"],
+"wichtig":["Das ist sehr wichtig.","Это очень важно."],
+"interessant":["Der Film war interessant.","Фильм был интересным."],
+"langweilig":["Das Buch ist langweilig.","Книга скучная."],
+"nett":["Die Nachbarn sind sehr nett.","Соседи очень приятные."],
+"frei":["Ist der Platz noch frei?","Это место ещё свободно?"],
+"lecker":["Der Kuchen ist lecker!","Пирог вкусный!"],
+"fertig":["Das Essen ist fertig!","Еда готова!"],
+"die Freizeit":["Was machst du in deiner Freizeit?","Что ты делаешь в свободное время?"],
+"das Hobby":["Mein Hobby ist Kochen.","Моё хобби — готовка."],
+"die Musik":["Ich höre gern Musik.","Я люблю слушать музыку."],
+"der Film":["Wie findest du den Film?","Как тебе фильм?"],
+"der Sport":["Machst du Sport?","Ты занимаешься спортом?"],
+"der Fußball":["Am Samstag spielen wir Fußball.","В субботу мы играем в футбол."],
+"das Spiel":["Das Spiel ist interessant.","Игра интересная."],
+"die Reise":["Gute Reise!","Счастливого пути!"],
+"der Urlaub":["Im August habe ich Urlaub.","В августе у меня отпуск."],
+"das Foto":["Ich mache ein Foto.","Я делаю фото."],
+"der Computer":["Er arbeitet am Computer.","Он работает за компьютером."],
+"das Handy":["Wo ist mein Handy?","Где мой телефон?"],
+"das Internet":["Ich suche im Internet.","Я ищу в интернете."],
+"die Party":["Kommst du zur Party?","Ты придёшь на вечеринку?"],
+"das Geschenk":["Das Geschenk ist für dich.","Этот подарок для тебя."],
+"der Geburtstag":["Wann hast du Geburtstag?","Когда у тебя день рождения?"],
+"der Brief":["Ich schreibe einen Brief.","Я пишу письмо."],
+"die E-Mail":["Ich schicke dir eine E-Mail.","Я отправлю тебе имейл."],
+"das Geld":["Ich habe kein Geld dabei.","У меня нет с собой денег."],
+"der Euro":["Das kostet zehn Euro.","Это стоит десять евро."],
+"der Cent":["Das kostet fünfzig Cent.","Это стоит пятьдесят центов."],
+"der Preis":["Die Preise sind hoch.","Цены высокие."],
+"der Markt":["Auf dem Markt kaufe ich Gemüse.","На рынке я покупаю овощи."],
+"die Kasse":["Zahlen Sie bitte an der Kasse!","Оплатите, пожалуйста, на кассе!"],
+"die Rechnung":["Die Rechnung, bitte!","Счёт, пожалуйста!"],
+"geöffnet":["Das Geschäft ist bis acht geöffnet.","Магазин открыт до восьми."],
+"geschlossen":["Sonntags ist alles geschlossen.","По воскресеньям всё закрыто."],
+"Herzlichen Glückwunsch!":["Herzlichen Glückwunsch zum Geburtstag!","Поздравляю с днём рождения!"],
+"Guten Appetit!":["Guten Appetit! — Danke, gleichfalls.","Приятного аппетита! — Спасибо, взаимно."],
+"Bis bald!":["Tschüss, bis bald!","Пока, до скорого!"],
+"Schönes Wochenende!":["Schönes Wochenende! — Danke, dir auch.","Хороших выходных! — Спасибо, и тебе."],
+"Wie bitte?":["Wie bitte? Noch einmal, bitte.","Как, простите? Ещё раз, пожалуйста."],
+"Achtung!":["Achtung, ein Auto kommt!","Осторожно, едет машина!"],
+"dann":["Zuerst esse ich, dann arbeite ich.","Сначала я ем, потом работаю."],
+"zuerst":["Zuerst lesen wir den Text.","Сначала мы читаем текст."],
+"zurück":["Ich komme um fünf zurück.","Я вернусь в пять."],
+"sofort":["Ich komme sofort!","Я сейчас же приду!"],
+"endlich":["Endlich ist Freitag!","Наконец-то пятница!"],
+"gleich":["Der Film beginnt gleich.","Фильм сейчас начнётся."],
+"fast":["Es ist fast zwölf Uhr.","Почти двенадцать часов."],
+"ganz":["Die Wohnung ist ganz neu.","Квартира совсем новая."],
+"genug":["Wir haben genug Brot.","У нас достаточно хлеба."],
+"wirklich":["Das ist wirklich lecker!","Это правда вкусно!"],
+"lieber":["Ich trinke lieber Tee.","Я предпочитаю чай."],
+"allein":["Sie wohnt allein.","Она живёт одна."],
+"selten":["Wir gehen selten ins Kino.","Мы редко ходим в кино."],
+"erst":["Der Zug kommt erst um zehn.","Поезд придёт только в десять."],
+"früher":["Früher habe ich in Russland gewohnt.","Раньше я жил в России."],
+"oben":["Das Bad ist oben.","Ванная наверху."],
+"unten":["Unten ist die Küche.","Внизу кухня."],
+"der Vormittag":["Am Vormittag arbeite ich.","В первой половине дня я работаю."],
+"der Anfang":["Der Anfang ist immer schwer.","Начало всегда трудное."],
+"das Ende":["Am Ende gibt es einen Test.","В конце будет тест."],
+"das Datum":["Welches Datum ist heute?","Какое сегодня число?"],
+"die Pause":["Wir machen eine Pause.","Мы делаем перерыв."],
+"der Nachbar":["Unser Nachbar ist sehr nett.","Наш сосед очень приятный."],
+"der Gast":["Wir haben heute Gäste.","У нас сегодня гости."],
+"die Person":["Ein Tisch für zwei Personen, bitte.","Столик на двоих, пожалуйста."],
+"das Getränk":["Die Getränke sind kalt.","Напитки холодные."],
+"die Flasche":["Eine Flasche Wasser, bitte.","Бутылку воды, пожалуйста."],
+"das Glas":["Das Glas ist leer.","Стакан пустой."],
+"die Tasse":["Eine Tasse Tee, bitte.","Чашку чая, пожалуйста."],
+"der Teller":["Der Teller ist voll.","Тарелка полная."],
+"der Löffel":["Ich brauche einen Löffel.","Мне нужна ложка."],
+"die Gabel":["Die Gabel liegt links.","Вилка лежит слева."],
+"das Messer":["Das Messer ist scharf.","Нож острый."],
+"die Speisekarte":["Die Speisekarte, bitte!","Меню, пожалуйста!"],
+"das Stück":["Ein Stück Kuchen, bitte.","Кусочек пирога, пожалуйста."],
+"das Licht":["Mach bitte das Licht an!","Включи, пожалуйста, свет!"],
+"der Müll":["Ich bringe den Müll raus.","Я выношу мусор."],
+"der Aufzug":["Der Aufzug ist kaputt.","Лифт сломан."],
+"der Stock":["Wir wohnen im dritten Stock.","Мы живём на четвёртом этаже."],
+"das Bild":["Das Bild hängt an der Wand.","Картина висит на стене."],
+"das Radio":["Ich höre Radio.","Я слушаю радио."],
+"das Telefon":["Das Telefon klingelt.","Телефон звонит."],
+"die Bäckerei":["Die Bäckerei öffnet um sechs.","Пекарня открывается в шесть."],
+"das Zentrum":["Wir wohnen im Zentrum.","Мы живём в центре."],
+"das Rathaus":["Das Rathaus ist im Zentrum.","Ратуша в центре."],
+"die Brücke":["Wir gehen über die Brücke.","Мы идём через мост."],
+"die Ampel":["An der Ampel links.","На светофоре налево."],
+"die Ecke":["Die Bäckerei ist an der Ecke.","Пекарня на углу."],
+"der Eingang":["Wo ist der Eingang?","Где вход?"],
+"der Ausgang":["Der Ausgang ist rechts.","Выход справа."],
+"der Fahrplan":["Der Fahrplan hängt an der Haltestelle.","Расписание висит на остановке."],
+"die Verspätung":["Der Zug hat zehn Minuten Verspätung.","Поезд опаздывает на десять минут."],
+"das Schwimmbad":["Wir gehen ins Schwimmbad.","Мы идём в бассейн."],
+"der Strand":["Die Kinder spielen am Strand.","Дети играют на пляже."],
+"das Ausland":["Sie arbeitet im Ausland.","Она работает за границей."],
+"der Ausflug":["Am Sonntag machen wir einen Ausflug.","В воскресенье мы едем на экскурсию."],
+"die Polizei":["Rufen Sie die Polizei!","Вызовите полицию!"],
+"der Unfall":["Auf der Straße war ein Unfall.","На улице была авария."],
+"der Führerschein":["Er macht den Führerschein.","Он получает водительские права."],
+"das Gepäck":["Mein Gepäck ist schwer.","Мой багаж тяжёлый."],
+"der Koffer":["Ich packe meinen Koffer.","Я собираю чемодан."],
+"das Doppelzimmer":["Ein Doppelzimmer für zwei Nächte, bitte.","Двухместный номер на две ночи, пожалуйста."],
+"der Ausweis":["Ihren Ausweis, bitte!","Ваше удостоверение, пожалуйста!"],
+"der Kellner":["Der Kellner bringt die Speisekarte.","Официант приносит меню."],
+"die Anmeldung":["Die Anmeldung für den Kurs ist online.","Запись на курс — онлайн."],
+"die Information":["Fragen Sie an der Information!","Спросите в справочной!"],
+"das Problem":["Kein Problem!","Без проблем!"],
+"die Hilfe":["Danke für Ihre Hilfe!","Спасибо за вашу помощь!"],
+"die Zeitung":["Er liest jeden Tag die Zeitung.","Он каждый день читает газету."],
+"die Zahl":["Schreiben Sie die Zahl!","Напишите число!"],
+"das Fieber":["Das Kind hat Fieber.","У ребёнка температура."],
+"das Medikament":["Nehmen Sie das Medikament zweimal am Tag!","Принимайте лекарство два раза в день!"],
+"das Rezept":["Der Arzt gibt mir ein Rezept.","Врач даёт мне рецепт."],
+"die Farbe":["Welche Farbe magst du?","Какой цвет тебе нравится?"],
+"Es schneit.":["Schau, es schneit!","Смотри, снег идёт!"],
+"das Fest":["Das Fest ist am Samstag.","Праздник в субботу."],
+"die Karte":["Ich schreibe eine Karte aus dem Urlaub.","Я пишу открытку из отпуска."],
+"die Briefmarke":["Ich brauche eine Briefmarke.","Мне нужна почтовая марка."],
+"das Lied":["Das Lied ist schön.","Песня красивая."],
+"die Nachricht":["Ich schreibe dir eine Nachricht.","Я напишу тебе сообщение."],
+"das Sonderangebot":["Der Käse ist im Sonderangebot.","Сыр по акции."],
+"die Größe":["Welche Größe haben Sie?","Какой у вас размер?"],
+"dick":["Das Buch ist dick.","Книга толстая."],
+"dünn":["Das Papier ist dünn.","Бумага тонкая."],
+"klar":["Alles klar!","Всё понятно!"],
+"letzte":["Der letzte Bus fährt um zwölf.","Последний автобус в двенадцать."],
+"nächste":["Die nächste Station ist Alexanderplatz.","Следующая станция — Александерплац."],
+"lustig":["Der Film ist sehr lustig.","Фильм очень смешной."],
+"pünktlich":["Der Zug ist pünktlich.","Поезд идёт по расписанию."],
+"ruhig":["Die Straße ist ruhig.","Улица спокойная."],
+"toll":["Das ist eine tolle Idee!","Это отличная идея!"],
+"verboten":["Rauchen ist hier verboten.","Курить здесь запрещено."],
+"zufrieden":["Ich bin mit dem Kurs zufrieden.","Я доволен курсом."],
+"süß":["Der Tee ist zu süß.","Чай слишком сладкий."],
+"satt":["Danke, ich bin satt.","Спасибо, я сыт."],
+"günstig":["Das Angebot ist günstig.","Предложение выгодное."],
+"kostenlos":["Der Eintritt ist kostenlos.","Вход бесплатный."],
+"besetzt":["Die Toilette ist besetzt.","Туалет занят."],
+"kaputt":["Mein Handy ist kaputt.","Мой телефон сломан."],
+"anfangen":["Der Kurs fängt um neun an.","Курс начинается в девять."],
+"aufhören":["Der Regen hört bald auf.","Дождь скоро закончится."],
+"anrufen":["Ich rufe dich morgen an.","Я позвоню тебе завтра."],
+"ankommen":["Der Zug kommt um zehn an.","Поезд прибывает в десять."],
+"abfahren":["Der Bus fährt gleich ab.","Автобус сейчас отправится."],
+"einsteigen":["Wir steigen in den Bus ein.","Мы садимся в автобус."],
+"aussteigen":["Ich steige am Bahnhof aus.","Я выхожу у вокзала."],
+"umsteigen":["Am Alexanderplatz steigen wir um.","На Александерплац мы делаем пересадку."],
+"einladen":["Ich lade dich zum Essen ein.","Я приглашаю тебя поесть."],
+"mitbringen":["Bring bitte Brot mit!","Принеси, пожалуйста, хлеб!"],
+"mitnehmen":["Nimm bitte Wasser mit!","Возьми с собой воду!"],
+"fernsehen":["Abends sehen wir fern.","По вечерам мы смотрим телевизор."],
+"ausfüllen":["Füllen Sie bitte das Formular aus!","Заполните, пожалуйста, бланк!"],
+"abholen":["Ich hole dich vom Bahnhof ab.","Я встречу тебя с вокзала."],
+"anziehen":["Zieh die Jacke an, es ist kalt!","Надень куртку, холодно!"],
+"bekommen":["Ich bekomme eine E-Mail.","Я получаю электронное письмо."],
+"bestellen":["Wir bestellen eine Pizza.","Мы заказываем пиццу."],
+"besuchen":["Am Sonntag besuchen wir Oma.","В воскресенье мы навещаем бабушку."],
+"bringen":["Der Kellner bringt das Essen.","Официант приносит еду."],
+"buchen":["Wir buchen eine Reise nach Italien.","Мы бронируем поездку в Италию."],
+"dauern":["Der Film dauert zwei Stunden.","Фильм длится два часа."],
+"duschen":["Ich dusche jeden Morgen.","Я принимаю душ каждое утро."],
+"erklären":["Können Sie das bitte erklären?","Можете это объяснить, пожалуйста?"],
+"feiern":["Wir feiern heute Geburtstag.","Мы сегодня празднуем день рождения."],
+"frühstücken":["Wir frühstücken um acht.","Мы завтракаем в восемь."],
+"gefallen":["Berlin gefällt mir sehr.","Берлин мне очень нравится."],
+"gehören":["Die Tasche gehört mir.","Эта сумка моя (принадлежит мне)."],
+"heiraten":["Sie heiraten im Mai.","Они женятся в мае."],
+"holen":["Ich hole schnell Brot.","Я быстро схожу за хлебом."],
+"kennenlernen":["Ich möchte neue Leute kennenlernen.","Я хочу знакомиться с новыми людьми."],
+"lachen":["Warum lachst du?","Почему ты смеёшься?"],
+"parken":["Hier dürfen Sie nicht parken.","Здесь нельзя парковаться."],
+"passieren":["Was ist passiert?","Что случилось?"],
+"probieren":["Probieren Sie den Kuchen!","Попробуйте пирог!"],
+"rauchen":["Er raucht nicht mehr.","Он больше не курит."],
+"reisen":["Wir reisen gern.","Мы любим путешествовать."],
+"reparieren":["Er repariert das Fahrrad.","Он чинит велосипед."],
+"reservieren":["Ich reserviere einen Tisch für acht Uhr.","Я резервирую столик на восемь."],
+"schenken":["Was schenkst du deiner Mutter?","Что ты подаришь маме?"],
+"schicken":["Ich schicke dir ein Foto.","Я отправлю тебе фото."],
+"schmecken":["Die Suppe schmeckt sehr gut.","Суп очень вкусный."],
+"treffen":["Wir treffen uns um sieben.","Мы встречаемся в семь."],
+"üben":["Ich übe jeden Tag Deutsch.","Я каждый день упражняюсь в немецком."],
+"übernachten":["Wir übernachten im Hotel.","Мы ночуем в отеле."],
+"unterschreiben":["Unterschreiben Sie bitte hier!","Подпишите здесь, пожалуйста!"],
+"vergessen":["Ich vergesse immer die Artikel!","Я всё время забываю артикли!"],
+"verkaufen":["Er verkauft sein Auto.","Он продаёт свою машину."],
+"verdienen":["Sie verdient gut.","Она хорошо зарабатывает."],
+"waschen":["Ich wasche meine Kleidung.","Я стираю одежду."],
+"wechseln":["Wo kann ich Geld wechseln?","Где можно поменять деньги?"],
+"wehtun":["Mein Kopf tut weh.","У меня болит голова."],
+"wünschen":["Ich wünsche dir viel Glück!","Желаю тебе удачи!"],
+"putzen":["Am Samstag putze ich die Wohnung.","В субботу я убираю квартиру."],
+"telefonieren":["Sie telefoniert mit ihrer Mutter.","Она разговаривает по телефону с мамой."],
+"spazieren gehen":["Wir gehen im Park spazieren.","Мы гуляем в парке."]
+};
+/* спряжение глаголов: ich, du, er/sie/es, wir, ihr, sie/Sie, Perfekt, [примечание] */
+var VF={
+"sein":["bin","bist","ist","sind","seid","sind","ist gewesen","Präteritum: ich war, du warst, er war"],
+"haben":["habe","hast","hat","haben","habt","haben","hat gehabt","Präteritum: ich hatte, er hatte"],
+"werden":["werde","wirst","wird","werden","werdet","werden","ist geworden"],
+"machen":["mache","machst","macht","machen","macht","machen","hat gemacht"],
+"gehen":["gehe","gehst","geht","gehen","geht","gehen","ist gegangen"],
+"kommen":["komme","kommst","kommt","kommen","kommt","kommen","ist gekommen"],
+"fahren":["fahre","fährst","fährt","fahren","fahrt","fahren","ist gefahren"],
+"fliegen":["fliege","fliegst","fliegt","fliegen","fliegt","fliegen","ist geflogen"],
+"laufen":["laufe","läufst","läuft","laufen","lauft","laufen","ist gelaufen"],
+"bleiben":["bleibe","bleibst","bleibt","bleiben","bleibt","bleiben","ist geblieben"],
+"wohnen":["wohne","wohnst","wohnt","wohnen","wohnt","wohnen","hat gewohnt"],
+"leben":["lebe","lebst","lebt","leben","lebt","leben","hat gelebt"],
+"heißen":["heiße","heißt","heißt","heißen","heißt","heißen","hat geheißen"],
+"sprechen":["spreche","sprichst","spricht","sprechen","sprecht","sprechen","hat gesprochen"],
+"sagen":["sage","sagst","sagt","sagen","sagt","sagen","hat gesagt"],
+"fragen":["frage","fragst","fragt","fragen","fragt","fragen","hat gefragt"],
+"antworten":["antworte","antwortest","antwortet","antworten","antwortet","antworten","hat geantwortet"],
+"sehen":["sehe","siehst","sieht","sehen","seht","sehen","hat gesehen"],
+"hören":["höre","hörst","hört","hören","hört","hören","hat gehört"],
+"lesen":["lese","liest","liest","lesen","lest","lesen","hat gelesen"],
+"schreiben":["schreibe","schreibst","schreibt","schreiben","schreibt","schreiben","hat geschrieben"],
+"lernen":["lerne","lernst","lernt","lernen","lernt","lernen","hat gelernt"],
+"verstehen":["verstehe","verstehst","versteht","verstehen","versteht","verstehen","hat verstanden"],
+"wissen":["weiß","weißt","weiß","wissen","wisst","wissen","hat gewusst"],
+"kennen":["kenne","kennst","kennt","kennen","kennt","kennen","hat gekannt"],
+"denken":["denke","denkst","denkt","denken","denkt","denken","hat gedacht"],
+"glauben":["glaube","glaubst","glaubt","glauben","glaubt","glauben","hat geglaubt"],
+"essen":["esse","isst","isst","essen","esst","essen","hat gegessen"],
+"trinken":["trinke","trinkst","trinkt","trinken","trinkt","trinken","hat getrunken"],
+"kochen":["koche","kochst","kocht","kochen","kocht","kochen","hat gekocht"],
+"schlafen":["schlafe","schläfst","schläft","schlafen","schlaft","schlafen","hat geschlafen"],
+"aufstehen":["stehe auf","stehst auf","steht auf","stehen auf","steht auf","stehen auf","ist aufgestanden"],
+"arbeiten":["arbeite","arbeitest","arbeitet","arbeiten","arbeitet","arbeiten","hat gearbeitet"],
+"kaufen":["kaufe","kaufst","kauft","kaufen","kauft","kaufen","hat gekauft"],
+"einkaufen":["kaufe ein","kaufst ein","kauft ein","kaufen ein","kauft ein","kaufen ein","hat eingekauft"],
+"kosten":["koste","kostest","kostet","kosten","kostet","kosten","hat gekostet","обычно: es kostet — это стоит"],
+"bezahlen":["bezahle","bezahlst","bezahlt","bezahlen","bezahlt","bezahlen","hat bezahlt"],
+"brauchen":["brauche","brauchst","braucht","brauchen","braucht","brauchen","hat gebraucht"],
+"suchen":["suche","suchst","sucht","suchen","sucht","suchen","hat gesucht"],
+"finden":["finde","findest","findet","finden","findet","finden","hat gefunden"],
+"nehmen":["nehme","nimmst","nimmt","nehmen","nehmt","nehmen","hat genommen"],
+"geben":["gebe","gibst","gibt","geben","gebt","geben","hat gegeben"],
+"helfen":["helfe","hilfst","hilft","helfen","helft","helfen","hat geholfen"],
+"zeigen":["zeige","zeigst","zeigt","zeigen","zeigt","zeigen","hat gezeigt"],
+"öffnen":["öffne","öffnest","öffnet","öffnen","öffnet","öffnen","hat geöffnet"],
+"schließen":["schließe","schließt","schließt","schließen","schließt","schließen","hat geschlossen"],
+"beginnen":["beginne","beginnst","beginnt","beginnen","beginnt","beginnen","hat begonnen"],
+"warten":["warte","wartest","wartet","warten","wartet","warten","hat gewartet"],
+"spielen":["spiele","spielst","spielt","spielen","spielt","spielen","hat gespielt"],
+"lieben":["liebe","liebst","liebt","lieben","liebt","lieben","hat geliebt"],
+"mögen":["mag","magst","mag","mögen","mögt","mögen","hat gemocht"],
+"möchten":["möchte","möchtest","möchte","möchten","möchtet","möchten","Perfekt не образует; прошлое: ich wollte"],
+"können":["kann","kannst","kann","können","könnt","können","hat gekonnt"],
+"müssen":["muss","musst","muss","müssen","müsst","müssen","hat gemusst"],
+"wollen":["will","willst","will","wollen","wollt","wollen","hat gewollt"],
+"dürfen":["darf","darfst","darf","dürfen","dürft","dürfen","hat gedurft"],
+"sollen":["soll","sollst","soll","sollen","sollt","sollen","hat gesollt"],
+"schwimmen":["schwimme","schwimmst","schwimmt","schwimmen","schwimmt","schwimmen","ist geschwommen"],
+"tanzen":["tanze","tanzt","tanzt","tanzen","tanzt","tanzen","hat getanzt"],
+"singen":["singe","singst","singt","singen","singt","singen","hat gesungen"],
+"sitzen":["sitze","sitzt","sitzt","sitzen","sitzt","sitzen","hat gesessen"],
+"stehen":["stehe","stehst","steht","stehen","steht","stehen","hat gestanden"],
+"liegen":["liege","liegst","liegt","liegen","liegt","liegen","hat gelegen"],
+"wiederholen":["wiederhole","wiederholst","wiederholt","wiederholen","wiederholt","wiederholen","hat wiederholt"],
+"buchstabieren":["buchstabiere","buchstabierst","buchstabiert","buchstabieren","buchstabiert","buchstabieren","hat buchstabiert"],
+"bedeuten":["bedeute","bedeutest","bedeutet","bedeuten","bedeutet","bedeuten","hat bedeutet","обычно: es bedeutet"],
+"anfangen":["fange an","fängst an","fängt an","fangen an","fangt an","fangen an","hat angefangen"],
+"aufhören":["höre auf","hörst auf","hört auf","hören auf","hört auf","hören auf","hat aufgehört"],
+"anrufen":["rufe an","rufst an","ruft an","rufen an","ruft an","rufen an","hat angerufen"],
+"ankommen":["komme an","kommst an","kommt an","kommen an","kommt an","kommen an","ist angekommen"],
+"abfahren":["fahre ab","fährst ab","fährt ab","fahren ab","fahrt ab","fahren ab","ist abgefahren"],
+"einsteigen":["steige ein","steigst ein","steigt ein","steigen ein","steigt ein","steigen ein","ist eingestiegen"],
+"aussteigen":["steige aus","steigst aus","steigt aus","steigen aus","steigt aus","steigen aus","ist ausgestiegen"],
+"umsteigen":["steige um","steigst um","steigt um","steigen um","steigt um","steigen um","ist umgestiegen"],
+"einladen":["lade ein","lädst ein","lädt ein","laden ein","ladet ein","laden ein","hat eingeladen"],
+"mitbringen":["bringe mit","bringst mit","bringt mit","bringen mit","bringt mit","bringen mit","hat mitgebracht"],
+"mitnehmen":["nehme mit","nimmst mit","nimmt mit","nehmen mit","nehmt mit","nehmen mit","hat mitgenommen"],
+"fernsehen":["sehe fern","siehst fern","sieht fern","sehen fern","seht fern","sehen fern","hat ferngesehen"],
+"ausfüllen":["fülle aus","füllst aus","füllt aus","füllen aus","füllt aus","füllen aus","hat ausgefüllt"],
+"abholen":["hole ab","holst ab","holt ab","holen ab","holt ab","holen ab","hat abgeholt"],
+"anziehen":["ziehe an","ziehst an","zieht an","ziehen an","zieht an","ziehen an","hat angezogen"],
+"bekommen":["bekomme","bekommst","bekommt","bekommen","bekommt","bekommen","hat bekommen"],
+"bestellen":["bestelle","bestellst","bestellt","bestellen","bestellt","bestellen","hat bestellt"],
+"besuchen":["besuche","besuchst","besucht","besuchen","besucht","besuchen","hat besucht"],
+"bringen":["bringe","bringst","bringt","bringen","bringt","bringen","hat gebracht"],
+"buchen":["buche","buchst","bucht","buchen","bucht","buchen","hat gebucht"],
+"dauern":["dauere","dauerst","dauert","dauern","dauert","dauern","hat gedauert","обычно: es dauert"],
+"duschen":["dusche","duschst","duscht","duschen","duscht","duschen","hat geduscht"],
+"erklären":["erkläre","erklärst","erklärt","erklären","erklärt","erklären","hat erklärt"],
+"feiern":["feiere","feierst","feiert","feiern","feiert","feiern","hat gefeiert"],
+"frühstücken":["frühstücke","frühstückst","frühstückt","frühstücken","frühstückt","frühstücken","hat gefrühstückt"],
+"gefallen":["gefalle","gefällst","gefällt","gefallen","gefallt","gefallen","hat gefallen","обычно: es gefällt mir"],
+"gehören":["gehöre","gehörst","gehört","gehören","gehört","gehören","hat gehört"],
+"heiraten":["heirate","heiratest","heiratet","heiraten","heiratet","heiraten","hat geheiratet"],
+"holen":["hole","holst","holt","holen","holt","holen","hat geholt"],
+"kennenlernen":["lerne kennen","lernst kennen","lernt kennen","lernen kennen","lernt kennen","lernen kennen","hat kennengelernt"],
+"lachen":["lache","lachst","lacht","lachen","lacht","lachen","hat gelacht"],
+"parken":["parke","parkst","parkt","parken","parkt","parken","hat geparkt"],
+"passieren":["passiere","passierst","passiert","passieren","passiert","passieren","ist passiert","обычно: es passiert"],
+"probieren":["probiere","probierst","probiert","probieren","probiert","probieren","hat probiert"],
+"rauchen":["rauche","rauchst","raucht","rauchen","raucht","rauchen","hat geraucht"],
+"reisen":["reise","reist","reist","reisen","reist","reisen","ist gereist"],
+"reparieren":["repariere","reparierst","repariert","reparieren","repariert","reparieren","hat repariert"],
+"reservieren":["reserviere","reservierst","reserviert","reservieren","reserviert","reservieren","hat reserviert"],
+"schenken":["schenke","schenkst","schenkt","schenken","schenkt","schenken","hat geschenkt"],
+"schicken":["schicke","schickst","schickt","schicken","schickt","schicken","hat geschickt"],
+"schmecken":["schmecke","schmeckst","schmeckt","schmecken","schmeckt","schmecken","hat geschmeckt","обычно: es schmeckt (mir)"],
+"treffen":["treffe","triffst","trifft","treffen","trefft","treffen","hat getroffen"],
+"üben":["übe","übst","übt","üben","übt","üben","hat geübt"],
+"übernachten":["übernachte","übernachtest","übernachtet","übernachten","übernachtet","übernachten","hat übernachtet"],
+"unterschreiben":["unterschreibe","unterschreibst","unterschreibt","unterschreiben","unterschreibt","unterschreiben","hat unterschrieben"],
+"vergessen":["vergesse","vergisst","vergisst","vergessen","vergesst","vergessen","hat vergessen"],
+"verkaufen":["verkaufe","verkaufst","verkauft","verkaufen","verkauft","verkaufen","hat verkauft"],
+"verdienen":["verdiene","verdienst","verdient","verdienen","verdient","verdienen","hat verdient"],
+"waschen":["wasche","wäschst","wäscht","waschen","wascht","waschen","hat gewaschen"],
+"wechseln":["wechsle","wechselst","wechselt","wechseln","wechselt","wechseln","hat gewechselt"],
+"wehtun":["tue weh","tust weh","tut weh","tun weh","tut weh","tun weh","hat wehgetan","обычно: es tut weh / mir tut der Kopf weh"],
+"wünschen":["wünsche","wünschst","wünscht","wünschen","wünscht","wünschen","hat gewünscht"],
+"putzen":["putze","putzt","putzt","putzen","putzt","putzen","hat geputzt"],
+"telefonieren":["telefoniere","telefonierst","telefoniert","telefonieren","telefoniert","telefonieren","hat telefoniert"],
+"spazieren gehen":["gehe spazieren","gehst spazieren","geht spazieren","gehen spazieren","geht spazieren","gehen spazieren","ist spazieren gegangen"]
+};
+/* ================= КОНСТАНТЫ ================= */
+var TYPES=["mcDeRu","mcRuDe","mcAuRu","mcAuDe","wrRuDe","wrAu"];
+var TNAME={mcDeRu:"Слово → перевод",mcRuDe:"Перевод → слово",mcAuRu:"Озвучка → перевод",mcAuDe:"Озвучка → слово",wrRuDe:"Перевод → письмо",wrAu:"Диктант"};
+var TDESC={mcDeRu:"видишь слово — выбираешь перевод",mcRuDe:"видишь перевод — выбираешь слово",mcAuRu:"слышишь слово — выбираешь перевод",mcAuDe:"слышишь слово — выбираешь написание",wrRuDe:"видишь перевод — пишешь слово",wrAu:"слышишь слово — пишешь его"};
+var IV=[0,600000,86400000,259200000,604800000,1382400000,3024000000];
+var BOXLBL=["новое","10 мин","1 день","3 дня","7 дней","16 дней","35 дней"];
+var KEY="de_a1_trainer_v1";
+/* ================= СОСТОЯНИЕ ================= */
+var S={w:{},daily:{},set:{voice:"",rate:0.9,auto:true},mem:false};
+var view="review",curCat=null,sess=null,learn=null,resetArm=false;
+var allQ="",allSort="rank",allFilt="all";
+var trainCfg={type:"mcDeRu",cats:null,len:20,learned:true};
+function $(s){return document.querySelector(s);}
+function $$(s){return document.querySelectorAll(s);}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+var RK=[184,174,168,172,169,185,176,78,77,187,177,75,76,178,186,171,173,25,1,2,3,4,5,6,7,8,32,33,34,35,38,39,36,37,40,41,42,90,85,101,100,23,24,29,30,27,26,28,137,31,20,21,22,18,19,79,80,84,86,83,89,88,87,97,98,161,140,82,81,91,92,163,144,147,164,153,165,121,117,118,119,116,120,155,122,281,280,285,276,277,94,95,96,93,282,274,275,302,309,311,314,304,306,307,315,301,303,295,296,291,294,293,300,313,305,312,308,418,413,411,416,407,421,412,424,131,404,130,129,406,408,419,414,422,425,423,415,410,115,409,426,432,478,455,436,453,471,445,427,448,468,440,442,454,464,482,466,449,451,438,463,459,485,428,467,439,458,430,431,441,437,456,481,487,484,457,443,132,133,526,513,508,534,532,520,519,509,527,512,288,290,514,530,533,523,529,531,525,524,522,516,289,391,394,124,360,123,125,370,356,192,393,399,188,189,376,401,357,383,365,389,392,364,358,397,390,395,359,369,362,400,193,373,363,190,191,194,366,128,127,433,444,434,474,460,479,272,469,483,477,476,283,429,498,491,126,501,506,505,493,492,495,499,489,490,496,497,502,500,507,504,287,286,544,540,538,537,547,545,548,541,542,535,551,539,536,549,554,543,555,298,552,546,614,585,613,615,597,609,586,590,599,602,603,600,607,611,612,604,601,610,594,606,608,556,593,588,584,582,595,592,583,581,589,596,591,587,598,605,616,617,620,618,629,624,619,625,628,623,622,621,627,9,10,11,43,44,45,65,222,204,59,47,60,46,48,54,70,71,53,197,63,64,50,56,55,72,73,74,61,62,202,243,246,49,66,249,67,68,57,213,58,52,51,69,217,138,139,234,215,225,205,198,14,12,13,15,16,17,255,214,210,211,212,206,266,270,233,104,105,102,103,106,107,108,331,109,110,113,114,111,112,336,340,342,345,332,323,329,328,324,339,352,349,346,347,355,354,325,321,335,333,575,368,566,560,570,573,569,568,572,561,574,564,577,567,576,580,563,571,134,136,292,135,299,181,182,310,316,180,175,167,179,170,166,99,158,159,157,160,152,142,143,148,162,154,150,156,141,151,145,149,284,279,273,146,278,420,405,417,472,470,435,452,465,461,446,462,488,450,515,511,521,518,510,517,528,387,386,385,371,367,361,382,379,388,398,396,375,380,378,384,377,403,372,374,402,381,473,480,486,475,447,503,494,550,557,553,626,558,559,565,579,562,578,317,297,319,320,322,337,344,338,351,330,327,348,353,318,326,343,350,341,334,229,232,219,230,228,261,260,256,237,262,251,250,247,218,231,235,248,236,220,199,200,221,238,201,264,239,223,240,196,268,203,207,252,253,224,209,263,265,241,242,254,226,195,267,271,258,259,257,227,244,216,245,208,269,183];
+function tierOf(i){var r=RK[i]||999;return r<=60?1:r<=165?2:r<=310?3:r<=475?4:5;}
+var TIERN=["","каркас языка","задания экзамена","бытовые темы","расширение","периферия"];
+function kid(i){return (W[i][0]?W[i][0]+" ":"")+W[i][1];}
+var deFull=kid;
+function deHtml(i){var w=W[i];return (w[0]?'<span class="art a-'+w[0]+'">'+w[0]+'</span> ':"")+esc(w[1]);}
+function exOf(i){return EX[kid(i)];}
+function conjHtml(i,open){
+  var f=VF[kid(i)];
+  if(!f)return "";
+  var PR=["ich","du","er/sie/es","wir","ihr","sie/Sie"];
+  var pairs=[[0,3],[1,4],[2,5]],g="";
+  for(var p=0;p<3;p++){
+    g+='<span>'+PR[pairs[p][0]]+'</span><b>'+esc(f[pairs[p][0]])+'</b><span>'+PR[pairs[p][1]]+'</span><b>'+esc(f[pairs[p][1]])+'</b>';
+  }
+  var body='<div class="cgrid">'+g+'</div><div class="cperf">Perfekt: '+esc(f[6])+'</div>'+(f[7]?'<div class="cperf mut2">'+esc(f[7])+'</div>':"");
+  if(open)return '<div class="conjT open">'+body+'</div>';
+  return '<div class="conjW"><button class="conjBtn" data-act="tglConj">Спряжение ▸</button><div class="conjT" style="display:none">'+body+'</div></div>';
+}
+var TRKL=["Чтение","Аудирование","Письмо"];
+function triHtml(i){
+  var x=wg(i),L=["Ч","С","П"],h='<span class="tri">';
+  for(var t=0;t<3;t++){
+    var b=x?x.b[t]:0;
+    h+='<span class="box mini b'+b+'" title="'+TRKL[t]+': '+BOXLBL[b]+'">'+L[t]+b+'</span>';
+  }
+  return h+'</span>';
+}
+function plural(n,one,few,many){var m10=n%10,m100=n%100;if(m10===1&&m100!==11)return one;if(m10>=2&&m10<=4&&(m100<10||m100>=20))return few;return many;}
+function ws(i){var k=kid(i),x=S.w[k];if(!x){x=S.w[k]={b:[0,0,0],d:[0,0,0],a:[0,0,0,0,0,0],c:[0,0,0,0,0,0],str:0,lap:0};}return x;}
+function wg(i){return S.w[kid(i)]||null;}
+/* миграция старого формата (одна ступень) на три трека: чтение, слух, письмо */
+function migAll(){
+  for(var k in S.w){
+    var x=S.w[k];
+    if(x&&typeof x.box==="number"){
+      x.b=[x.box,x.box,x.box];
+      x.d=[x.due,x.due,x.due];
+      delete x.box;delete x.due;
+    }
+    if(x&&!x.b){x.b=[0,0,0];x.d=[0,0,0];}
+  }
+}
+/* ================= ХРАНИЛИЩЕ ================= */
+var syncOn=false,snap={};
+function localLoad(){
+  try{
+    var raw=localStorage.getItem(KEY);
+    if(!raw)return;
+    var d=JSON.parse(raw);
+    if(d&&typeof d==="object"){
+      if(d.w)S.w=d.w;
+      if(d.daily)S.daily=d.daily;
+      if(d.set)S.set=Object.assign(S.set,d.set);
+    }
+  }catch(e){}
+}
+function localSave(){
+  try{localStorage.setItem(KEY,JSON.stringify({w:S.w,daily:S.daily,set:S.set}));S.mem=false;}
+  catch(e){if(!S.mem){S.mem=true;render();}}
+}
+function snapshot(){
+  snap={};
+  for(var k in S.w)snap["w:"+k]=JSON.stringify(S.w[k]);
+  snap["daily"]=JSON.stringify(S.daily);
+  snap["set"]=JSON.stringify(S.set);
+}
+function syncPush(){
+  if(!window.Progress||!syncOn)return;
+  for(var k in S.w){
+    var id="w:"+k,j=JSON.stringify(S.w[k]);
+    if(snap[id]!==j){Progress.touch(id,{d:S.w[k]});snap[id]=j;}
+  }
+  var dj=JSON.stringify(S.daily);
+  if(snap["daily"]!==dj){Progress.touch("daily",{d:S.daily});snap["daily"]=dj;}
+  var sj=JSON.stringify(S.set);
+  if(snap["set"]!==sj){Progress.touch("set",{d:S.set});snap["set"]=sj;}
+}
+function loadS(){
+  localLoad();migAll();snapshot();
+  if(!window.Progress||!window.APP)return Promise.resolve();
+  var remembered=false;
+  try{remembered=!!localStorage.getItem("dt:s");}catch(e){}
+  if(!remembered)return Promise.resolve();
+  Progress.init(Object.assign({},window.APP,{path:"woerter-a1.json",delay:8000}));
+  syncOn=true;
+  return Progress.start(false).then(function(st){
+    var empty=true;
+    for(var id in st){
+      empty=false;
+      var v=st[id]&&st[id].d;
+      if(!v)continue;
+      if(id.slice(0,2)==="w:")S.w[id.slice(2)]=v;
+      else if(id==="daily")S.daily=v;
+      else if(id==="set")S.set=Object.assign(S.set,v);
+    }
+    migAll();
+    if(empty){snap={};syncPush();}   /* первая синхронизация — выгружаем накопленное */
+    else{snapshot();localSave();}
+  }).catch(function(){});
+}
+var svT=null;
+function save(){
+  clearTimeout(svT);
+  svT=setTimeout(function(){localSave();syncPush();},500);
+}
+/* ================= ОЗВУЧКА ================= */
+var synth=("speechSynthesis" in window)?window.speechSynthesis:null;
+var voices=[];
+function loadVoices(){
+  if(!synth)return;
+  voices=synth.getVoices().filter(function(v){return /^de/i.test(v.lang);});
+  var sel=$("#voiceSel");if(sel)fillVoiceSel(sel);
+  if(view==="review")render();
+}
+var speechBroken=false,probeDone=false;
+if(synth){
+  loadVoices();
+  if(typeof synth.onvoiceschanged!=="undefined")synth.onvoiceschanged=loadVoices;
+  /* Android наполняет список с задержкой, иногда лишь после касания экрана */
+  [300,1200,3000].forEach(function(ms){setTimeout(function(){if(!voices.length)loadVoices();},ms);});
+  document.addEventListener("touchstart",function once(){
+    document.removeEventListener("touchstart",once);
+    if(!voices.length)loadVoices();
+  },{passive:true});
+}
+function speak(txt){
+  if(!synth)return;
+  try{
+    synth.cancel();
+    var u=new SpeechSynthesisUtterance(txt);
+    u.lang="de-DE";
+    var v=null;
+    for(var i=0;i<voices.length;i++){if(voices[i].voiceURI===S.set.voice){v=voices[i];break;}}
+    if(!v&&voices.length)v=voices[0];
+    if(v)u.voice=v;
+    u.rate=S.set.rate;
+    var started=false;
+    u.onstart=function(){started=true;probeDone=true;speechBroken=false;};
+    u.onerror=function(){if(!probeDone){probeDone=true;speechBroken=true;}};
+    /* движок проверяем однократно и молча: перерисовка отсюда даёт петлю с автоозвучкой */
+    if(!probeDone)setTimeout(function(){if(!started&&!probeDone){probeDone=true;speechBroken=true;}},2500);
+    if(synth.speaking||synth.pending)setTimeout(function(){synth.speak(u);},80);
+    else synth.speak(u);
+  }catch(e){speechBroken=true;}
+}
+function speakW(i){speak(deFull(i));}
+var autoT=null;
+function autoSpeak(i,ms){clearTimeout(autoT);autoT=setTimeout(function(){speakW(i);},ms);}
+function fillVoiceSel(sel){
+  if(!voices.length){sel.innerHTML='<option value="">— немецкие голоса не найдены —</option>';return;}
+  var h="";
+  for(var i=0;i<voices.length;i++){
+    var v=voices[i];
+    h+='<option value="'+esc(v.voiceURI)+'"'+(v.voiceURI===S.set.voice?" selected":"")+'>'+esc(v.name)+" · "+esc(v.lang)+"</option>";
+  }
+  sel.innerHTML=h;
+}
+/* ================= ДНЕВНИК ================= */
+function dkey(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function today(){return dkey(new Date());}
+function drec(){var k=today();return S.daily[k]||(S.daily[k]={a:0,c:0,n:0});}
+function dlog(ok){var d=drec();d.a++;if(ok)d.c++;}
+function dnew(){drec().n++;}
+function calcStreak(){
+  var n=0,d=new Date(),t=S.daily[today()];
+  if(!(t&&t.a>0))d.setDate(d.getDate()-1);
+  for(;;){
+    var v=S.daily[dkey(d)];
+    if(v&&v.a>0){n++;d.setDate(d.getDate()-1);}else break;
+  }
+  return n;
+}
+function last14(){
+  var r=[],d=new Date();d.setDate(d.getDate()-13);
+  for(var i=0;i<14;i++){
+    var v=S.daily[dkey(d)]||{a:0,c:0};
+    r.push({a:v.a,c:v.c,lbl:d.getDate()});
+    d.setDate(d.getDate()+1);
+  }
+  return r;
+}
+/* ================= SRS ================= */
+/* Треки: 0 — чтение, 1 — аудирование, 2 — письмо.
+   Чтение и письмо опираются на один и тот же образ слова, поэтому промах
+   в одном откатывает оба. Аудирование — отдельный навык, отвечает само за себя. */
+function linkedTracks(tr){ return tr===1 ? [1] : [0,2]; }
+
+/* Откат на две коробки, но не ниже второй и никогда вверх.
+   Срок при этом короткий: промах нужно переспросить в этой же сессии. */
+function demote(x,tr,now){
+  x.b[tr]=Math.min(x.b[tr],Math.max(2,x.b[tr]-2));
+  x.d[tr]=now+IV[1];
+}
+
+function applyAns(i,ti,ok,mode){
+  var x=ws(i),now=Date.now(),tr=ti>>1;
+  var wasNew=(x.b[0]+x.b[1]+x.b[2]===0);
+  x.a[ti]++;if(ok)x.c[ti]++;
+  dlog(ok);
+  if(window.myDE)window.myDE.logAnswer("woerter",{item:kid(i),track:tr,mode:TYPES[ti],correct:ok});
+
+  /* В тренировке коробки не двигаются ни вверх, ни вниз — только статистика. */
+  if(mode==="train"){save();return;}
+
+  if(ok){
+    if(x.b[tr]===0){x.b[tr]=1;x.d[tr]=now+IV[1];}
+    else if(mode==="review"||now>=x.d[tr]){x.b[tr]=Math.min(6,x.b[tr]+1);x.d[tr]=now+IV[x.b[tr]];}
+    x.str++;
+  }else{
+    x.lap++;x.str=0;
+    var L=linkedTracks(tr);
+    for(var k=0;k<L.length;k++)if(x.b[L[k]]>0)demote(x,L[k],now);
+    if(x.b[tr]===0){x.b[tr]=1;x.d[tr]=now+IV[1];}
+  }
+  if(wasNew&&x.b[0]+x.b[1]+x.b[2]>0)dnew();
+  save();
+}
+/* Слово с несколькими просроченными треками даёт несколько записей в очереди.
+   Простая перетасовка их слипает: в 75% сессий одно и то же слово шло подряд.
+   Раздаём по кругам — внутри круга каждое слово ровно один раз. */
+function spreadPairs(d){
+  var by={},ids=[],k;
+  for(k=0;k<d.length;k++){
+    var id=d[k].i;
+    if(!by[id]){by[id]=[];ids.push(id);}
+    by[id].push(d[k]);
+  }
+  for(k=0;k<ids.length;k++)shuffle(by[ids[k]]);
+  var out=[];
+  while(out.length<d.length){
+    var round=ids.filter(function(x){return by[x].length;});
+    if(!round.length)break;
+    shuffle(round);
+    /* не начинать круг тем словом, которым закончился предыдущий */
+    if(out.length&&round.length>1&&round[0]===out[out.length-1].i){
+      var t=round[0];round[0]=round[1];round[1]=t;
+    }
+    for(k=0;k<round.length;k++)out.push(by[round[k]].shift());
+  }
+  return out;
+}
+function duePairs(){
+  var now=Date.now(),r=[];
+  for(var i=0;i<W.length;i++){
+    var x=wg(i);if(!x)continue;
+    for(var t=0;t<3;t++)if(x.b[t]>=1&&x.d[t]<=now)r.push({i:i,t:t});
+  }
+  return r;
+}
+function newIn(cat){
+  var r=[];
+  for(var i=0;i<W.length;i++){
+    if(cat!=="all"&&W[i][4]!==cat)continue;
+    var x=wg(i);if(!x||x.b[0]+x.b[1]+x.b[2]===0)r.push(i);
+  }
+  /* сначала то, без чего не собрать фразу на экзамене */
+  r.sort(function(p,q){return (RK[p]||999)-(RK[q]||999);});
+  return r;
+}
+var TT=[["mcDeRu","mcRuDe"],["mcAuRu","mcAuDe"],["wrRuDe","wrAu"]];
+function typeForTrack(t,b){
+  var pro=b>2;
+  if(Math.random()<0.25)pro=!pro;
+  return TT[t][pro?1:0];
+}
+/* ================= ВОПРОСЫ ================= */
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function distract(i,n){
+  var w=W[i],pool=[],j;
+  for(j=0;j<W.length;j++){if(j!==i&&W[j][4]===w[4]&&W[j][3]!==w[3])pool.push(j);}
+  shuffle(pool);
+  if(pool.length<n){
+    var extra=[];
+    for(j=0;j<W.length;j++){if(j!==i&&W[j][3]!==w[3]&&pool.indexOf(j)<0)extra.push(j);}
+    shuffle(extra);
+    while(pool.length<n&&extra.length)pool.push(extra.pop());
+  }
+  return pool.slice(0,n);
+}
+function makeQ(i,type){
+  var q={wid:i,type:type};
+  if(type.indexOf("mc")===0){
+    var opts=distract(i,3).map(function(j){return {wid:j};});
+    opts.push({wid:i});
+    shuffle(opts);
+    q.opts=opts;
+  }
+  return q;
+}
+function norm(s){
+  return String(s).toLowerCase().trim()
+    .replace(/[.,!?«»']/g,"")
+    .replace(/é/g,"e")
+    .replace(/-/g,"")
+    .replace(/\s+/g," ")
+    .replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss");
+}
+function checkWrite(i,inp){
+  var w=W[i],v=norm(inp||"");
+  if(!v)return {ok:false};
+  var base=norm(w[1]);
+  if(w[0]){
+    if(v===norm(w[0]+" "+w[1]))return {ok:true};
+    if(v===base)return {ok:true,noArt:true};
+    var arts=["der","die","das"];
+    for(var k=0;k<3;k++){if(arts[k]!==w[0]&&v===norm(arts[k]+" "+w[1]))return {ok:false,badArt:true};}
+    return {ok:false};
+  }
+  return {ok:v===base};
+}
+/* ================= СЕССИЯ ================= */
+function startSession(qs,mode,title,back){
+  if(!qs.length){toast("Нет подходящих слов");return;}
+  sess={qs:qs,mode:mode,title:title,back:back||"review",i:0,c:0,mist:[],ans:false,chosen:-1,fb:null,userText:""};
+  show("session");
+}
+function curQ(){return sess.qs[sess.i];}
+function answerChoice(k){
+  if(!sess||sess.ans||sess.i>=sess.qs.length)return;
+  var q=curQ();
+  if(!q.opts||k>=q.opts.length)return;
+  sess.chosen=k;
+  finishAns(q.opts[k].wid===q.wid,"");
+}
+function submitWrite(){
+  if(!sess||sess.ans)return;
+  var inp=$("#wInp");if(!inp)return;
+  var val=inp.value;
+  if(!val.trim())return;
+  var r=checkWrite(curQ().wid,val);
+  sess.userText=val;
+  var msg="";
+  if(r.ok&&r.noArt)msg="Слово верно. Запомни артикль!";
+  if(!r.ok&&r.badArt)msg="Слово верно, но артикль другой.";
+  inp.blur();   /* разбор виден, следующий Enter листает осознанно */
+  finishAns(r.ok,msg);
+}
+function finishAns(ok,msg){
+  var q=curQ(),ti=TYPES.indexOf(q.type);
+  var x=ws(q.wid);
+  /* снимок до применения: позволяет пересчитать ответ как верный (опечатка) */
+  sess.undo={wid:q.wid,ti:ti,snap:JSON.stringify(x),wasOk:ok};
+  sess.ans=true;sess.fb={ok:ok,msg:msg};
+  applyAns(q.wid,ti,ok,sess.mode==="review"?"review":"train");
+  if(ok)sess.c++;else sess.mist.push(q.wid);
+  render();
+  if(S.set.auto)autoSpeak(q.wid,200);
+}
+
+/* «Это опечатка»: откатываем последствия промаха и засчитываем как верный. */
+function acceptTypo(){
+  var u=sess&&sess.undo;
+  if(!u||u.wasOk)return;
+  var x=ws(u.wid),snap=JSON.parse(u.snap),k;
+  for(k in snap)x[k]=snap[k];          /* состояние слова до ответа */
+  var d=drec();d.a--;                   /* и дневная статистика */
+  var ix=sess.mist.lastIndexOf(u.wid);
+  if(ix>=0)sess.mist.splice(ix,1);
+  applyAns(u.wid,u.ti,true,sess.mode==="review"?"review":"train");
+  sess.c++;
+  sess.undo.wasOk=true;
+  sess.fb={ok:true,msg:"Засчитано как опечатка."};
+  render();
+}
+function nextQ(){
+  if(!sess)return;
+  sess.ans=false;sess.chosen=-1;sess.fb=null;sess.userText="";sess.undo=null;
+  sess.i++;
+  render();
+}
+function startReview(){
+  var d=spreadPairs(duePairs()).slice(0,24);
+  startSession(d.map(function(p){return makeQ(p.i,typeForTrack(p.t,wg(p.i).b[p.t]));}),"review","Повторение","review");
+}
+function introduce(i){
+  var x=ws(i),now=Date.now(),ch=false;
+  for(var t=0;t<3;t++)if(x.b[t]===0){x.b[t]=1;x.d[t]=now+IV[1];ch=true;}
+  if(ch){dnew();save();}
+}
+function startLearn(cat,n){
+  var list=newIn(cat).slice(0,n);
+  if(!list.length){toast("Новых слов здесь больше нет");return;}
+  learn={list:list,i:0};
+  show("learn");
+}
+function learnNext(){
+  introduce(learn.list[learn.i]);
+  learn.i++;
+  if(learn.i>=learn.list.length){
+    var ids=learn.list.slice();
+    var p1=shuffle(ids.slice()),p2=shuffle(ids.slice());
+    /* второй проход не должен начинаться словом, которым кончился первый */
+    if(p2.length>1&&p2[0]===p1[p1.length-1]){var t2=p2[0];p2[0]=p2[1];p2[1]=t2;}
+    var qs=p1.map(function(i){return makeQ(i,"mcDeRu");})
+      .concat(p2.map(function(i){return makeQ(i,"mcRuDe");}));
+    learn=null;
+    startSession(qs,"train","Закрепление новых слов","review");
+  }else render();
+}
+function prio(i,ti){
+  var x=wg(i);
+  if(!x||x.a[ti]===0)return 0.9+Math.random()*0.4;
+  var er=(x.a[ti]-x.c[ti])/x.a[ti];
+  return er*2+Math.random()*0.5;
+}
+function startTrain(){
+  var pool=[],i;
+  for(i=0;i<W.length;i++){
+    if(!trainCfg.cats.has(W[i][4]))continue;
+    var x=wg(i);
+    if(trainCfg.learned&&(!x||x.b[0]+x.b[1]+x.b[2]===0))continue;
+    pool.push(i);
+  }
+  if(!pool.length){toast("Сначала изучи слова в выбранных категориях");return;}
+  var ti=TYPES.indexOf(trainCfg.type);
+  pool.sort(function(a,b){return prio(b,ti)-prio(a,ti);});
+  var take=shuffle(pool.slice(0,trainCfg.len));
+  startSession(take.map(function(i){return makeQ(i,trainCfg.type);}),"train",TNAME[trainCfg.type],"train");
+}
+/* ================= ЭКРАНЫ ================= */
+function catStats(c){
+  var tot=0,st=0,ms=0;
+  for(var i=0;i<W.length;i++){
+    if(W[i][4]!==c)continue;tot++;
+    var x=wg(i);
+    if(x&&x.b[0]+x.b[1]+x.b[2]>0)st++;
+    if(x&&Math.min(x.b[0],x.b[1],x.b[2])>=5)ms++;
+  }
+  return {tot:tot,st:st,ms:ms};
+}
+function vReview(){
+  var dp=duePairs(),uw={},un=0;
+  for(var j=0;j<dp.length;j++)if(!uw[dp[j].i]){uw[dp[j].i]=1;un++;}
+  var due=dp.length;
+  var t=S.daily[today()]||{a:0,c:0,n:0};
+  var st=calcStreak();
+  var learned=0;
+  for(var i=0;i<W.length;i++){var x=wg(i);if(x&&x.b[0]+x.b[1]+x.b[2]>0)learned++;}
+  var h='<section class="hero"><div class="eyebrow">Интервальные повторения</div>';
+  h+='<div class="heroN">'+due+'</div><div class="heroSub">'+plural(due,"карточка ждёт","карточки ждут","карточек ждут")+(due?' · '+un+' '+plural(un,"слово","слова","слов"):"")+'</div>';
+  h+='<button class="btn acc big" data-act="startReview"'+(due?"":" disabled")+'>'+(due?"Начать повторение":"Всё повторено ✓")+'</button>';
+  h+='<div class="mut xs" style="margin-top:9px">карточка = слово × навык (чтение · слух · письмо)</div></section>';
+  h+='<section class="card"><div class="cardT">Новые слова</div><div class="row">';
+  h+='<select id="newCat" class="sel grow"><option value="all">Все категории</option>';
+  for(var c in CATS)h+='<option value="'+c+'">'+CATS[c][0]+' '+CATS[c][1]+'</option>';
+  h+='</select><select id="newN" class="sel"><option>5</option><option selected>7</option><option>10</option><option>15</option></select>';
+  h+='<button class="btn" data-act="learnGo">Учить</button></div>';
+  h+='<div class="mut sm">В работе: '+learned+' из '+W.length+' слов</div></section>';
+  h+='<section class="card"><div class="cardT">Сегодня</div><div class="trio">';
+  h+='<div><b>'+t.a+'</b><span>'+plural(t.a,"ответ","ответа","ответов")+'</span></div>';
+  h+='<div><b>'+(t.a?Math.round(100*t.c/t.a):0)+'%</b><span>точность</span></div>';
+  h+='<div><b>'+st+'</b><span>'+plural(st,"день","дня","дней")+' подряд</span></div></div></section>';
+  if(!synth)h+='<section class="card warn">В этом браузере нет синтеза речи. Открой файл в Chrome, Edge или Safari.</section>';
+  else if(speechBroken)h+='<section class="card warn">Немецкий голос в системе не установлен.<br>Android: Настройки → Спец. возможности → Синтез речи → Google → шестерёнка → Установка голосовых данных → Deutsch.<br>iPhone: Настройки → Универсальный доступ → Устный контент → Голоса → Deutsch.</section>';
+  else if(!voices.length)h+='<section class="card warn mut2">Список голосов пуст. Возможно, он ещё наполняется — нажми «прослушать» и проверь. Если звука нет, установи движок: Play Store → «Речевые сервисы от Google».</section>';
+  if(S.mem)h+='<section class="card warn">Сервер myDE не отвечает: прогресс пока сохраняется в этом браузере и уедет на сервер, как только связь вернётся.</section>';
+  return h;
+}
+function vWords(){
+  var h='<div class="pageT">Слова · '+W.length+'</div>';
+  h+='<button class="btn acc big" data-act="openAll" style="margin-bottom:14px">Общий список · все '+W.length+'</button>';
+  h+='<div class="catGrid">';
+  for(var c in CATS){
+    var s=catStats(c);
+    var p=s.tot?Math.round(100*s.st/s.tot):0;
+    var pm=s.tot?Math.round(100*s.ms/s.tot):0;
+    h+='<button class="catCard" data-act="pickCat" data-c="'+c+'">'
+      +'<span class="cIco">'+CATS[c][0]+'</span><span class="cName">'+CATS[c][1]+'</span>'
+      +'<span class="cNum">'+s.st+' / '+s.tot+'</span>'
+      +'<span class="pbar"><i style="width:'+p+'%"></i><i class="pm" style="width:'+pm+'%"></i></span></button>';
+  }
+  h+='</div><div class="mut sm">Полоска: жёлтым — освоено надёжно, тусклым — в работе. Цвет артикля: <span class="art a-der">der</span> · <span class="art a-die">die</span> · <span class="art a-das">das</span>.</div>';
+  return h;
+}
+function wStatus(i){
+  var x=wg(i);
+  if(!x||x.b[0]+x.b[1]+x.b[2]===0)return "new";
+  if(Math.min(x.b[0],x.b[1],x.b[2])>=5)return "done";
+  return "work";
+}
+function wAcc(i){
+  var x=wg(i);if(!x)return -1;
+  var a=0,c=0;
+  for(var t=0;t<x.a.length;t++){a+=x.a[t];c+=x.c[t];}
+  return a>=3?c/a:-1;
+}
+function vAll(){
+  var h='<div class="row head"><button class="icoBtn" data-act="back">←</button><div class="pageT" style="margin:0">Все слова</div></div>';
+
+  h+='<input id="allSearch" class="srch" type="search" placeholder="Поиск по немецкому или русскому" value="'+esc(allQ)+'">';
+
+  h+='<div class="chips">';
+  var FL=[["all","все"],["new","новые"],["work","в работе"],["weak","слабые"],["done","освоено"]];
+  for(var f=0;f<FL.length;f++)
+    h+='<button class="chip'+(allFilt===FL[f][0]?" on":"")+'" data-act="allFilt" data-v="'+FL[f][0]+'">'+FL[f][1]+'</button>';
+  h+='</div><div class="chips">';
+  var SL=[["rank","по важности"],["abc","по алфавиту"],["weak","слабые сначала"]];
+  for(var s2=0;s2<SL.length;s2++)
+    h+='<button class="chip'+(allSort===SL[s2][0]?" on":"")+'" data-act="allSort" data-v="'+SL[s2][0]+'">'+SL[s2][1]+'</button>';
+  h+='</div>';
+
+  var q=allQ.trim().toLowerCase(),idx=[];
+  for(var i=0;i<W.length;i++){
+    var st=wStatus(i),ac=wAcc(i);
+    if(allFilt==="weak"){ if(!(ac>=0&&ac<0.75))continue; }
+    else if(allFilt!=="all"&&st!==allFilt)continue;
+    if(q&&(kid(i)+" "+W[i][3]).toLowerCase().indexOf(q)<0)continue;
+    idx.push(i);
+  }
+  if(allSort==="abc")idx.sort(function(p,r){return W[p][1].toLowerCase()<W[r][1].toLowerCase()?-1:1;});
+  else if(allSort==="weak")idx.sort(function(p,r){
+    var ap=wAcc(p),ar=wAcc(r);
+    if(ap<0)ap=2;if(ar<0)ar=2;
+    return ap-ar||(RK[p]||999)-(RK[r]||999);});
+  else idx.sort(function(p,r){return (RK[p]||999)-(RK[r]||999);});
+
+  h+='<div class="mut sm">Показано: '+idx.length+' из '+W.length+'</div>';
+  h+='<div class="wlist">';
+  for(var z=0;z<idx.length;z++){
+    var j=idx[z],w=W[j],ac2=wAcc(j);
+    h+='<div class="wrow slim"><button class="icoBtn" data-act="play" data-i="'+j+'">🔊</button>'
+      +'<div class="wmain"><div class="wde serif">'+deHtml(j)
+      +'<span class="tier t'+tierOf(j)+'" title="важность №'+RK[j]+' · '+TIERN[tierOf(j)]+'">'+RK[j]+'</span></div>'
+      +'<div class="wru">'+esc(w[3])
+      +' <span class="mut">· '+CATS[w[4]][0]+'</span>'
+      +(ac2>=0?' <span class="'+(ac2<0.75?"accBad":"accOk")+'">'+Math.round(ac2*100)+'%</span>':"")
+      +'</div></div>'+triHtml(j)+'</div>';
+  }
+  if(!idx.length)h+='<div class="mut sm">Ничего не найдено</div>';
+  return h+'</div>';
+}
+/* ================= ТРЕНАЖЁР ЧИСЕЛ ================= */
+
+var NUM_O=["null","eins","zwei","drei","vier","fünf","sechs","sieben","acht","neun"];
+var NUM_T=["zehn","elf","zwölf","dreizehn","vierzehn","fünfzehn","sechzehn","siebzehn","achtzehn","neunzehn"];
+var NUM_Z=["","","zwanzig","dreißig","vierzig","fünfzig","sechzig","siebzig","achtzig","neunzig"];
+
+/* 0..999 — без слова «тысяча» */
+function numSub(n){
+  if(n===0)return "";
+  if(n<10)return NUM_O[n];
+  if(n<20)return NUM_T[n-10];
+  if(n<100){
+    var u=n%10,t=Math.floor(n/10);
+    return u?((u===1?"ein":NUM_O[u])+"und"+NUM_Z[t]):NUM_Z[t];
+  }
+  var h=Math.floor(n/100),r=n%100;
+  return (h===1?"ein":NUM_O[h])+"hundert"+(r?numSub(r):"");
+}
+function numWord(n){
+  n=Math.round(n);
+  if(n===0)return "null";
+  if(n<1000)return numSub(n);
+  var th=Math.floor(n/1000),r=n%1000;
+  return (th===1?"ein":numSub(th))+"tausend"+(r?numSub(r):"");
+}
+
+/* Пишут слитно, но учащийся может поставить пробелы или дефисы — принимаем. */
+function numNorm(s){
+  return String(s).toLowerCase()
+    .replace(/[\s\-.,]/g,"")
+    .replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss");
+}
+/* «hundert» и «einhundert» одинаково правильны, то же с тысячей */
+function numAccept(n){
+  var a=numWord(n),v=[a];
+  if(/^einhundert/.test(a))v.push(a.replace(/^einhundert/,"hundert"));
+  if(/^eintausend/.test(a))v.push(a.replace(/^eintausend/,"tausend"));
+  var out={};for(var k=0;k<v.length;k++)out[numNorm(v[k])]=1;
+  return out;
+}
+
+function numState(){
+  if(!S.num)S.num={a:0,c:0,miss:{},min:0,max:100,mode:"hear"};
+  if(S.num.min===undefined){S.num.min=0;S.num.max=100;S.num.mode="hear";}
+  if(!S.num.miss)S.num.miss={};
+  return S.num;
+}
+
+var numQ=null,numFb=null;
+
+/* Треть вопросов берём из ранее проваленных — иначе слабые места не закрываются. */
+function numPick(){
+  var st=numState(),lo=Math.min(st.min,st.max),hi=Math.max(st.min,st.max);
+  var pool=[];
+  for(var k in st.miss){var v=+k;if(v>=lo&&v<=hi&&st.miss[k]>0)pool.push(v);}
+  if(pool.length&&Math.random()<0.34)return pool[Math.floor(Math.random()*pool.length)];
+  return lo+Math.floor(Math.random()*(hi-lo+1));
+}
+function numNew(){
+  numQ={n:numPick()};
+  numFb=null;
+  render();
+  if(numState().mode==="hear")setTimeout(numSay,220);
+}
+function numSay(){ if(numQ)speak(numWord(numQ.n)); }
+function numCheck(){
+  if(!numQ||numFb)return;
+  var st=numState(),inp=$("#numInp"),val=inp?inp.value:"",ok;
+  if(st.mode==="hear"){
+    ok=String(val).replace(/\s/g,"")===String(numQ.n);
+  }else{
+    ok=!!numAccept(numQ.n)[numNorm(val)];
+  }
+  st.a++;if(ok)st.c++;
+  var key=String(numQ.n);
+  if(ok){ if(st.miss[key])st.miss[key]--; }
+  else  { st.miss[key]=(st.miss[key]||0)+1; }
+  numFb={ok:ok,given:val};
+  dlog(ok);
+  save();
+  render();
+}
+
+function vNum(){
+  var st=numState();
+  var h='<div class="pageT">Числа</div>';
+  h+='<div class="card"><div class="eyebrow">Диапазон</div><div class="rangeRow">'
+    +'<label>от <input id="numMin" type="number" inputmode="numeric" value="'+st.min+'"></label>'
+    +'<label>до <input id="numMax" type="number" inputmode="numeric" value="'+st.max+'"></label>'
+    +'</div><div class="chips">';
+  var PR=[[0,12,"0–12"],[0,20,"0–20"],[0,100,"0–100"],[0,1000,"0–1000"],[13,99,"13–99"],[100,999,"сотни"]];
+  for(var p=0;p<PR.length;p++)
+    h+='<button class="chip'+(st.min===PR[p][0]&&st.max===PR[p][1]?" on":"")+'" data-act="numRange" data-a="'+PR[p][0]+'" data-b="'+PR[p][1]+'">'+PR[p][2]+'</button>';
+  h+='</div><div class="chips">'
+    +'<button class="chip'+(st.mode==="hear"?" on":"")+'" data-act="numMode" data-v="hear">на слух → цифрами</button>'
+    +'<button class="chip'+(st.mode==="write"?" on":"")+'" data-act="numMode" data-v="write">цифрами → буквами</button>'
+    +'</div></div>';
+  if(!numQ){
+    h+='<button class="btn acc big" data-act="numStart">Начать</button>';
+    if(st.a)h+='<div class="mut sm">Всего ответов: '+st.a+' · верно '+Math.round(100*st.c/st.a)+'%</div>';
+    return h;
+  }
+  h+='<div class="numBox">';
+  if(st.mode==="hear")h+='<button class="numPlay" data-act="numSay">🔊</button><div class="mut sm">Нажми, чтобы услышать ещё раз</div>';
+  else h+='<div class="numBig">'+numQ.n+'</div>';
+  h+='</div>';
+  h+='<input id="numInp" class="numInp" type="'+(st.mode==="hear"?"number":"text")+'"'
+    +(st.mode==="hear"?' inputmode="numeric"':' autocapitalize="none" spellcheck="false"')
+    +' placeholder="'+(st.mode==="hear"?"цифрами":"по-немецки, одним словом")+'"'
+    +(numFb?' disabled':'')+'>';
+  if(numFb){
+    h+='<div class="fb '+(numFb.ok?"okB":"badB")+'"><div class="fbT">'+(numFb.ok?"Верно":"Неверно")+'</div>';
+    h+='<div class="fbW serif">'+numQ.n+' — '+numWord(numQ.n)+'</div>';
+    if(!numFb.ok&&numFb.given)h+='<div class="fbM">твой ответ: '+esc(numFb.given)+'</div>';
+    h+='<button class="btn acc big" data-act="numNext">Дальше ⏎</button></div>';
+  }else h+='<button class="btn acc big" data-act="numCheck">Проверить ⏎</button>';
+  h+='<div class="mut sm">Ответов: '+st.a+' · верно '+(st.a?Math.round(100*st.c/st.a):0)+'%'
+    +' · треть вопросов берётся из тех, где ошибался</div>';
+  h+='<button class="btn" data-act="numStop">Закончить</button>';
+  return h;
+}
+
+/* ================= ТРЕНАЖЁР ПРЕДЛОГОВ ================= */
+/* Предлог — это отношение, а не слово. Тренируются четыре разных навыка:
+   падеж, выбор предлога по смыслу, Wo/Wohin и слитные формы. */
+
+var PREP_CASE=[
+  ["aus","Dativ"],["bei","Dativ"],["mit","Dativ"],["nach","Dativ"],
+  ["seit","Dativ"],["von","Dativ"],["zu","Dativ"],["ab","Dativ"],
+  ["durch","Akkusativ"],["für","Akkusativ"],["gegen","Akkusativ"],
+  ["ohne","Akkusativ"],["um","Akkusativ"],["bis","Akkusativ"],
+  ["an","двойной"],["auf","двойной"],["hinter","двойной"],["in","двойной"],
+  ["neben","двойной"],["über","двойной"],["unter","двойной"],
+  ["vor","двойной"],["zwischen","двойной"]
+];
+
+/* пропуск в предложении: текст до, ответ, текст после, перевод */
+var PREP_GAP=[
+  ["Ich komme ","aus"," Russland.","Я из России."],
+  ["Ich wohne ","bei"," meiner Schwester.","Я живу у сестры."],
+  ["Ich fahre ","mit"," dem Bus.","Я еду на автобусе."],
+  ["Ich fliege ","nach"," Berlin.","Я лечу в Берлин."],
+  ["Ich lerne ","seit"," einem Jahr Deutsch.","Я учу немецкий год."],
+  ["Das ist das Auto ","von"," meinem Vater.","Это машина моего отца."],
+  ["Ich gehe ","zu"," meiner Freundin.","Я иду к подруге."],
+  ["","Ab"," Montag arbeite ich.","С понедельника я работаю."],
+  ["Wir gehen ","durch"," den Park.","Мы идём через парк."],
+  ["Das Geschenk ist ","für"," dich.","Подарок для тебя."],
+  ["Ich komme ","gegen"," sechs Uhr.","Я приду около шести."],
+  ["Ich trinke Kaffee ","ohne"," Zucker.","Я пью кофе без сахара."],
+  ["Der Kurs beginnt ","um"," acht Uhr.","Курс начинается в восемь."],
+  ["Ich arbeite ","bis"," Freitag.","Я работаю до пятницы."],
+  ["Das Bild hängt ","an"," der Wand.","Картина висит на стене."],
+  ["Das Buch liegt ","auf"," dem Tisch.","Книга лежит на столе."],
+  ["Ich wohne ","in"," Berlin.","Я живу в Берлине."],
+  ["Der Garten ist ","hinter"," dem Haus.","Сад за домом."],
+  ["Die Bank ist ","neben"," der Post.","Банк рядом с почтой."],
+  ["Die Lampe hängt ","über"," dem Tisch.","Лампа висит над столом."],
+  ["Die Katze schläft ","unter"," dem Bett.","Кошка спит под кроватью."],
+  ["Wir treffen uns ","vor"," dem Kino.","Встречаемся перед кинотеатром."],
+  ["Die Apotheke ist ","zwischen"," Bank und Café.","Аптека между банком и кафе."]
+];
+
+/* Wo/Wohin: текст до, ответ, текст после, вопрос, перевод */
+var PREP_WW=[
+  ["Das Buch liegt auf ","dem"," Tisch.","Wo?","Книга лежит на столе."],
+  ["Ich lege das Buch auf ","den"," Tisch.","Wohin?","Я кладу книгу на стол."],
+  ["Die Katze ist unter ","dem"," Bett.","Wo?","Кошка под кроватью."],
+  ["Die Katze geht unter ","das"," Bett.","Wohin?","Кошка идёт под кровать."],
+  ["Ich bin in ","der"," Schule.","Wo?","Я в школе."],
+  ["Ich gehe in ","die"," Schule.","Wohin?","Я иду в школу."],
+  ["Das Bild hängt an ","der"," Wand.","Wo?","Картина висит на стене."],
+  ["Ich hänge das Bild an ","die"," Wand.","Wohin?","Я вешаю картину на стену."],
+  ["Wir sitzen vor ","dem"," Haus.","Wo?","Мы сидим перед домом."],
+  ["Wir gehen vor ","das"," Haus.","Wohin?","Мы идём перед дом."],
+  ["Er steht neben ","dem"," Auto.","Wo?","Он стоит рядом с машиной."],
+  ["Die Lampe hängt über ","dem"," Tisch.","Wo?","Лампа висит над столом."],
+  ["Ich hänge die Lampe über ","den"," Tisch.","Wohin?","Я вешаю лампу над столом."],
+  ["Der Ball ist hinter ","der"," Tür.","Wo?","Мяч за дверью."],
+  ["Der Ball rollt hinter ","die"," Tür.","Wohin?","Мяч катится за дверь."]
+];
+
+/* Временные обороты — прямая часть A1: Notionen «Ort/Zeitpunkt». */
+var PREP_TIME=[
+  ["Der Kurs beginnt ","um"," acht Uhr.","Курс начинается в восемь."],
+  ["Ich arbeite ","am"," Montag.","Я работаю в понедельник.","am"],
+  ["","Am"," Abend sehe ich fern.","Вечером я смотрю телевизор."],
+  ["Ich habe ","im"," Januar Geburtstag.","У меня день рождения в январе."],
+  ["","Im"," Sommer fahre ich nach Hause.","Летом я еду домой."],
+  ["Der Film dauert ","bis"," zehn Uhr.","Фильм идёт до десяти."],
+  ["Ich lerne Deutsch ","seit"," einem Jahr.","Я учу немецкий год."],
+  ["","Ab"," Montag habe ich Urlaub.","С понедельника у меня отпуск."],
+  ["Ich komme ","gegen"," sechs.","Я приду около шести."],
+  ["","Nach"," der Arbeit gehe ich einkaufen.","После работы я иду за покупками."],
+  ["","Vor"," dem Essen trinke ich Wasser.","Перед едой я пью воду."],
+  ["Wir treffen uns ","am"," Wochenende.","Встретимся на выходных."]
+];
+
+var PREP_MERGE=[
+  ["in","dem","im"],["in","das","ins"],["an","dem","am"],["an","das","ans"],
+  ["zu","dem","zum"],["zu","der","zur"],["bei","dem","beim"],["von","dem","vom"]
+];
+
+function prepState(){
+  if(!S.prep)S.prep={a:0,c:0,miss:{},mode:"gap"};
+  if(!S.prep.miss)S.prep.miss={};
+  if(!S.prep.mode)S.prep.mode="gap";
+  return S.prep;
+}
+var prepQ=null,prepFb=null;
+
+function prepOpts(correct,pool,n){
+  var o=[correct],guard=0;
+  while(o.length<n&&guard++<200){
+    var c=pool[Math.floor(Math.random()*pool.length)];
+    if(o.indexOf(c)<0)o.push(c);
+  }
+  return shuffle(o);
+}
+
+function prepNew(){
+  var st=prepState(),m=st.mode,mk;
+  /* треть вопросов — из тех, где ошибался */
+  var pool=[];for(var k in st.miss)if(st.miss[k]>0&&k.indexOf(m+"|")===0)pool.push(k);
+  var forced=(pool.length&&Math.random()<0.34)?pool[Math.floor(Math.random()*pool.length)]:null;
+
+  if(m==="case"){
+    var it=forced?PREP_CASE.filter(function(x){return m+"|"+x[0]===forced;})[0]:null;
+    if(!it)it=PREP_CASE[Math.floor(Math.random()*PREP_CASE.length)];
+    mk={key:m+"|"+it[0],q:it[0],ans:it[1],opts:["Dativ","Akkusativ","двойной"],hint:"Какой падеж требует предлог?"};
+  }else if(m==="gap"){
+    var g=forced?PREP_GAP.filter(function(x){return m+"|"+x[0]+x[1]===forced;})[0]:null;
+    if(!g)g=PREP_GAP[Math.floor(Math.random()*PREP_GAP.length)];
+    var all=PREP_CASE.map(function(x){return x[0];});
+    mk={key:m+"|"+g[0]+g[1],pre:g[0],ans:g[1],post:g[2],ru:g[3],
+        opts:prepOpts(g[1],all,4),hint:"Какой предлог подходит?"};
+  }else if(m==="ww"){
+    var v=forced?PREP_WW.filter(function(x){return m+"|"+x[0]+x[1]===forced;})[0]:null;
+    if(!v)v=PREP_WW[Math.floor(Math.random()*PREP_WW.length)];
+    mk={key:m+"|"+v[0]+v[1],pre:v[0],ans:v[1],post:v[2],ru:v[4],tag:v[3],
+        opts:prepOpts(v[1],["dem","den","das","der","die"],4),
+        hint:"Wo? — Dativ (покой) · Wohin? — Akkusativ (движение)"};
+  }else if(m==="time"){
+    var tt=forced?PREP_TIME.filter(function(x){return m+"|"+x[0]+x[1]===forced;})[0]:null;
+    if(!tt)tt=PREP_TIME[Math.floor(Math.random()*PREP_TIME.length)];
+    mk={key:m+"|"+tt[0]+tt[1],pre:tt[0],ans:tt[1],post:tt[2],ru:tt[3],
+        opts:prepOpts(tt[1],["um","am","Am","im","Im","bis","seit","Ab","gegen","Nach","Vor"],4),
+        hint:"um — точное время · am — день и часть суток · im — месяц и время года"};
+  }else{
+    var mg=forced?PREP_MERGE.filter(function(x){return m+"|"+x[0]+x[1]===forced;})[0]:null;
+    if(!mg)mg=PREP_MERGE[Math.floor(Math.random()*PREP_MERGE.length)];
+    mk={key:m+"|"+mg[0]+mg[1],q:mg[0]+" + "+mg[1],ans:mg[2],
+        opts:prepOpts(mg[2],["im","ins","am","ans","zum","zur","beim","vom"],4),
+        hint:"Как звучит слитная форма?"};
+  }
+  prepQ=mk;prepFb=null;render();
+}
+
+function prepAnswer(choice){
+  if(!prepQ||prepFb)return;
+  var st=prepState(),ok=(choice===prepQ.ans);
+  st.a++;if(ok)st.c++;
+  if(ok){if(st.miss[prepQ.key])st.miss[prepQ.key]--;}
+  else st.miss[prepQ.key]=(st.miss[prepQ.key]||0)+1;
+  prepFb={ok:ok,given:choice};
+  dlog(ok);save();render();
+  if(S.set.auto&&prepQ.pre)speak(prepQ.pre+prepQ.ans+prepQ.post);
+}
+
+function vPrep(){
+  var st=prepState();
+  var h='<div class="pageT">Предлоги</div>';
+  var M=[["gap","пропуск",""],["time","время",""],["merge","слияния",""],
+         ["case","падеж","A2"],["ww","Wo / Wohin","A2"]];
+  h+='<div class="chips">';
+  for(var k=0;k<M.length;k++)
+    h+='<button class="chip'+(st.mode===M[k][0]?" on":"")+(M[k][2]?" adv":"")+'" data-act="prepMode" data-v="'+M[k][0]+'">'
+      +M[k][1]+(M[k][2]?'<span class="lvl">'+M[k][2]+'</span>':'')+'</button>';
+  h+='</div>';
+
+  if(!prepQ){
+    var D={gap:"Предложение с пропуском. Выбираешь подходящий по смыслу предлог — ровно то, что спрашивают на A1.",
+           time:"Обороты времени: um восемь, am Montag, im Januar. На экзамене встречаются постоянно, особенно в аудировании.",
+           merge:"Предлог сливается с артиклем: zum Bahnhof, ins Ausland. В речи ты слышишь именно эти формы.",
+           case:"Какой падеж требует предлог. Это уже уровень A2 — на Start Deutsch 1 падежи предлогов не спрашивают. Полезно на будущее, но не к 1 октября.",
+           ww:"Wo? — Dativ, Wohin? — Akkusativ. Тема уровня A2, в программе Start Deutsch 1 её нет. Берись, если основное уже закрыто."};
+    h+='<div class="mut sm" style="margin-bottom:12px">'+D[st.mode]+'</div>';
+    h+='<button class="btn acc big" data-act="prepStart">Начать</button>';
+    if(st.a)h+='<div class="mut sm">Всего ответов: '+st.a+' · верно '+Math.round(100*st.c/st.a)+'%</div>';
+    return h;
+  }
+
+  h+='<div class="prepBox">';
+  if(prepQ.tag)h+='<div class="prepTag">'+prepQ.tag+'</div>';
+  if(prepQ.q)h+='<div class="prepBig serif">'+esc(prepQ.q)+'</div>';
+  else h+='<div class="prepSent serif">'+esc(prepQ.pre)+'<span class="gap">'
+       +(prepFb?esc(prepQ.ans):"____")+'</span>'+esc(prepQ.post)+'</div>';
+  if(prepQ.ru)h+='<div class="mut sm">'+esc(prepQ.ru)+'</div>';
+  h+='</div>';
+
+  h+='<div class="opts">';
+  for(var o=0;o<prepQ.opts.length;o++){
+    var v=prepQ.opts[o],cls="opt";
+    if(prepFb){
+      if(v===prepQ.ans)cls+=" good";
+      else if(v===prepFb.given)cls+=" bad";
+    }
+    h+='<button class="'+cls+'" data-act="prepAns" data-v="'+esc(v)+'"'+(prepFb?' disabled':'')+'>'+esc(v)+'</button>';
+  }
+  h+='</div>';
+
+  if(prepFb){
+    h+='<div class="fb '+(prepFb.ok?"okB":"badB")+'"><div class="fbT">'+(prepFb.ok?"Верно":"Неверно")+'</div>';
+    h+='<div class="fbM">'+prepQ.hint+'</div>';
+    h+='<button class="btn acc big" data-act="prepNext">Дальше ⏎</button></div>';
+  }
+  h+='<div class="mut sm">Ответов: '+st.a+' · верно '+(st.a?Math.round(100*st.c/st.a):0)+'%'
+    +' · треть вопросов из тех, где ошибался</div>';
+  h+='<button class="btn" data-act="prepStop">Закончить</button>';
+  return h;
+}
+
+function vCatList(){
+  var c=curCat;
+  var nn=newIn(c).length;
+  var h='<div class="row head"><button class="icoBtn" data-act="back">←</button><div class="pageT" style="margin:0">'+CATS[c][0]+' '+CATS[c][1]+'</div></div>';
+  h+='<div class="row gap"><button class="btn acc" data-act="learnCat" data-c="'+c+'"'+(nn?"":" disabled")+'>Учить новые ('+nn+')</button>';
+  h+='<button class="btn" data-act="trainCat" data-c="'+c+'">Тренировать</button></div>';
+  if(nn){var nx=newIn(c).slice(0,3).map(function(j){return W[j][1];}).join(', ');
+    h+='<div class="mut sm">Новые выдаются по важности для экзамена. Следующие: '+esc(nx)+'</div>';}
+  h+='<div class="wlist">';
+  var idx=[];for(var q=0;q<W.length;q++)if(W[q][4]===c)idx.push(q);
+  idx.sort(function(p,q){return (RK[p]||999)-(RK[q]||999);});
+  for(var z=0;z<idx.length;z++){
+    var i=idx[z];
+    var w=W[i];
+    h+='<div class="wrow"><button class="icoBtn" data-act="play" data-i="'+i+'">🔊</button>'
+      +'<div class="wmain"><div class="wde serif">'+deHtml(i)+'<span class="tier t'+tierOf(i)+'" title="важность №'+RK[i]+' · '+TIERN[tierOf(i)]+'">'+RK[i]+'</span></div>'
+      +'<div class="wru">'+esc(w[3])+(w[2]?' <span class="mut">· мн. die '+esc(w[2])+'</span>':"")+'</div>'
+      +(w[5]?'<div class="wnote">'+esc(w[5])+'</div>':"")
+      +(exOf(i)?'<div class="wnote exI">'+esc(exOf(i)[0])+' <span class="exRuI">— '+esc(exOf(i)[1])+'</span></div>':"")
+      +conjHtml(i,false)
+      +'</div>'+triHtml(i)+'</div>';
+  }
+  h+='</div>';
+  return h;
+}
+function vTrain(){
+  if(!trainCfg.cats)trainCfg.cats=new Set(Object.keys(CATS));
+  var h='<div class="pageT">Тренировка</div>';
+  h+='<div class="cardT">Режим</div><div class="tGrid">';
+  for(var k=0;k<TYPES.length;k++){
+    var t=TYPES[k];
+    h+='<button class="tCard'+(trainCfg.type===t?" sel":"")+'" data-act="setType" data-t="'+t+'"><b>'+TNAME[t]+'</b><span>'+TDESC[t]+'</span></button>';
+  }
+  h+='</div><div class="cardT">Категории</div><div class="chips">';
+  var all=trainCfg.cats.size===Object.keys(CATS).length;
+  h+='<button class="chip'+(all?" on":"")+'" data-act="allCats">Все</button>';
+  for(var c in CATS){
+    h+='<button class="chip'+(trainCfg.cats.has(c)?" on":"")+'" data-act="tglCat" data-c="'+c+'">'+CATS[c][0]+' '+CATS[c][1]+'</button>';
+  }
+  h+='</div><div class="cardT">Длина серии</div><div class="chips">';
+  var lens=[10,20,40];
+  for(var j=0;j<lens.length;j++){
+    h+='<button class="chip'+(trainCfg.len===lens[j]?" on":"")+'" data-act="setLen" data-n="'+lens[j]+'">'+lens[j]+'</button>';
+  }
+  h+='</div>';
+  h+='<label class="ckRow"><input type="checkbox" id="onlyL"'+(trainCfg.learned?" checked":"")+'> только изученные слова</label>';
+  h+='<button class="btn acc big" data-act="goTrain">Начать</button>';
+  h+='<div class="mut sm">Слова с большим числом ошибок в выбранном режиме попадают в серию первыми.</div>';
+  return h;
+}
+function vStats(){
+  var BX=[[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]];
+  var tA=[0,0,0,0,0,0],tC=[0,0,0,0,0,0];
+  var hard=[],i,t,learned=0,mast=0;
+  for(i=0;i<W.length;i++){
+    var x=wg(i);
+    for(t=0;t<3;t++)BX[t][x?x.b[t]:0]++;
+    if(x){
+      if(x.b[0]+x.b[1]+x.b[2]>0)learned++;
+      if(Math.min(x.b[0],x.b[1],x.b[2])>=5)mast++;
+      var a=0,cc=0;
+      for(t=0;t<6;t++){tA[t]+=x.a[t];tC[t]+=x.c[t];a+=x.a[t];cc+=x.c[t];}
+      if(a>=4)hard.push({i:i,er:(a-cc)/a});
+    }
+  }
+  var ta=0,tc=0;
+  for(t=0;t<6;t++){ta+=tA[t];tc+=tC[t];}
+  hard.sort(function(x,y){return y.er-x.er;});
+  var h='<div class="pageT">Статистика</div>';
+  h+='<div class="trio wide"><div><b>'+learned+'</b><span>в работе</span></div><div><b>'+mast+'</b><span>освоено полностью</span></div><div><b>'+(ta?Math.round(100*tc/ta):0)+'%</b><span>точность · '+ta+' отв.</span></div></div>';
+  h+='<section class="card"><div class="cardT">Навыки</div>';
+  var skills=[["Чтение",[0,1]],["Аудирование",[2,3]],["Письмо",[4,5]]];
+  for(i=0;i<skills.length;i++){
+    var sa=0,sc=0;
+    for(var q=0;q<2;q++){sa+=tA[skills[i][1][q]];sc+=tC[skills[i][1][q]];}
+    var p=sa?Math.round(100*sc/sa):0;
+    h+='<div class="brow"><span class="blbl">'+skills[i][0]+'</span><span class="btrack"><i style="width:'+p+'%"></i></span><span class="bval">'+(sa?p+"% · "+sa:"—")+'</span></div>';
+  }
+  h+='</section><section class="card"><div class="cardT">По режимам</div>';
+  for(t=0;t<6;t++){
+    var pp=tA[t]?Math.round(100*tC[t]/tA[t]):0;
+    h+='<div class="brow sm"><span class="blbl">'+TNAME[TYPES[t]]+'</span><span class="btrack"><i style="width:'+pp+'%"></i></span><span class="bval">'+(tA[t]?pp+"% · "+tA[t]:"—")+'</span></div>';
+  }
+  h+='</section><section class="card"><div class="cardT">Ступени по навыкам</div><div class="stG">';
+  h+='<span></span>';
+  for(var b=0;b<7;b++)h+='<span class="box mini hb b'+b+'">'+b+'</span>';
+  var STL=["Чтение","Слух","Письмо"];
+  for(t=0;t<3;t++){
+    h+='<span class="stL">'+STL[t]+'</span>';
+    for(b=0;b<7;b++)h+='<span class="stC'+(BX[t][b]?"":" dim0")+'">'+BX[t][b]+'</span>';
+  }
+  h+='</div><div class="mut xs" style="margin-top:7px">0 — навык не тренировался; интервалы: '+BOXLBL.slice(1).join(" → ")+'; слово освоено, когда все три навыка на ступени 5+</div></section>';
+  var days=last14(),mx=1;
+  for(i=0;i<days.length;i++)if(days[i].a>mx)mx=days[i].a;
+  h+='<section class="card"><div class="cardT">Активность · 14 дней</div><div class="actRow">';
+  for(i=0;i<days.length;i++){
+    var d=days[i];
+    var hh=d.a?Math.max(5,Math.round(64*d.a/mx)):2;
+    var op=d.a?(0.35+0.65*(d.c/d.a)):0.12;
+    h+='<div class="actCol"><div class="actBar" style="height:'+hh+'px;opacity:'+op.toFixed(2)+'" title="'+d.a+' отв."></div><span>'+d.lbl+'</span></div>';
+  }
+  h+='</div><div class="mut xs" style="margin-top:6px">высота — число ответов, яркость — точность</div></section>';
+  h+='<section class="card"><div class="cardT">Категории</div>';
+  for(var c in CATS){
+    var s=catStats(c),ca=0,ccc=0;
+    for(i=0;i<W.length;i++){
+      if(W[i][4]!==c)continue;
+      var xx=wg(i);
+      if(xx)for(t=0;t<6;t++){ca+=xx.a[t];ccc+=xx.c[t];}
+    }
+    var cp=s.tot?Math.round(100*s.st/s.tot):0;
+    h+='<div class="brow sm"><span class="blbl">'+CATS[c][0]+' '+CATS[c][1]+'</span><span class="btrack"><i style="width:'+cp+'%"></i></span><span class="bval">'+s.st+'/'+s.tot+(ca?" · "+Math.round(100*ccc/ca)+"%":"")+'</span></div>';
+  }
+  h+='</section>';
+  if(hard.length){
+    h+='<section class="card"><div class="cardT">Трудные слова</div>';
+    var hl=hard.slice(0,10);
+    for(i=0;i<hl.length;i++){
+      var wi=hl[i].i;
+      h+='<div class="wrow"><button class="icoBtn" data-act="play" data-i="'+wi+'">🔊</button><div class="wmain"><div class="wde serif">'+deHtml(wi)+'</div><div class="wru">'+esc(W[wi][3])+'</div></div><span class="bval err">'+Math.round(100*hl[i].er)+'% ошиб.</span></div>';
+    }
+    h+='</section>';
+  }
+  return h;
+}
+function vSet(){
+  var h='<div class="pageT">Настройки</div>';
+  h+='<section class="card"><div class="cardT">Озвучка</div>';
+  h+='<label class="lbl" for="voiceSel">Немецкий голос</label><select id="voiceSel" class="sel full"></select>';
+  h+='<label class="lbl">Скорость: <b id="rateVal">'+S.set.rate.toFixed(2)+'</b></label>';
+  h+='<input type="range" id="rateRng" class="full" min="0.6" max="1.2" step="0.05" value="'+S.set.rate+'">';
+  h+='<label class="ckRow"><input type="checkbox" id="autoCk"'+(S.set.auto?" checked":"")+'> автоозвучка в упражнениях</label>';
+  h+='<button class="btn" data-act="testV">▶ Проба голоса</button>';
+  h+='<div class="mut sm">Синтез речи встроен в браузер. Самые естественные голоса — в Edge и Chrome (при интернете). Для офлайна установи немецкий языковой пакет в системе — появится локальный голос.</div></section>';
+  h+='<section class="card"><div class="cardT">Данные</div><div class="row gap">';
+  h+='<button class="btn" data-act="doWeak">Слабые слова</button>';
+  h+='<button class="btn" data-act="doExport">Экспорт</button>';
+  h+='<button class="btn" data-act="doImport">Импорт</button>';
+  h+='<button class="btn danger" data-act="doReset">'+(resetArm?"Точно сбросить?":"Сбросить прогресс")+'</button></div>';
+  h+='<textarea id="ioArea" class="io" placeholder="Экспорт положит сюда JSON с прогрессом — скопируй и сохрани. Для импорта вставь JSON и нажми «Импорт»."></textarea></section>';
+  h+='<div class="mut sm center">Wörter A1 · '+W.length+' слов · Лейтнер: 10 мин → 1 → 3 → 7 → 16 → 35 дней</div>';
+  return h;
+}
+function vLearn(){
+  var i=learn.list[learn.i],w=W[i];
+  var h='<div class="shead"><button class="icoBtn" data-act="quitLearn">✕</button><div class="sbar"><i style="width:'+Math.round(100*learn.i/learn.list.length)+'%"></i></div><div class="scount">'+(learn.i+1)+'/'+learn.list.length+'</div></div>';
+  h+='<div class="lcard"><div class="eyebrow">'+CATS[w[4]][0]+' '+CATS[w[4]][1]
+      +'<span class="tier t'+tierOf(i)+'">№'+RK[i]+' · '+TIERN[tierOf(i)]+'</span></div>';
+  h+='<div class="lde serif">'+deHtml(i)+'</div>';
+  h+='<button class="bigPlay" data-act="play" data-i="'+i+'">🔊</button>';
+  h+='<div class="lru">'+esc(w[3])+'</div>';
+  if(w[2])h+='<div class="fbM">мн. ч.: die '+esc(w[2])+'</div>';
+  if(w[5])h+='<div class="fbM">'+esc(w[5])+'</div>';
+  var ex=exOf(i);
+  if(ex)h+='<div class="exB"><button class="icoBtn" data-act="playEx" data-i="'+i+'">🔊</button><div class="exTxt"><div class="exDe serif">'+esc(ex[0])+'</div><div class="exRu">'+esc(ex[1])+'</div></div></div>';
+  h+=conjHtml(i,true);
+  h+='</div><button class="btn acc big" data-act="lNext">'+(learn.i+1>=learn.list.length?"К закреплению →":"Дальше")+'</button>';
+  return h;
+}
+function vSession(){
+  var s=sess;
+  if(s.i>=s.qs.length)return vSummary();
+  var q=s.qs[s.i],w=W[q.wid];
+  var pr=Math.round(100*s.i/s.qs.length);
+  var audioQ=(q.type==="mcAuRu"||q.type==="mcAuDe"||q.type==="wrAu");
+  var h='<div class="shead"><button class="icoBtn" data-act="quit">✕</button><div class="sbar"><i style="width:'+pr+'%"></i></div><div class="scount">'+(s.i+1)+'/'+s.qs.length+'</div></div>';
+  h+='<div class="stitle">'+TNAME[q.type]+'</div>';
+  if(q.type==="mcDeRu")h+='<div class="qde serif">'+deHtml(q.wid)+' <button class="icoBtn" data-act="play" data-i="'+q.wid+'">🔊</button></div>';
+  if(q.type==="mcRuDe"||q.type==="wrRuDe")h+='<div class="qru">'+esc(w[3])+'</div>';
+  if(audioQ)h+='<div class="center"><button class="bigPlay" data-act="play" data-i="'+q.wid+'">🔊</button><div class="mut sm">нажми, чтобы послушать ещё раз</div></div>';
+  if(q.type.indexOf("mc")===0){
+    h+='<div class="opts">';
+    for(var k=0;k<q.opts.length;k++){
+      var o=q.opts[k];
+      var lbl=(q.type==="mcDeRu"||q.type==="mcAuRu")?esc(W[o.wid][3]):deHtml(o.wid);
+      var cls="opt";
+      if(s.ans){
+        if(o.wid===q.wid)cls+=" ok";
+        else if(k===s.chosen)cls+=" bad";
+        else cls+=" dim";
+      }
+      h+='<button class="'+cls+'" data-act="opt" data-k="'+k+'"'+(s.ans?" disabled":"")+'><span class="key">'+(k+1)+'</span><span>'+lbl+'</span></button>';
+    }
+    h+='</div>';
+  }else{
+    h+='<div class="wwrap"><input id="wInp" class="winp" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="напиши по-немецки…"'+(s.ans?' disabled value="'+esc(s.userText)+'"':"")+'>';
+    h+='<div class="uml">';
+    var uch=["ä","ö","ü","ß"];
+    for(var u=0;u<4;u++)h+='<button class="uch" data-act="ins" data-ch="'+uch[u]+'"'+(s.ans?" disabled":"")+'>'+uch[u]+'</button>';
+    h+='<button class="btn acc" data-act="submitW"'+(s.ans?" disabled":"")+'>Проверить</button></div>';
+    if(w[0]&&!s.ans)h+='<div class="mut sm">артикль можно опустить; неверный артикль — ошибка</div>';
+    h+='</div>';
+  }
+  if(s.ans){
+    var fb=s.fb;
+    h+='<div class="fb '+(fb.ok?"okB":"badB")+'"><div class="fbT">'+(fb.ok?"Верно":"Неверно")+'</div>';
+    h+='<div class="fbW serif">'+deHtml(q.wid)+' <button class="icoBtn" data-act="play" data-i="'+q.wid+'">🔊</button></div>';
+    h+='<div class="fbR">'+esc(w[3])+'</div>';
+    if(w[2])h+='<div class="fbM">мн. ч.: die '+esc(w[2])+'</div>';
+    if(w[5])h+='<div class="fbM">'+esc(w[5])+'</div>';
+    var ex=exOf(q.wid);
+    if(ex)h+='<div class="exB"><button class="icoBtn" data-act="playEx" data-i="'+q.wid+'">🔊</button><div class="exTxt"><div class="exDe serif">'+esc(ex[0])+'</div><div class="exRu">'+esc(ex[1])+'</div></div></div>';
+    h+=conjHtml(q.wid,false);
+    if(fb.msg)h+='<div class="fbM hl">'+fb.msg+'</div>';
+    if(!fb.ok&&(q.type==="wrRuDe"||q.type==="wrAu")&&s.undo&&!s.undo.wasOk){
+      h+='<div class="typoBox">Ответ: <b>'+esc(s.userText||"")+'</b>'
+        +'<button class="btn" data-act="typo">Это опечатка — засчитать</button></div>';
+    }
+    h+='<button class="btn acc big" data-act="next">Дальше ⏎</button></div>';
+  }
+  return h;
+}
+function vSummary(){
+  var s=sess,tot=s.qs.length;
+  var acc=tot?Math.round(100*s.c/tot):0;
+  var um=[];
+  for(var j=0;j<s.mist.length;j++)if(um.indexOf(s.mist[j])<0)um.push(s.mist[j]);
+  var h='<div class="sum"><div class="eyebrow">'+s.title+'</div><div class="heroN">'+acc+'%</div><div class="heroSub">'+s.c+' из '+tot+'</div>';
+  if(um.length){
+    h+='<div class="cardT left">Ошибки</div>';
+    for(var i=0;i<um.length;i++){
+      h+='<div class="wrow"><button class="icoBtn" data-act="play" data-i="'+um[i]+'">🔊</button><div class="wmain" style="text-align:left"><div class="wde serif">'+deHtml(um[i])+'</div><div class="wru">'+esc(W[um[i]][3])+'</div></div></div>';
+    }
+    h+='<button class="btn big" data-act="redo">Повторить ошибки</button>';
+  }else{
+    h+='<div class="mut">Без единой ошибки!</div>';
+  }
+  h+='<button class="btn acc big" data-act="fin">Готово</button></div>';
+  return h;
+}
+/* ================= ДЕЙСТВИЯ ================= */
+function insCh(ch){
+  var inp=$("#wInp");if(!inp||inp.disabled)return;
+  var s0=inp.selectionStart,e0=inp.selectionEnd;
+  if(s0===null||s0===undefined){s0=inp.value.length;e0=s0;}
+  inp.value=inp.value.slice(0,s0)+ch+inp.value.slice(e0);
+  inp.focus();
+  inp.selectionStart=inp.selectionEnd=s0+1;
+}
+var toT=null;
+function toast(m){
+  var t=$("#toast");t.textContent=m;t.classList.add("on");
+  clearTimeout(toT);toT=setTimeout(function(){t.classList.remove("on");},2400);
+}
+var A={
+  doWeak:function(){
+    var out=[],i,k,x,a,c,mn,acc;
+    for(i=0;i<W.length;i++){
+      k=kid(i);x=S.w[k];
+      if(!x)continue;
+      a=0;c=0;
+      for(var t=0;t<x.a.length;t++){a+=x.a[t];c+=x.c[t];}
+      if(!a)continue;
+      mn=Math.min(x.b[0],x.b[1],x.b[2]);
+      acc=c/a;
+      /* слабое: низкая точность при достаточной выборке, либо трек застрял внизу */
+      if(a<3)continue;
+      if(acc<0.75||(mn<=1&&a>=4))
+        out.push({s:acc,t:kid(i)+" — "+W[i][3]+" | "+c+"/"+a+" | "+Math.round(acc*100)+"% | ящики "+x.b.join("/")+" | "+W[i][4]});
+    }
+    out.sort(function(p,q){return p.s-q.s;});
+    var seen=0;for(k in S.w)seen++;
+    var txt="слабых: "+out.length+" из "+seen+" начатых ("+W.length+" всего)\n"+
+            "порог: точность ниже 75% при 3+ попытках\n\n"+
+            out.map(function(o){return o.t;}).join("\n");
+    var ta=$("#ioArea");if(ta){ta.value=txt;ta.focus();ta.select();}
+  },
+  play:function(b){speakW(+b.dataset.i);},
+  playEx:function(b){var e=exOf(+b.dataset.i);if(e)speak(e[0]);},
+  tglConj:function(b){var d=b.nextElementSibling;if(!d)return;var off=d.style.display==="none";d.style.display=off?"":"none";b.textContent=off?"Спряжение ▾":"Спряжение ▸";},
+  startReview:function(){startReview();},
+  learnGo:function(){startLearn($("#newCat").value,+$("#newN").value);},
+  pickCat:function(b){curCat=b.dataset.c;show("catlist");},
+  back:function(){show(view==="all"?"words":"words");},
+  openAll:function(){allQ="";allFilt="all";allSort="rank";show("all");},
+  allFilt:function(b){allFilt=b.dataset.v;render();},
+  allSort:function(b){allSort=b.dataset.v;render();},
+  learnCat:function(b){startLearn(b.dataset.c,7);},
+  trainCat:function(b){trainCfg.cats=new Set([b.dataset.c]);show("train");},
+  setType:function(b){trainCfg.type=b.dataset.t;render();},
+  tglCat:function(b){var c=b.dataset.c;if(trainCfg.cats.has(c))trainCfg.cats.delete(c);else trainCfg.cats.add(c);render();},
+  allCats:function(){var ks=Object.keys(CATS);trainCfg.cats=(trainCfg.cats.size===ks.length)?new Set():new Set(ks);render();},
+  setLen:function(b){trainCfg.len=+b.dataset.n;render();},
+  goTrain:function(){var ck=$("#onlyL");if(ck)trainCfg.learned=ck.checked;startTrain();},
+  opt:function(b){answerChoice(+b.dataset.k);},
+  submitW:function(){submitWrite();},
+  ins:function(b){insCh(b.dataset.ch);},
+  prepMode:function(b){prepState().mode=b.dataset.v;prepQ=null;prepFb=null;save();render();},
+  prepStart:function(){prepNew();},
+  prepAns:function(b){prepAnswer(b.dataset.v);},
+  prepNext:function(){prepNew();},
+  prepStop:function(){prepQ=null;prepFb=null;render();},
+  numRange:function(b){var st=numState();st.min=+b.dataset.a;st.max=+b.dataset.b;save();render();},
+  numMode:function(b){var st=numState();st.mode=b.dataset.v;numQ=null;numFb=null;save();render();},
+  numStart:function(){numNew();},
+  numSay:function(){numSay();},
+  numCheck:function(){numCheck();},
+  numNext:function(){numNew();},
+  numStop:function(){numQ=null;numFb=null;render();},
+  typo:function(){acceptTypo();},
+  next:function(){nextQ();},
+  quit:function(){var back=sess?sess.back:"review";sess=null;show(back);},
+  quitLearn:function(){learn=null;show("review");},
+  lNext:function(){learnNext();},
+  redo:function(){
+    var um=[],tp={},i;
+    for(i=0;i<sess.mist.length;i++)if(um.indexOf(sess.mist[i])<0)um.push(sess.mist[i]);
+    for(i=0;i<sess.qs.length;i++)tp[sess.qs[i].wid]=sess.qs[i].type;
+    var mode=sess.mode,title=sess.title,back=sess.back;
+    startSession(um.map(function(i){return makeQ(i,tp[i]);}),mode,title,back);
+  },
+  fin:function(){var back=sess.back;sess=null;show(back);},
+  testV:function(){speak("Guten Tag! Ich lerne deutsche Wörter.");},
+  doExport:function(){
+    var t=$("#ioArea");
+    t.value=JSON.stringify({w:S.w,daily:S.daily,set:S.set});
+    t.select();
+    toast("JSON готов — скопируй и сохрани");
+  },
+  doImport:function(){
+    try{
+      var d=JSON.parse($("#ioArea").value);
+      if(!d||typeof d.w!=="object")throw 0;
+      S.w=d.w;S.daily=d.daily||{};S.set=Object.assign(S.set,d.set||{});
+      migAll();
+      save();toast("Импортировано");render();
+    }catch(e){toast("Не получилось разобрать JSON");}
+  },
+  doReset:function(){
+    if(!resetArm){
+      resetArm=true;render();
+      setTimeout(function(){resetArm=false;if(view==="set")render();},4000);
+    }else{
+      resetArm=false;S.w={};S.daily={};save();
+      toast("Прогресс сброшен");render();
+    }
+  }
+};
+/* ================= РОУТЕР ================= */
+function show(v){view=v;render();}
+function render(){
+  var badge=duePairs().length;
+  var backMap={catlist:"words",all:"words",learn:"review",session:(sess?sess.back:"review")};
+  var actV=backMap[view]||view;
+  $$(".tab").forEach(function(b){b.classList.toggle("act",b.dataset.v===actV);});
+  var bd=$("#dueBadge");
+  bd.textContent=badge;
+  bd.style.display=badge?"":"none";
+  var h="";
+  if(view==="review")h=vReview();
+  else if(view==="words")h=vWords();
+  else if(view==="catlist")h=vCatList();
+  else if(view==="all")h=vAll();
+  else if(view==="train")h=vTrain();
+  else if(view==="num")h=vNum();
+  else if(view==="prep")h=vPrep();
+  else if(view==="stats")h=vStats();
+  else if(view==="set")h=vSet();
+  else if(view==="learn")h=vLearn();
+  else if(view==="session")h=vSession();
+  $("#view").innerHTML=h;
+  afterRender();
+}
+function afterRender(){
+  if(view==="set"){
+    var sel=$("#voiceSel");
+    if(sel){fillVoiceSel(sel);sel.onchange=function(){S.set.voice=sel.value;save();};}
+    var r=$("#rateRng");
+    if(r)r.oninput=function(){S.set.rate=+r.value;$("#rateVal").textContent=S.set.rate.toFixed(2);save();};
+    var a=$("#autoCk");
+    if(a)a.onchange=function(){S.set.auto=a.checked;save();};
+  }
+  if(view==="session"&&sess&&sess.i<sess.qs.length&&!sess.ans){
+    var q=curQ();
+    if(S.set.auto&&(q.type==="mcAuRu"||q.type==="mcAuDe"||q.type==="wrAu"||q.type==="mcDeRu"))autoSpeak(q.wid,250);
+    var inp=$("#wInp");
+    if(inp){
+      inp.onkeydown=function(e){
+        if(e.key!=="Enter")return;
+        e.preventDefault();
+        e.stopPropagation();
+        if(!sess.ans)submitWrite();
+      };
+      inp.onkeyup=function(e){if(e.key==="Enter")e.stopPropagation();};
+      setTimeout(function(){inp.focus();},60);
+    }
+  }
+  if(view==="num"){
+    var ni=$("#numInp");
+    if(ni&&!numFb){
+      ni.focus();
+      ni.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();e.stopPropagation();numCheck();}};
+    }
+    var mn=$("#numMin"),mx=$("#numMax");
+    if(mn)mn.onchange=function(){numState().min=+mn.value||0;save();render();};
+    if(mx)mx.onchange=function(){numState().max=+mx.value||0;save();render();};
+  }
+  if(view==="all"){
+    var si=$("#allSearch");
+    if(si){
+      var t=null;
+      si.oninput=function(){
+        allQ=si.value;
+        clearTimeout(t);
+        /* перерисовка отложена, иначе на слабом телефоне ввод дёргается */
+        t=setTimeout(function(){var p=si.selectionStart;render();
+          var n=$("#allSearch");if(n){n.focus();try{n.setSelectionRange(p,p);}catch(e){}}},250);
+      };
+    }
+  }
+  if(view==="learn"&&learn&&S.set.auto)autoSpeak(learn.list[learn.i],250);
+}
+document.addEventListener("click",function(e){
+  var tb=e.target.closest(".tab");
+  if(tb){sess=null;learn=null;show(tb.dataset.v);return;}
+  var b=e.target.closest("[data-act]");
+  if(!b||b.disabled)return;
+  var fn=A[b.dataset.act];
+  if(fn)fn(b);
+});
+document.addEventListener("keydown",function(e){
+  if(view==="num"){
+    if(e.key==="Enter"){e.preventDefault();if(numFb)numNew();else numCheck();}
+    return;
+  }
+  if(view==="prep"){
+    if(e.key==="Enter"&&prepFb){e.preventDefault();prepNew();}
+    return;
+  }
+  if(view!=="session"||!sess)return;
+  if(sess.i>=sess.qs.length){if(e.key==="Enter")A.fin();return;}
+  var q=curQ();
+  if(!sess.ans&&q.type.indexOf("mc")===0&&["1","2","3","4"].indexOf(e.key)>=0){answerChoice(+e.key-1);return;}
+  if(sess.ans&&e.key==="Enter"){e.preventDefault();nextQ();}
+});
+document.addEventListener("visibilitychange",function(){
+  if(document.visibilityState==="hidden"){clearTimeout(autoT);if(synth)synth.cancel();}
+});
+loadS().then(function(){render();});
+</script>
+</body>
+</html>

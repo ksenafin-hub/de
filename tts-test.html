@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Проверка озвучки</title>
+<style>
+  body{font-family:system-ui,sans-serif;background:#E1E5DD;color:#17242B;margin:0;padding:18px 14px}
+  .box{max-width:620px;margin:0 auto;background:#F3F5EF;border:1px solid #BAC2B7;padding:20px}
+  h1{font-size:21px;margin:0 0 4px}
+  p.lead{color:#5C6A66;font-size:13.5px;line-height:1.5;margin:0 0 18px}
+  h2{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+     color:#5C6A66;margin:20px 0 7px}
+  button{font-size:14px;font-weight:600;padding:12px 16px;background:#4E2E78;color:#fff;
+     border:0;cursor:pointer;margin:0 6px 6px 0}
+  button.alt{background:transparent;color:#17242B;border:1.5px solid #17242B}
+  pre{font-family:ui-monospace,monospace;font-size:12px;line-height:1.5;background:#fff;
+     border:1px solid #BAC2B7;padding:11px;overflow-x:auto;white-space:pre-wrap;margin:0}
+  .ok{color:#2c6e3f;font-weight:600}
+  .bad{color:#9C2B23;font-weight:600}
+</style>
+
+<div class="box">
+  <h1>Проверка озвучки</h1>
+  <p class="lead">Нажми «Сказать по-немецки». Затем пришли содержимое обоих блоков ниже.</p>
+
+  <button id="say">Сказать по-немецки</button>
+  <button id="refresh" class="alt">Обновить список</button>
+
+  <h2>Что произошло</h2>
+  <pre id="log">ещё не нажимали</pre>
+
+  <h2>Что видит браузер</h2>
+  <pre id="info">…</pre>
+</div>
+
+<script>
+const logEl = document.getElementById('log');
+const infoEl = document.getElementById('info');
+const lines = [];
+const put = s => { lines.push(s); logEl.innerHTML = lines.join('\n'); };
+
+const synth = ('speechSynthesis' in window) ? window.speechSynthesis : null;
+
+function info(){
+  const out = [];
+  out.push('speechSynthesis: ' + (synth ? '<span class="ok">есть</span>' : '<span class="bad">НЕТ</span>'));
+  if (synth){
+    const all = synth.getVoices();
+    out.push('всего голосов: ' + all.length);
+    const de = all.filter(v => /^de/i.test(v.lang));
+    out.push('немецких: ' + de.length);
+    if (all.length){
+      out.push('');
+      out.push('список:');
+      all.slice(0, 40).forEach(v =>
+        out.push('  ' + v.lang + '  ' + v.name + (v.localService ? '  [локальный]' : '  [сетевой]')));
+      if (all.length > 40) out.push('  … и ещё ' + (all.length - 40));
+    }
+  }
+  out.push('');
+  out.push('userAgent:');
+  out.push('  ' + navigator.userAgent);
+  infoEl.innerHTML = out.join('\n');
+}
+info();
+if (synth) synth.onvoiceschanged = info;
+[300, 1200, 3000].forEach(ms => setTimeout(info, ms));
+
+document.getElementById('refresh').onclick = info;
+
+document.getElementById('say').onclick = () => {
+  lines.length = 0;
+  if (!synth){ put('<span class="bad">speechSynthesis отсутствует</span>'); return; }
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance('Guten Tag. Ich lerne Deutsch.');
+  u.lang = 'de-DE';
+  u.rate = 0.9;
+  const de = synth.getVoices().filter(v => /^de/i.test(v.lang));
+  if (de.length){ u.voice = de[0]; put('назначен голос: ' + de[0].name + ' (' + de[0].lang + ')'); }
+  else put('объект голоса не назначен, читаем по lang=de-DE');
+  u.onstart = () => put('<span class="ok">start — движок начал говорить</span>');
+  u.onend   = () => put('<span class="ok">end — договорил</span>');
+  u.onerror = e => put('<span class="bad">error: ' + (e && e.error ? e.error : 'неизвестно') + '</span>');
+  try { synth.speak(u); put('speak() вызван, ждём событий…'); }
+  catch (e){ put('<span class="bad">исключение: ' + e.message + '</span>'); }
+  setTimeout(() => { if (lines.length <= 2) put('<span class="bad">за 4 секунды ни одного события — движок молчит</span>'); }, 4000);
+};
+</script>

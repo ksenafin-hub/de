@@ -1,0 +1,530 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sprechkarte — Start Deutsch 1, Teil 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper:#E1E5DD;
+    --card:#F3F5EF;
+    --ink:#17242B;
+    --ink-soft:#5C6A66;
+    --rule:#BAC2B7;
+    --stamp:#4E2E78;
+    --stamp-soft:#4e2e781a;
+    --signal:#9C2B23;
+    --pad:clamp(16px,4vw,32px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--paper);
+    background-image:
+      repeating-linear-gradient(38deg, #0000 0 2px, #17242b09 2px 3px),
+      repeating-linear-gradient(-38deg, #0000 0 2px, #17242b09 2px 3px);
+    color:var(--ink);
+    font-family:"Source Serif 4",Georgia,serif;
+    padding:clamp(10px,3vw,36px);
+    -webkit-text-size-adjust:100%;
+  }
+  .card{
+    max-width:720px;margin:0 auto;position:relative;
+    background:var(--card);
+    border:1px solid var(--rule);
+    box-shadow:0 1px 0 #fff inset, 0 8px 28px #17242b14;
+  }
+
+  /* microprint edge — security-paper device */
+  .microprint{
+    font-family:"Barlow Semi Condensed",sans-serif;
+    font-size:5px;letter-spacing:.18em;color:#17242b40;
+    padding:4px var(--pad) 0;white-space:nowrap;overflow:hidden;user-select:none;
+  }
+
+  header{padding:6px var(--pad) 18px;border-bottom:1px solid var(--rule)}
+  .eyebrow{
+    font-family:"Barlow Semi Condensed",sans-serif;
+    font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  h1{
+    font-family:"Barlow Semi Condensed",sans-serif;
+    font-weight:600;letter-spacing:.03em;text-transform:uppercase;
+    font-size:clamp(30px,8vw,46px);line-height:.95;margin:.18em 0 .1em;
+  }
+  .sub{font-size:14px;color:var(--ink-soft);margin:0}
+
+  /* form-style data fields */
+  .fields{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));
+    gap:1px;background:var(--rule);border-bottom:1px solid var(--rule);
+  }
+  .field{background:var(--card);padding:10px var(--pad) 12px}
+  .fields .field{padding-left:14px;padding-right:14px}
+  .fields .field:first-child{padding-left:var(--pad)}
+  label{
+    display:block;font-family:"Barlow Semi Condensed",sans-serif;
+    font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:5px;
+  }
+  input,select{
+    width:100%;font-family:"IBM Plex Mono",monospace;font-size:15px;color:var(--ink);
+    background:transparent;border:0;border-bottom:1.5px solid var(--ink);
+    padding:2px 0 3px;border-radius:0;
+  }
+  select{font-family:"Source Serif 4",serif}
+  input:focus,select:focus,button:focus-visible{outline:2px solid var(--stamp);outline-offset:3px}
+
+  /* controls */
+  .bar{
+    display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+    padding:12px var(--pad);border-bottom:1px solid var(--rule);
+  }
+  button{
+    font-family:"Barlow Semi Condensed",sans-serif;font-size:13px;font-weight:600;
+    letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+    background:transparent;color:var(--ink);border:1.5px solid var(--ink);
+    padding:8px 14px;border-radius:0;
+  }
+  button:hover{background:var(--ink);color:var(--card)}
+  button.primary{background:var(--stamp);border-color:var(--stamp);color:#fff}
+  button.primary:hover{background:#3b2260;border-color:#3b2260}
+  button[aria-pressed="true"]{background:var(--stamp);border-color:var(--stamp);color:#fff}
+  .speed{display:flex;align-items:center;gap:8px;margin-left:auto}
+  .speed span{font-family:"Barlow Semi Condensed",sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+  input[type=range]{width:96px;border:0;accent-color:var(--stamp)}
+  .note{padding:8px var(--pad);font-size:13px;color:var(--signal);border-bottom:1px solid var(--rule)}
+
+  /* lines */
+  ol{list-style:none;margin:0;padding:0}
+  li{
+    display:grid;grid-template-columns:34px 1fr 34px;gap:10px;align-items:start;
+    padding:13px var(--pad);border-bottom:1px solid #bac2b766;
+    border-left:3px solid transparent;
+  }
+  li.on{background:var(--stamp-soft);border-left-color:var(--stamp)}
+  .num{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft);padding-top:5px}
+  .de{font-size:clamp(17px,4.4vw,20px);line-height:1.4;margin:0}
+  .ru{font-size:14px;line-height:1.45;color:var(--ink-soft);margin:5px 0 0;font-style:italic}
+  .say{
+    border:0;padding:4px 0 0;font-size:17px;color:var(--stamp);background:none;
+    letter-spacing:0;
+  }
+  .say:hover{background:none;color:#3b2260}
+  .tx{font-size:14px;line-height:1.55;color:var(--stamp);margin:4px 0 0}
+  .ipa{font-family:"Noto Sans",sans-serif;font-size:13.5px;letter-spacing:.01em}
+  body.tr-ipa .rus{display:none}
+  body.tr-ru .ipa{display:none}
+  body.tr-off .tx{display:none}
+  body.hide-ru .ru{display:none}
+  body.exam .de{visibility:hidden}
+  body.exam .say{visibility:hidden}
+  body.exam .tx{display:none}
+  body.exam .ru{display:block;font-style:normal;color:var(--ink);font-size:16px}
+  .seg{display:inline-flex}
+  .seg button{border-right-width:0}
+  .seg button:last-child{border-right-width:1.5px}
+
+  /* data blocks */
+  .block{padding:15px var(--pad);border-bottom:1px solid var(--rule)}
+  .block h2{
+    font-family:"Barlow Semi Condensed",sans-serif;font-size:11px;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 8px;
+  }
+  .mono{font-family:"IBM Plex Mono",monospace;font-size:clamp(17px,4.6vw,21px);letter-spacing:.16em;margin:0}
+  .gloss{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-soft);margin:6px 0 10px;letter-spacing:.04em}
+
+  /* exam bar */
+  .synced-strip{display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+    padding:9px var(--pad);border-bottom:1px solid var(--rule);
+    font-family:"Barlow Semi Condensed",sans-serif;font-size:12px;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)}
+  .synced-strip button{padding:5px 11px;font-size:11px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--rule);flex:none}
+  .dot.ok{background:var(--stamp)}
+  .dot.bad{background:var(--signal)}
+  .exam-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:15px var(--pad)}
+  .clock{font-family:"IBM Plex Mono",monospace;font-size:30px;font-variant-numeric:tabular-nums}
+  .clock.over{color:var(--signal)}
+  .hint{font-size:13px;color:var(--ink-soft);margin:0}
+
+  .stamp{
+    position:absolute;right:clamp(8px,4vw,28px);bottom:70px;
+    border:3px double var(--stamp);color:var(--stamp);
+    font-family:"Barlow Semi Condensed",sans-serif;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;font-size:15px;line-height:1.1;
+    padding:8px 14px;text-align:center;opacity:0;transform:rotate(-9deg) scale(1.5);
+    pointer-events:none;
+  }
+  .stamp small{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em}
+  .stamp.show{animation:land .45s cubic-bezier(.2,.9,.3,1) forwards}
+  @keyframes land{to{opacity:.85;transform:rotate(-9deg) scale(1)}}
+  @media (prefers-reduced-motion:reduce){
+    .stamp.show{animation:none;opacity:.85;transform:rotate(-9deg) scale(1)}
+  }
+  @media (max-width:420px){
+    li{grid-template-columns:26px 1fr 30px;gap:7px}
+    .speed{margin-left:0;width:100%}
+  }
+</style>
+
+<div class="card">
+  <div class="microprint">STARTDEUTSCH1·SPRECHEN·TEIL1·SICHVORSTELLEN·STARTDEUTSCH1·SPRECHEN·TEIL1·SICHVORSTELLEN·STARTDEUTSCH1·SPRECHEN·TEIL1·SICHVORSTELLEN·STARTDEUTSCH1·SPRECHEN·TEIL1·</div>
+
+  <header>
+    <div class="eyebrow">Start Deutsch 1 · Sprechen, Teil 1</div>
+    <h1>Sprechkarte</h1>
+    <p class="sub">Визитка на минуту. Слушай, повторяй, потом закрывай немецкий и рассказывай сам.</p>
+  </header>
+
+  <div class="fields">
+    <div class="field">
+      <label for="age">Возраст</label>
+      <input id="age" type="number" min="16" max="99" value="35" inputmode="numeric">
+    </div>
+    <div class="field">
+      <label for="years">Лет в Берлине</label>
+      <input id="years" type="number" min="1" max="40" value="3" inputmode="numeric">
+    </div>
+    <div class="field">
+      <label for="hobby">Хобби</label>
+      <select id="hobby">
+        <option value="lese ich gern|я люблю читать|ле́зэ ихь герн|ˈleːzə ɪç ɡɛʁn">lesen — читать</option>
+        <option value="sehe ich gern Filme|я люблю смотреть фильмы|зэ́э ихь герн фи́льмэ|ˈzeːə ɪç ɡɛʁn ˈfɪlmə">Filme sehen — фильмы</option>
+        <option value="mache ich gern Sport|я занимаюсь спортом|ма́хэ ихь герн шпорт|ˈmaxə ɪç ɡɛʁn ʃpɔʁt">Sport machen — спорт</option>
+        <option value="koche ich gern|я люблю готовить|ко́хэ ихь герн|ˈkɔxə ɪç ɡɛʁn">kochen — готовить</option>
+        <option value="gehe ich gern spazieren|я люблю гулять|гэ́э ихь герн шпаци́рэн|ˈɡeːə ɪç ɡɛʁn ʃpaˈt͡siːʁən">spazieren gehen — гулять</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="tel">Телефон</label>
+      <input id="tel" type="text" value="0176 1234567" inputmode="tel">
+    </div>
+  </div>
+
+  <div class="synced-strip">
+    <span class="dot" id="dot"></span>
+    <span id="syncText">Данные только на этом устройстве</span>
+    <button id="syncBtn" style="margin-left:auto">Синхронизировать</button>
+  </div>
+
+  <div class="bar">
+    <button id="play" class="primary">▶ Прочитать всё</button>
+    <button id="stop">■ Стоп</button>
+    <button id="ru" aria-pressed="false">Перевод</button>
+    <span class="seg" role="group" aria-label="Транскрипция">
+      <button class="mode" data-mode="ipa">МФА</button>
+      <button class="mode" data-mode="ru">рус</button>
+      <button class="mode" data-mode="off">нет</button>
+    </span>
+    <div class="speed">
+      <span>Темп</span>
+      <input id="rate" type="range" min="0.55" max="1" step="0.05" value="0.8">
+      <span id="rateVal" style="font-family:'IBM Plex Mono',monospace">0.80</span>
+    </div>
+  </div>
+  <div class="note" id="voiceNote" hidden>Немецкий голос в системе не установлен. Android: Настройки → Спец. возможности → Синтез речи → Google → шестерёнка → Установка голосовых данных → Deutsch. iPhone: Настройки → Универсальный доступ → Устный контент → Голоса → Deutsch.</div>
+
+  <ol id="lines"></ol>
+
+  <div class="block">
+    <h2>Buchstabieren Sie Ihren Namen</h2>
+    <p class="mono">L A K I R E V</p>
+    <p class="gloss">El · A · Ka · I · Er · E · Vau</p>
+    <p class="tx ipa" style="margin:-4px 0 10px">[ɛl · aː · kaː · iː · ɛʁ · eː · faʊ̯] &nbsp; Sascha: [ɛs · aː · ɛs · t͡seː · haː · aː]</p>
+    <p class="tx rus" style="margin:-4px 0 10px">эль · а · ка · и · эр · э · фау &nbsp;|&nbsp; Sascha: эс · а · эс · цэ · ха · а</p>
+    <button class="spell" data-word="El. A. Ka. I. Er. E. Vau.">▶ Фамилия по буквам</button>
+    <button class="spell" data-word="Es. A. Es. Ce. Ha. A.">▶ Sascha</button>
+  </div>
+
+  <div class="block">
+    <h2>Nennen Sie Ihre Telefonnummer</h2>
+    <p class="mono" id="telShow">0176 1234567</p>
+    <p class="gloss" id="telWords"></p>
+    <p class="tx ipa" id="telIpa" style="margin:-4px 0 10px"></p>
+    <p class="tx rus" id="telTr" style="margin:-4px 0 10px"></p>
+    <button id="telSay">▶ По цифрам</button>
+  </div>
+
+  <div class="exam-bar">
+    <button id="exam" aria-pressed="false">Prüfmodus</button>
+    <div class="clock" id="clock">00:00</div>
+    <p class="hint" id="hint">Цель — уложиться в минуту без пауз длиннее двух секунд.</p>
+  </div>
+
+  <div class="stamp" id="stamp">Geübt<small id="stampTime">00:00</small></div>
+</div>
+
+<script src="app-config.js"></script>
+<script src="progress.js"></script>
+<script>
+(function(){
+  const ones=['null','eins','zwei','drei','vier','fünf','sechs','sieben','acht','neun'];
+  const teens=['zehn','elf','zwölf','dreizehn','vierzehn','fünfzehn','sechzehn','siebzehn','achtzehn','neunzehn'];
+  const tens=['','','zwanzig','dreißig','vierzig','fünfzig','sechzig','siebzig','achtzig','neunzig'];
+  function numDE(n){
+    n=Math.max(0,Math.min(99,parseInt(n,10)||0));
+    if(n<10) return ones[n];
+    if(n<20) return teens[n-10];
+    const t=Math.floor(n/10), u=n%10;
+    return u===0 ? tens[t] : (u===1?'ein':ones[u])+'und'+tens[t];
+  }
+  const ruYears=n=>{const a=n%10,b=n%100;return (a===1&&b!==11)?'год':((a>=2&&a<=4)&&!(b>=12&&b<=14))?'года':'лет';};
+
+  const trOnes=['нуль','айнс','цвай','драй','фир','фюнф','зэкс','зи́бэн','ахт','нойн'];
+  const trTeens=['цэн','эльф','цвёльф','дра́йцэн','фи́рцэн','фю́нфцэн','зэ́хьцэн','зи́пцэн','а́хтцэн','но́йнцэн'];
+  const trTens=['','','цва́нцихь','дра́йсихь','фи́рцихь','фю́нфцихь','зэ́хьцихь','зи́пцихь','а́хтцихь','но́йнцихь'];
+  function numTR(n){
+    n=Math.max(0,Math.min(99,parseInt(n,10)||0));
+    if(n<10) return trOnes[n];
+    if(n<20) return trTeens[n-10];
+    const t=Math.floor(n/10), u=n%10;
+    return u===0 ? trTens[t] : (u===1?'айн':trOnes[u])+'унт'+trTens[t];
+  }
+
+  // МФА без знаков ударения — расставляются при сборке
+  const ipOnes=['nʊl','aɪ̯ns','t͡svaɪ̯','dʁaɪ̯','fiːɐ̯','fʏnf','zɛks','ziːbn̩','axt','nɔɪ̯n'];
+  const ipTeens=['t͡seːn','ɛlf','t͡svœlf','dʁaɪ̯t͡seːn','fɪʁt͡seːn','fʏnft͡seːn','zɛçt͡seːn','ziːpt͡seːn','axt͡seːn','nɔɪ̯nt͡seːn'];
+  const ipTens=['','','t͡svant͡sɪç','dʁaɪ̯sɪç','fɪʁt͡sɪç','fʏnft͡sɪç','zɛçt͡sɪç','ziːpt͡sɪç','axt͡sɪç','nɔɪ̯nt͡sɪç'];
+  function numIP(n){
+    n=Math.max(0,Math.min(99,parseInt(n,10)||0));
+    if(n<10) return 'ˈ'+ipOnes[n];
+    if(n<20) return 'ˈ'+ipTeens[n-10];
+    const t=Math.floor(n/10), u=n%10;
+    return u===0 ? 'ˈ'+ipTens[t] : 'ˈ'+(u===1?'aɪ̯n':ipOnes[u])+'ʊntˌ'+ipTens[t];
+  }
+
+  const $=s=>document.querySelector(s);
+  const linesEl=$('#lines');
+
+  function build(){
+    const age=parseInt($('#age').value,10)||35;
+    const yrs=parseInt($('#years').value,10)||1;
+    const [hDe,hRu,hTr,hIp]=$('#hobby').value.split('|');
+    const seit = yrs===1 ? 'seit einem Jahr' : 'seit '+numDE(yrs)+' Jahren';
+    const seitTr = yrs===1 ? 'зайт а́йнэм яр' : 'зайт '+numTR(yrs)+' я́рэн';
+    const seitIp = yrs===1 ? 'zaɪ̯t ˈaɪ̯nəm ˈjaːɐ̯' : 'zaɪ̯t '+numIP(yrs)+' ˈjaːʁən';
+    return [
+      ['Guten Tag. Ich heiße Sascha Lakirev.','Добрый день. Меня зовут Саша Лакирев.',
+       'гу́тэн так. ихь ха́йсэ Са́ша Лаки́рев.',
+       '[ˈɡuːtn̩ ˈtaːk ‖ ɪç ˈhaɪ̯sə ˈzaʃa laˈkiːʁɛf]'],
+      ['Ich bin '+numDE(age)+' Jahre alt.','Мне '+age+' '+ruYears(age)+'.',
+       'ихь бин '+numTR(age)+' я́рэ альт.',
+       '[ɪç bɪn '+numIP(age)+' ˈjaːʁə alt]'],
+      ['Ich komme aus Russland, aus Magnitogorsk.','Я из России, из Магнитогорска.',
+       'ихь ко́мэ аус ру́сланд, аус магнитого́рск.',
+       '[ɪç ˈkɔmə aʊ̯s ˈʁʊslant | aʊ̯s maɡnitoˈɡɔʁsk]'],
+      ['Jetzt wohne ich in Berlin, '+seit+'.','Сейчас я живу в Берлине, уже '+yrs+' '+ruYears(yrs)+'.',
+       'етцт во́нэ ихь ин бэрли́н, '+seitTr+'.',
+       '[jɛt͡st ˈvoːnə ɪç ɪn bɛʁˈliːn | '+seitIp+']'],
+      ['Ich bin verheiratet. Meine Frau heißt Margarita.','Я женат. Мою жену зовут Маргарита.',
+       'ихь бин фэрха́йратэт. ма́йнэ фрау хайст Маргари́та.',
+       '[ɪç bɪn fɛɐ̯ˈhaɪ̯ʁaːtət ‖ ˈmaɪ̯nə ˈfʁaʊ̯ haɪ̯st maʁɡaˈʁiːta]'],
+      ['Wir haben zwei Katzen, einen Kater und eine Katze.','У нас две кошки — кот и кошка.',
+       'вир ха́бэн цвай ка́цэн, а́йнэн ка́тэр унт а́йнэ ка́цэ.',
+       '[viːɐ̯ ˈhaːbn̩ t͡svaɪ̯ ˈkat͡sn̩ | ˈaɪ̯nən ˈkaːtɐ ʊnt ˈaɪ̯nə ˈkat͡sə]'],
+      ['Ich arbeite in der IT, bei einer internationalen Firma.','Я работаю в IT, в международной фирме.',
+       'ихь а́рбайтэ ин дэр и-тэ́, бай а́йнэр интэрнациона́лэн фи́рма.',
+       '[ɪç ˈaʁbaɪ̯tə ɪn deːɐ̯ iːˈteː | baɪ̯ ˈaɪ̯nɐ ɪntɐnat͡sioˈnaːlən ˈfɪʁma]'],
+      ['Ich spreche Russisch, Englisch und ein bisschen Deutsch.','Я говорю по-русски, по-английски и немного по-немецки.',
+       'ихь шпрэ́хе ру́сиш, э́нглиш унт айн би́схен дойч.',
+       '[ɪç ˈʃpʁɛçə ˈʁʊsɪʃ | ˈɛŋlɪʃ ʊnt aɪ̯n ˈbɪsçən dɔɪ̯t͡ʃ]'],
+      ['In meiner Freizeit '+hDe+'.','В свободное время '+hRu+'.',
+       'ин ма́йнэр фра́йцайт '+hTr+'.',
+       '[ɪn ˈmaɪ̯nɐ ˈfʁaɪ̯t͡saɪ̯t '+hIp+']'],
+      ['Ich lerne jetzt Deutsch. Das ist wichtig für mich.','Сейчас я учу немецкий. Это для меня важно.',
+       'ихь ле́рнэ етцт дойч. дас ист ви́хьтихь фюр михь.',
+       '[ɪç ˈlɛʁnə jɛt͡st dɔɪ̯t͡ʃ ‖ das ɪst ˈvɪçtɪç fyːɐ̯ mɪç]'],
+      ['Danke schön.','Спасибо.','да́нкэ шён.','[ˈdaŋkə ʃøːn]']
+    ];
+  }
+
+  let lines=[];
+  function render(){
+    lines=build();
+    linesEl.innerHTML=lines.map(([de,ru,tr,ip],i)=>
+      '<li data-i="'+i+'"><span class="num">'+String(i+1).padStart(2,'0')+'</span>'+
+      '<div><p class="de">'+de+'</p><p class="tx ipa">'+ip+'</p>'+
+      '<p class="tx rus">'+tr+'</p><p class="ru">'+ru+'</p></div>'+
+      '<button class="say" data-i="'+i+'" aria-label="Прочитать строку '+(i+1)+'">▶</button></li>'
+    ).join('');
+  }
+  render();
+  ['#age','#years','#hobby'].forEach(s=>$(s).addEventListener('input',render));
+
+  // ---- phone ----
+  function telUpdate(){
+    const raw=$('#tel').value;
+    $('#telShow').textContent=raw;
+    const digits=raw.replace(/\D/g,'');
+    $('#telWords').textContent=digits.split('').map(d=>ones[+d]).join(' · ');
+    $('#telTr').textContent=digits.split('').map(d=>trOnes[+d]).join(' · ');
+    $('#telIpa').textContent=digits.length?'['+digits.split('').map(d=>ipOnes[+d]).join(' · ')+']':'';
+  }
+  $('#tel').addEventListener('input',telUpdate); telUpdate();
+
+  // ---- speech ----
+  const synth=window.speechSynthesis;
+  let probed=false;
+  let voice=null;
+  function pickVoice(){
+    if(!synth) return;
+    const v=synth.getVoices().filter(x=>/^de/i.test(x.lang));
+    voice=v.find(x=>/de[-_]DE/i.test(x.lang))||v[0]||null;
+    // без объекта голоса система обычно всё равно читает по u.lang — не пугаем зря
+    $('#voiceNote').hidden=true;
+  }
+  if(synth){
+    pickVoice(); synth.onvoiceschanged=pickVoice;
+    [300,1200,3000].forEach(ms=>setTimeout(()=>{ if(!voice) pickVoice(); },ms));
+    document.addEventListener('touchstart',function once(){
+      document.removeEventListener('touchstart',once); if(!voice) pickVoice();
+    },{passive:true});
+  } else { $('#voiceNote').hidden=false; }
+
+  const rate=()=>parseFloat($('#rate').value);
+  $('#rate').addEventListener('input',()=>$('#rateVal').textContent=rate().toFixed(2));
+
+  function clearHl(){document.querySelectorAll('li.on').forEach(l=>l.classList.remove('on'));}
+  function utter(text,onstart){
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='de-DE'; if(voice) u.voice=voice; u.rate=rate(); u.pitch=1;
+    let started=false;
+    u.onstart=e=>{started=true;probed=true;$('#voiceNote').hidden=true;if(onstart)onstart(e);};
+    u.onerror=()=>{if(!probed){probed=true;$('#voiceNote').hidden=false;}};
+    if(!probed)setTimeout(()=>{if(!started&&!probed){probed=true;$('#voiceNote').hidden=false;}},2500);
+    return u;
+  }
+  function stopAll(){ if(synth) synth.cancel(); clearHl(); }
+
+  function sayLine(i){
+    stopAll();
+    const li=linesEl.querySelector('li[data-i="'+i+'"]');
+    synth && synth.speak(utter(lines[i][0],()=>{clearHl();li.classList.add('on');}));
+  }
+  linesEl.addEventListener('click',e=>{
+    const b=e.target.closest('.say'); if(b) sayLine(+b.dataset.i);
+  });
+
+  $('#play').addEventListener('click',()=>{
+    stopAll(); if(!synth) return;
+    lines.forEach(([de],i)=>{
+      const li=linesEl.querySelector('li[data-i="'+i+'"]');
+      const u=utter(de,()=>{clearHl();li.classList.add('on');});
+      if(i===lines.length-1) u.onend=clearHl;
+      synth.speak(u);
+    });
+  });
+  $('#stop').addEventListener('click',stopAll);
+
+  document.querySelectorAll('.spell').forEach(b=>
+    b.addEventListener('click',()=>{stopAll(); synth&&synth.speak(utter(b.dataset.word));})
+  );
+  $('#telSay').addEventListener('click',()=>{
+    stopAll();
+    const w=$('#telWords').textContent.replace(/·/g,',');
+    synth&&synth.speak(utter(w));
+  });
+
+  // ---- toggles ----
+  $('#ru').addEventListener('click',e=>{
+    const on=document.body.classList.toggle('hide-ru');
+    e.currentTarget.setAttribute('aria-pressed',String(!on));
+  });
+  $('#ru').setAttribute('aria-pressed','true');
+
+  function setMode(m){
+    document.body.classList.remove('tr-ipa','tr-ru','tr-off');
+    document.body.classList.add('tr-'+m);
+    document.querySelectorAll('.mode').forEach(b=>
+      b.setAttribute('aria-pressed',String(b.dataset.mode===m)));
+  }
+  document.querySelectorAll('.mode').forEach(b=>
+    b.addEventListener('click',()=>setMode(b.dataset.mode)));
+  setMode('ipa');
+
+  // ---- exam mode + timer ----
+  let t0=null,tick=null;
+  const fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+  $('#exam').addEventListener('click',e=>{
+    const on=document.body.classList.toggle('exam');
+    e.currentTarget.setAttribute('aria-pressed',String(on));
+    $('#stamp').classList.remove('show');
+    if(on){
+      stopAll();
+      document.body.classList.remove('hide-ru'); $('#ru').setAttribute('aria-pressed','true');
+      $('#hint').textContent='Читай русские строки как подсказку и говори по-немецки. Нажми ещё раз, когда закончишь.';
+      t0=Date.now(); $('#clock').classList.remove('over');
+      tick=setInterval(()=>{
+        const s=Math.floor((Date.now()-t0)/1000);
+        $('#clock').textContent=fmt(s);
+        $('#clock').classList.toggle('over',s>60);
+      },250);
+    }else{
+      clearInterval(tick);
+      const s=Math.floor((Date.now()-t0)/1000);
+      $('#clock').textContent=fmt(s);
+      $('#hint').textContent = s<=60
+        ? 'Уложился в минуту. Теперь то же самое, но глядя в стену, а не в экран.'
+        : 'Дольше минуты — прогоняй ещё раз, пока не перестанешь вспоминать слова.';
+      if(s<=60){ $('#stampTime').textContent=fmt(s); $('#stamp').classList.add('show'); }
+    }
+  });
+
+  /* ---------- перенос настроек между устройствами ---------- */
+
+  const FIELDS = ['#age', '#years', '#hobby', '#tel'];
+  const dot = $('#dot'), syncText = $('#syncText');
+
+  const LABEL = {
+    opening:  'открываю',
+    synced:   'синхронизировано',
+    offline:  'нет связи, сохранено локально',
+    expired:  'доступ истёк, обновите app-config.js',
+    conflict: 'расхождение, откройте заново'
+  };
+
+  function status(state) {
+    syncText.textContent = LABEL[state] || state;
+    dot.className = 'dot' + (state === 'synced' ? ' ok'
+      : (state === 'expired' || state === 'conflict') ? ' bad' : '');
+  }
+
+  function collect() {
+    return { age: $('#age').value, years: $('#years').value,
+             hobby: $('#hobby').value, tel: $('#tel').value };
+  }
+
+  function apply(saved) {
+    if (!saved) return;
+    if (saved.age)   $('#age').value = saved.age;
+    if (saved.years) $('#years').value = saved.years;
+    if (saved.hobby) $('#hobby').value = saved.hobby;
+    if (saved.tel)   { $('#tel').value = saved.tel; telUpdate(); }
+    render();
+  }
+
+  if (window.Progress && window.APP) {
+    Progress.init(Object.assign({}, window.APP, { path: 'sprechkarte.json', delay: 4000 }));
+    Progress.on(status);
+
+    const go = force => Progress.start(force).then(state => {
+      apply(state.card);
+      FIELDS.forEach(s => $(s).addEventListener('input',
+        () => Progress.touch('card', collect())));
+      $('#syncBtn').textContent = 'Отключить';
+      $('#syncBtn').onclick = () => { Progress.forget(); location.reload(); };
+    });
+
+    // уже открывали на этом устройстве — не спрашиваем заново
+    let remembered = false;
+    try { remembered = !!localStorage.getItem('dt:s'); } catch (e) {}
+    if (remembered) go(false);
+    else $('#syncBtn').onclick = () => go(false);
+  } else {
+    $('#syncBtn').hidden = true;
+  }
+})();
+</script>

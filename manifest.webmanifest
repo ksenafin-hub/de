@@ -1,0 +1,9 @@
+{
+  "name": "Deutsch A1",
+  "short_name": "Deutsch",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#E1E5DD",
+  "theme_color": "#E1E5DD",
+  "icons": []
+}
