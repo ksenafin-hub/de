@@ -184,6 +184,15 @@ input[type=range].full{width:100%;margin-bottom:6px;accent-color:var(--acc)}
 .opts{display:flex;flex-direction:column;gap:8px;margin-top:14px}
 .opt{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:16px;text-align:left;cursor:pointer}
 .opt .key{flex:0 0 auto;width:22px;height:22px;border-radius:6px;background:var(--card2);color:var(--mut);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sprCard{display:inline-block;min-width:62%;border:2px solid var(--line,#999);border-radius:12px;padding:14px 18px;margin:4px 0 6px}
+.sprTh{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut,#888);margin-bottom:6px}
+.sprW{font-size:30px;font-weight:600}
+.sprCue{font-size:22px;line-height:1.45}
+.sprPic{font-size:64px;line-height:1.1}
+.sprAsk{text-align:center;color:var(--mut,#888);font-size:14px;margin:12px 0 4px}
+.sprGrade{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.sprGrade .btn{margin:0}
+.btn.bad{border-color:#b3382f;color:#e07a70}
 .opt.ok{border-color:var(--ok);background:#132b21}
 .opt.bad{border-color:var(--bad);background:#2e181c}
 .opt.dim{opacity:.5}
@@ -2491,7 +2500,7 @@ function vNum(){
     +'</div></div>';
   if(!numQ){
     h+='<button class="btn acc big" data-act="numStart">Начать</button>';
-    if(st.a)h+='<div class="mut sm">Всего ответов: '+st.a+' · верно '+Math.round(100*st.c/st.a)+'%</div>';
+    if(st.a)h+='<div class="mut sm">Отмечено карточек: '+st.a+' · знал '+Math.round(100*st.c/st.a)+'%</div>';
     return h;
   }
   h+='<div class="numBox">';
@@ -3003,40 +3012,43 @@ function sprNew(){
   var st=sprState(),m=st.mode,i,it,mk;
   if(m==="vor"){
     i=sprPickIdx(SPR_VOR,m,st);it=SPR_VOR[i];
-    mk={key:m+"|"+i,tag:"Teil 1 · "+it[4],pre:it[0],ans:it[1],post:it[2],ru:it[3],
-        opts:shuffle([it[1]].concat(it[5])),say:it[0]+it[1]+it[2],
+    mk={key:m+"|"+i,tag:"Teil 1 · ключевое слово",cue:it[4],cueRu:it[3],
+        say:it[0]+it[1]+it[2],ru:it[3],
         hint:"Семь ключевых слов: Name, Alter, Land, Wohnort, Sprachen, Beruf, Hobby. Возраст — bin, не habe."};
   }else if(m==="frag"){
     i=sprPickIdx(SPR_FRAG,m,st);it=SPR_FRAG[i];
-    mk={key:m+"|"+i,tag:"Teil 2 · "+it[0]+(it[9]?" · карточка "+it[9]:""),q:it[1],ans:it[2],ru:it[4],
-        opts:shuffle([it[2]].concat(it[3])),say:it[2],hint:SPR_FRAG_HINT[it[5]]};
+    mk={key:m+"|"+i,tag:"Teil 2 · тема на карточке"+(it[9]?" · "+it[9]:""),cue:it[0],cue2:it[1],
+        say:it[2],ru:it[4],any:true,hint:SPR_FRAG_HINT[it[5]]};
   }else if(m==="antw"){
     i=sprPickIdx(SPR_FRAG,m,st);it=SPR_FRAG[i];
-    mk={key:m+"|"+i,tag:"Teil 2 · вам задают вопрос · "+it[0],q:it[2],listen:true,ans:it[6],ru:it[8],
-        opts:shuffle([it[6]].concat(it[7])),say:it[6],hint:SPR_ANTW_HINT[it[5]]};
+    mk={key:m+"|"+i,tag:"Teil 2 · вам задают вопрос",cue:it[2],cueRu:it[4],listen:true,
+        say:it[6],ru:it[8],any:true,hint:SPR_ANTW_HINT[it[5]]};
   }else if(m==="bit"){
     i=sprPickIdx(SPR_BIT,m,st);it=SPR_BIT[i];
-    mk={key:m+"|"+i,tag:"Teil 3 · Bildkarte",q:it[0]+"  "+it[1],ans:it[2],ru:it[4],
-        opts:shuffle([it[2]].concat(it[3])),say:it[2],
-        hint:SPR_BIT_HINT[it[5]||"k"]};
+    mk={key:m+"|"+i,tag:"Teil 3 · картинка на карточке",cue:it[0],cue2:it[1],big:true,
+        say:it[2],ru:it[4],any:true,hint:SPR_BIT_HINT[it[5]||"k"]};
   }else{
     i=sprPickIdx(SPR_REAK,m,st);it=SPR_REAK[i];
-    mk={key:m+"|"+i,tag:"Teil 3 · нужно "+it[0],q:it[1],ans:it[2],ru:"",
-        opts:shuffle([it[2]].concat(it[3])),say:it[2],
-        hint:"Реакция — 1 балл за карточку. Достаточно короткой формулы, разворачивать не нужно."};
+    mk={key:m+"|"+i,tag:"Teil 3 · вас просят — нужно "+it[0],cue:it[1],listen:true,
+        say:it[2],ru:"",hint:"Реакция — 1 балл. Хватит короткой формулы, разворачивать не нужно."};
   }
   sprQ=mk;sprFb=null;render();
+  if(mk.listen&&S.set.auto)setTimeout(function(){speak(mk.cue);},200);
 }
 
-function sprAnswer(choice){
+function sprReveal(){
   if(!sprQ||sprFb)return;
-  var st=sprState(),ok=(choice===sprQ.ans);
+  sprFb={rev:true};render();
+  if(S.set.auto)speak(sprQ.say);
+}
+function sprGrade(ok){
+  if(!sprQ||!sprFb||sprFb.graded)return;
+  var st=sprState();
   st.a++;if(ok)st.c++;
   if(ok){if(st.miss[sprQ.key])st.miss[sprQ.key]--;}
   else st.miss[sprQ.key]=(st.miss[sprQ.key]||0)+1;
-  sprFb={ok:ok,given:choice};
-  dlog(ok);save();render();
-  if(S.set.auto)speak(sprQ.say);
+  sprFb.graded=true;
+  dlog(ok);save();sprNew();
 }
 
 function sprKarte(){
@@ -3068,7 +3080,7 @@ function vSpr(){
   if(!sprQ){
     var D={vor:"Teil 1 — рассказ о себе по семи ключевым словам, потом фамилия по буквам и одно число. 3 балла из 15.",
            frag:"Teil 2 — тема и слово на карточке → вопрос по одной из четырёх формул, всегда на Sie. Вопрос стоит 2 балла. Пометка telc/Goethe — карточка из официального пробника.",
-           antw:"Teil 2 — вопрос задают вам. Отвечаете зеркалом: глагол из вопроса, Sie → ich, окончание -e. Ответ — 1 балл. 🔊 — послушать вопрос.",
+           antw:"Teil 2 — вопрос задают вам. Отвечаете зеркалом: глагол из вопроса, Sie → ich, окончание -e. Ответ — 1 балл. 🔊 — послушать вопрос ещё раз.",
            bit:"Teil 3 — картинка → тип → шаблон. Предмет: Geben Sie mir bitte … Действие: Machen Sie bitte … auf / zu / an / aus. Знак запрета: Bitte hier nicht …! Сама просьба — 2 балла.",
            reak:"Teil 3 — короткая реакция на чужую просьбу. Всего 1 балл, но отдавать его даром незачем."};
     h+='<div class="mut sm" style="margin-bottom:12px">'+D[st.mode]+'</div>';
@@ -3079,36 +3091,28 @@ function vSpr(){
 
   h+='<div class="prepBox">';
   h+='<div class="prepTag">'+esc(sprQ.tag)+'</div>';
-  if(sprQ.q)h+='<div class="prepSent serif">'+esc(sprQ.q)
-       +(sprQ.listen?' <button class="icoBtn" data-act="sprSay" data-t="'+esc(sprQ.q)+'">🔊</button>':'')+'</div>';
-  else h+='<div class="prepSent serif">'+esc(sprQ.pre)+'<span class="gap">'
-       +(sprFb?esc(sprQ.ans):"____")+'</span>'+esc(sprQ.post)+'</div>';
-  if(sprQ.ru&&(sprFb||st.mode==="vor"))h+='<div class="mut sm">'+esc(sprQ.ru)+'</div>';
+  if(sprQ.big)h+='<div class="sprPic">'+esc(sprQ.cue)+'</div><div class="sprCue serif">'+esc(sprQ.cue2)+'</div>';
+  else if(sprQ.cue2)h+='<div class="sprCard"><div class="sprTh">'+esc(sprQ.cue)+'</div><div class="sprW serif">'+esc(sprQ.cue2)+'</div></div>';
+  else h+='<div class="sprCue serif">'+esc(sprQ.cue)
+       +(sprQ.listen?' <button class="icoBtn" data-act="sprSay" data-t="'+esc(sprQ.cue)+'">🔊</button>':'')+'</div>';
+  if(sprQ.cueRu&&!sprFb&&st.mode==="vor")h+='<div class="mut sm">'+esc(sprQ.cueRu)+'</div>';
   h+='</div>';
 
-  h+='<div class="opts">';
-  for(var o=0;o<sprQ.opts.length;o++){
-    var v=sprQ.opts[o],cls="opt";
-    if(sprFb){
-      if(v===sprQ.ans)cls+=" ok";
-      else if(v===sprFb.given)cls+=" bad";
-      else cls+=" dim";
-    }
-    h+='<button class="'+cls+'" data-act="sprAns" data-v="'+esc(v)+'"'+(sprFb?" disabled":"")
-      +'><span class="key">'+(o+1)+'</span><span>'+esc(v)+'</span></button>';
-  }
-  h+='</div>';
-
-  if(sprFb){
-    h+='<div class="fb '+(sprFb.ok?"okB":"badB")+'"><div class="fbT">'+(sprFb.ok?"Верно":"Неверно")+'</div>';
-    h+='<div class="fbW serif" style="font-size:19px;line-height:1.35">'+esc(sprQ.say)
+  if(!sprFb){
+    h+='<div class="sprAsk">Скажи вслух — потом открой</div>';
+    h+='<button class="btn acc big" data-act="sprReveal">Показать ⏎</button>';
+  }else{
+    h+='<div class="fb okB"><div class="fbW serif" style="font-size:20px;line-height:1.4">'+esc(sprQ.say)
       +' <button class="icoBtn" data-act="sprSay" data-t="'+esc(sprQ.say)+'">🔊</button></div>';
     if(sprQ.ru)h+='<div class="fbR">'+esc(sprQ.ru)+'</div>';
     h+='<div class="fbM">'+sprQ.hint+'</div>';
-    h+='<button class="btn acc big" data-act="sprNext">Дальше ⏎</button></div>';
+    if(sprQ.any)h+='<div class="fbM">Это один из верных вариантов. Если сказал другой, но правильный — тоже знал.</div>';
+    h+='</div><div class="sprGrade">'
+      +'<button class="btn big bad" data-act="sprNo"><span class="key">2</span> Не знал</button>'
+      +'<button class="btn acc big" data-act="sprYes"><span class="key">1</span> Знал</button></div>';
   }
-  h+='<div class="mut sm">Ответов: '+st.a+' · верно '+(st.a?Math.round(100*st.c/st.a):0)+'%'
-    +' · треть карточек из тех, где ошибался</div>';
+  h+='<div class="mut sm">Знал — только если сказал вслух целиком до того, как открыл. '
+    +'Отмечено: '+st.a+' · знал '+(st.a?Math.round(100*st.c/st.a):0)+'% · треть карточек из тех, что не знал</div>';
   h+='<button class="btn" data-act="sprStop">Закончить</button>';
   return h;
 }
@@ -3407,8 +3411,9 @@ var A={
   prepStop:function(){prepQ=null;prepFb=null;render();},
   sprMode:function(b){sprState().mode=b.dataset.v;sprQ=null;sprFb=null;save();render();},
   sprStart:function(){sprNew();},
-  sprAns:function(b){sprAnswer(b.dataset.v);},
-  sprNext:function(){sprNew();},
+  sprReveal:function(){sprReveal();},
+  sprYes:function(){sprGrade(true);},
+  sprNo:function(){sprGrade(false);},
   sprStop:function(){sprQ=null;sprFb=null;render();},
   sprSay:function(b){speak(b.dataset.t);},
   numRange:function(b){var st=numState();st.min=+b.dataset.a;st.max=+b.dataset.b;save();render();},
@@ -3551,11 +3556,9 @@ document.addEventListener("keydown",function(e){
   }
   if(view==="spr"){
     if(!sprQ)return;
-    if(e.key==="Enter"&&sprFb){e.preventDefault();sprNew();return;}
-    if(!sprFb&&["1","2","3","4"].indexOf(e.key)>=0){
-      var oi=+e.key-1;
-      if(oi<sprQ.opts.length)sprAnswer(sprQ.opts[oi]);
-    }
+    if(!sprFb){ if(e.key==="Enter"||e.key===" "){e.preventDefault();sprReveal();} return; }
+    if(e.key==="1"){sprGrade(true);return;}
+    if(e.key==="2"){sprGrade(false);return;}
     return;
   }
   if(view!=="session"||!sess)return;
