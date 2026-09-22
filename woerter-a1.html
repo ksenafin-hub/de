@@ -226,6 +226,7 @@ input[type=range].full{width:100%;margin-bottom:6px;accent-color:var(--acc)}
   <button class="tab" data-v="train">Тренировка</button>
   <button class="tab" data-v="num">Числа</button>
   <button class="tab" data-v="prep">Предлоги</button>
+  <button class="tab" data-v="spr">Sprechen</button>
   <button class="tab" data-v="stats">Статистика</button>
   <button class="tab" data-v="set">Настройки</button>
 </nav>
@@ -958,7 +959,7 @@ var W=[
 ["","Moment, bitte.","","Секунду, пожалуйста.","help","нужно время подумать"],
 ["","Noch einmal, bitte.","","Ещё раз, пожалуйста.","help","не понял или не расслышал"],
 ["","Was bedeutet das?","","Что это значит?","help","услышал незнакомое слово"],
-["","Entschuldigung, ich habe das nicht verstanden.","","Извините, я не понял.","help","не понял — говори вместе со следующей"],
+["","Entschuldigung, ich verstehe das nicht.","","Извините, я не понимаю.","help","не понимаешь — говори вместе со следующей"],
 ["","Können Sie das bitte wiederholen?","","Можете повторить, пожалуйста?","help","с экзаменатором — всегда Sie"],
 ["","Das weiß ich leider nicht. Machen wir weiter?","","К сожалению, не знаю. Давайте дальше?","help","не знаешь ответа — не замирай, переходи дальше; с соседом можно Keine Ahnung"]];
 /* примеры употребления: ключ = артикль + слово */
@@ -2713,6 +2714,405 @@ function vPrep(){
   return h;
 }
 
+/* ================= SPRECHEN: устная часть telc A1 =================
+   Teil 1 — 3 балла, Teil 2 — 6, Teil 3 — 6. Итого 15 из 60 сырых баллов.
+   Задания на выбор, а не на письмо: на экзамене никто ничего не пишет,
+   нужна узнаваемая формула, произнесённая без пауз. */
+
+/* Teil 1: [до, верное, после, перевод, Stichwort, [три неверных]] */
+var SPR_VOR=[
+  ["Mein Name ","ist"," Alexander Nowak.","Меня зовут Александр Новак.","Name",["bin","heiße","hat"]],
+  ["Ich ","heiße"," Alexander.","Меня зовут Александр.","Name",["ist","heißt","nennst"]],
+  ["Ich ","bin"," 35 Jahre alt.","Мне 35 лет.","Alter",["habe","hat","bist"]],
+  ["Ich ","komme"," aus Russland.","Я из России.","Land",["gehe","fahre","kommt"]],
+  ["Ich ","wohne"," in Berlin.","Я живу в Берлине.","Wohnort",["wohnt","wohnst","wohnen"]],
+  ["Ich ","spreche"," Russisch und Englisch.","Я говорю по-русски и по-английски.","Sprachen",["sprichst","spricht","sprechen"]],
+  ["Ich ","lerne"," seit einem Jahr Deutsch.","Я учу немецкий уже год.","Sprachen",["lernst","lernt","lernen"]],
+  ["Ich ","arbeite"," als Ingenieur.","Я работаю инженером.","Beruf",["arbeitest","arbeitet","bin"]],
+  ["Ich bin ","von"," Beruf Ingenieur.","По профессии я инженер.","Beruf",["aus","mit","in"]],
+  ["Meine Hobbys ","sind"," Lesen und Sport.","Мои хобби — чтение и спорт.","Hobby",["ist","bin","haben"]],
+  ["Ich ","habe"," zwei Kinder.","У меня двое детей.","Familie",["bin","hat","habt"]],
+  ["Ich ","bin"," verheiratet.","Я женат.","Familie",["habe","hat","bist"]],
+  ["Meine Telefonnummer ","ist"," null eins sieben sechs …","Мой номер телефона — 0176…","Nummer",["sind","hat","bin"]],
+  ["Ich ","buchstabiere"," meinen Namen: N-O-W-A-K.","Я продиктую фамилию по буквам: N-O-W-A-K.","Buchstabieren",["buchstabierst","buchstabiert","buchstabieren"]]
+];
+
+/* Teil 2: [Thema, слово с карточки, вопрос, [три неверных], перевод вопроса,
+            формула, ответ-зеркало, [три неверных], перевод ответа, источник]
+   Формулы: j — да/нет, глагол темы первым; q — то же с W-словом впереди;
+            h — Haben Sie …?; w — Wo …?; l — Was ist Ihr Lieblings…? / Wie ist Ihr(e) …?
+   Источник: telc — telc Übungstest 1, Goethe — Goethe Übungssatz 02;
+             пусто — дополнительные темы, которых в этих пробниках нет. */
+var SPR_FRAG=[
+  /* telc Übungstest 1 · Essen und Trinken */
+  ["Essen und Trinken","Frühstück","Was essen Sie gern zum Frühstück?",["Was Sie essen gern zum Frühstück?","Was essen Sie gern zu Frühstück?","Was isst Sie gern zum Frühstück?"],"Что вы любите есть на завтрак?","q",
+   "Ich esse gern Brot und Obst.",["Ich isst gern Brot und Obst.","Sie essen gern Brot und Obst.","Ich gern esse Brot und Obst."],"Я люблю хлеб и фрукты.","telc"],
+  ["Essen und Trinken","Bier","Trinken Sie gern Bier?",["Trinkt Sie gern Bier?","Trinken gern Sie Bier?","Essen Sie gern Bier?"],"Вы любите пиво?","j",
+   "Nein, ich trinke nicht gern Bier.",["Nein, ich trinke kein gern Bier.","Nein, ich trinkt nicht gern Bier.","Nein, Sie trinken nicht gern Bier."],"Нет, я не люблю пиво.","telc"],
+  ["Essen und Trinken","Lieblingsessen","Was ist Ihr Lieblingsessen?",["Was ist Ihre Lieblingsessen?","Was sind Ihr Lieblingsessen?","Was Ihr Lieblingsessen ist?"],"Какое ваше любимое блюдо?","l",
+   "Mein Lieblingsessen ist Pizza.",["Meine Lieblingsessen ist Pizza.","Ihr Lieblingsessen ist Pizza.","Mein Lieblingsessen bin Pizza."],"Моё любимое блюдо — пицца.","telc"],
+  ["Essen und Trinken","Brot","Essen Sie gern Brot?",["Isst Sie gern Brot?","Essen gern Sie Brot?","Trinken Sie gern Brot?"],"Вы любите хлеб?","j",
+   "Ja, ich esse gern Brot.",["Ja, ich isst gern Brot.","Ja, ich gern esse Brot.","Ja, Sie essen gern Brot."],"Да, я люблю хлеб.","telc"],
+  ["Essen und Trinken","Fleisch","Essen Sie gern Fleisch?",["Esst Sie gern Fleisch?","Essen Sie Fleisch gern essen?","Trinken Sie gern Fleisch?"],"Вы любите мясо?","j",
+   "Nein, ich esse kein Fleisch.",["Nein, ich esse nicht Fleisch.","Nein, ich esse keine Fleisch.","Nein, ich isst kein Fleisch."],"Нет, я не ем мясо.","telc"],
+  ["Essen und Trinken","Obst","Essen Sie oft Obst?",["Isst Sie oft Obst?","Essen oft Sie Obst?","Trinken Sie oft Obst?"],"Вы часто едите фрукты?","j",
+   "Ja, ich esse jeden Tag Obst.",["Ja, ich esst jeden Tag Obst.","Ja, jeden Tag ich esse Obst.","Ja, Sie essen jeden Tag Obst."],"Да, я ем фрукты каждый день.","telc"],
+  /* telc Übungstest 1 · Einkaufen */
+  ["Einkaufen","Sonntag","Kaufen Sie am Sonntag ein?",["Einkaufen Sie am Sonntag?","Kaufen Sie ein am Sonntag?","Kauft Sie am Sonntag ein?"],"Вы ходите за покупками в воскресенье?","j",
+   "Nein, ich kaufe am Sonntag nicht ein.",["Nein, ich einkaufe am Sonntag nicht.","Nein, ich kaufe ein am Sonntag nicht.","Nein, ich kauft am Sonntag nicht ein."],"Нет, в воскресенье я не хожу за покупками.","telc"],
+  ["Einkaufen","Schuhe","Kaufen Sie gern Schuhe?",["Kauft Sie gern Schuhe?","Kaufen gern Sie Schuhe?","Essen Sie gern Schuhe?"],"Вы любите покупать обувь?","j",
+   "Ja, ich kaufe gern Schuhe.",["Ja, ich kaufst gern Schuhe.","Ja, ich gern kaufe Schuhe.","Ja, Sie kaufen gern Schuhe."],"Да, я люблю покупать обувь.","telc"],
+  ["Einkaufen","Zeitung","Kaufen Sie oft eine Zeitung?",["Kaufen Sie oft einen Zeitung?","Kaufen Sie oft ein Zeitung?","Kauft Sie oft eine Zeitung?"],"Вы часто покупаете газету?","j",
+   "Nein, ich kaufe keine Zeitung.",["Nein, ich nicht kaufe eine Zeitung.","Nein, ich kaufe kein Zeitung.","Nein, ich kaufe keinen Zeitung."],"Нет, я не покупаю газет.","telc"],
+  ["Einkaufen","Buch","Kaufen Sie gern Bücher?",["Kaufen Sie gern Buchs?","Kaufen Sie gern Büchern?","Kauft Sie gern Bücher?"],"Вы любите покупать книги?","j",
+   "Ja, ich kaufe gern Bücher.",["Ja, ich kaufe gern Buchs.","Ja, ich kauft gern Bücher.","Ja, Sie kaufen gern Bücher."],"Да, я люблю покупать книги.","telc"],
+  ["Einkaufen","Stadtplan","Wo kaufen Sie einen Stadtplan?",["Wo Sie kaufen einen Stadtplan?","Wo kaufen Sie ein Stadtplan?","Wo kauft Sie einen Stadtplan?"],"Где вы покупаете карту города?","w",
+   "Ich kaufe einen Stadtplan am Kiosk.",["Ich kaufe ein Stadtplan am Kiosk.","Sie kaufen einen Stadtplan am Kiosk.","Ich kaufen einen Stadtplan am Kiosk."],"Я покупаю карту города в киоске.","telc"],
+  ["Einkaufen","Kasse","Wo ist die Kasse?",["Wo die Kasse ist?","Wo ist der Kasse?","Wo sind die Kasse?"],"Где касса?","w",
+   "Die Kasse ist dort, rechts.",["Die Kasse sind dort, rechts.","Der Kasse ist dort, rechts.","Dort die Kasse ist, rechts."],"Касса вон там, справа.","telc"],
+  /* Goethe Übungssatz 02 · Beruf */
+  ["Beruf","Arbeitszeit","Wie ist Ihre Arbeitszeit?",["Wie ist Ihr Arbeitszeit?","Wie sind Ihre Arbeitszeit?","Wie Ihre Arbeitszeit ist?"],"Какой у вас рабочий график?","l",
+   "Meine Arbeitszeit ist von neun bis fünf.",["Mein Arbeitszeit ist von neun bis fünf.","Ihre Arbeitszeit ist von neun bis fünf.","Meine Arbeitszeit sind von neun bis fünf."],"Я работаю с девяти до пяти.","Goethe"],
+  ["Beruf","Kollegen","Haben Sie nette Kollegen?",["Hat Sie nette Kollegen?","Haben Sie nett Kollegen?","Sind Sie nette Kollegen?"],"У вас хорошие коллеги?","h",
+   "Ja, ich habe nette Kollegen.",["Ja, ich hat nette Kollegen.","Ja, Sie haben nette Kollegen.","Ja, ich bin nette Kollegen."],"Да, у меня хорошие коллеги.","Goethe"],
+  ["Beruf","Spaß","Haben Sie Spaß bei der Arbeit?",["Hat Sie Spaß bei der Arbeit?","Haben Sie Spaß bei die Arbeit?","Sind Sie Spaß bei der Arbeit?"],"Вам нравится ваша работа?","h",
+   "Ja, ich habe viel Spaß bei der Arbeit.",["Ja, ich habe viel Spaß bei die Arbeit.","Ja, ich bin viel Spaß bei der Arbeit.","Ja, Sie haben viel Spaß bei der Arbeit."],"Да, работа мне очень нравится.","Goethe"],
+  ["Beruf","Arbeitskleidung","Haben Sie Arbeitskleidung?",["Hat Sie Arbeitskleidung?","Haben Sie eine Arbeitskleidung haben?","Sind Sie Arbeitskleidung?"],"У вас есть рабочая одежда?","h",
+   "Nein, ich habe keine Arbeitskleidung.",["Nein, ich habe nicht Arbeitskleidung.","Nein, ich habe kein Arbeitskleidung.","Nein, ich hat keine Arbeitskleidung."],"Нет, у меня нет рабочей одежды.","Goethe"],
+  ["Beruf","Arbeitsplatz","Wo ist Ihr Arbeitsplatz?",["Wo Ihr Arbeitsplatz ist?","Wo ist Ihre Arbeitsplatz?","Wo sind Ihr Arbeitsplatz?"],"Где ваше рабочее место?","w",
+   "Mein Arbeitsplatz ist in Berlin.",["Meine Arbeitsplatz ist in Berlin.","Ihr Arbeitsplatz ist in Berlin.","Mein Arbeitsplatz sind in Berlin."],"Моё рабочее место — в Берлине.","Goethe"],
+  ["Beruf","Aufgaben","Haben Sie viele Aufgaben?",["Hat Sie viele Aufgaben?","Haben Sie viele Aufgabe?","Sind Sie viele Aufgaben?"],"У вас много задач на работе?","h",
+   "Ja, ich habe viele Aufgaben.",["Ja, ich habe viele Aufgabe.","Ja, ich hat viele Aufgaben.","Ja, Sie haben viele Aufgaben."],"Да, у меня много задач.","Goethe"],
+  /* Goethe Übungssatz 02 · Sport */
+  ["Sport","Lieblingssport","Was ist Ihr Lieblingssport?",["Was ist Ihre Lieblingssport?","Was sind Ihr Lieblingssport?","Was Ihr Lieblingssport ist?"],"Какой ваш любимый вид спорта?","l",
+   "Mein Lieblingssport ist Schwimmen.",["Meine Lieblingssport ist Schwimmen.","Ihr Lieblingssport ist Schwimmen.","Mein Lieblingssport sind Schwimmen."],"Мой любимый вид спорта — плавание.","Goethe"],
+  ["Sport","schwimmen","Schwimmen Sie gern?",["Schwimmt Sie gern?","Schwimmen gern Sie?","Sie gern schwimmen?"],"Вы любите плавать?","j",
+   "Ja, ich schwimme sehr gern.",["Ja, ich schwimmt sehr gern.","Ja, ich sehr gern schwimme.","Ja, Sie schwimmen sehr gern."],"Да, я очень люблю плавать.","Goethe"],
+  ["Sport","Wochenende","Machen Sie am Wochenende Sport?",["Machen Sie an Wochenende Sport?","Macht Sie am Wochenende Sport?","Machen am Wochenende Sie Sport?"],"Вы занимаетесь спортом на выходных?","j",
+   "Ja, ich mache am Wochenende Sport.",["Ja, ich mache an Wochenende Sport.","Ja, ich macht am Wochenende Sport.","Ja, am Wochenende ich mache Sport."],"Да, на выходных я занимаюсь спортом.","Goethe"],
+  ["Sport","Abend","Machen Sie am Abend Sport?",["Machen Sie in Abend Sport?","Macht Sie am Abend Sport?","Machen Sie Sport am Abend machen?"],"Вы занимаетесь спортом по вечерам?","j",
+   "Nein, ich mache am Abend keinen Sport.",["Nein, am Abend ich mache keinen Sport.","Nein, ich mache am Abend kein Sport.","Nein, ich mache am Abend keine Sport."],"Нет, по вечерам я не занимаюсь спортом.","Goethe"],
+  ["Sport","Ball","Spielen Sie gern Ball?",["Spielt Sie gern Ball?","Spielen gern Sie Ball?","Machen Sie gern Ball?"],"Вы любите играть в мяч?","j",
+   "Ja, ich spiele gern Ball.",["Ja, ich spielt gern Ball.","Ja, ich gern spiele Ball.","Ja, Sie spielen gern Ball."],"Да, я люблю играть в мяч.","Goethe"],
+  ["Sport","Fahrrad","Fahren Sie gern Fahrrad?",["Fährt Sie gern Fahrrad?","Fahren gern Sie Fahrrad?","Spielen Sie gern Fahrrad?"],"Вы любите кататься на велосипеде?","j",
+   "Ja, ich fahre jeden Tag Fahrrad.",["Ja, ich fährt jeden Tag Fahrrad.","Ja, jeden Tag ich fahre Fahrrad.","Ja, Sie fahren jeden Tag Fahrrad."],"Да, я езжу на велосипеде каждый день.","Goethe"],
+  /* дополнительные темы: в этих пробниках их нет, на экзамене могут быть — меняется только глагол */
+  ["Einkaufen","Supermarkt","Kaufen Sie im Supermarkt ein?",["Einkaufen Sie im Supermarkt?","Kauft Sie im Supermarkt ein?","Kaufen Sie in Supermarkt ein?"],"Вы делаете покупки в супермаркете?","j",
+   "Ja, ich kaufe im Supermarkt ein.",["Ja, ich einkaufe im Supermarkt.","Ja, ich kaufe in Supermarkt ein.","Ja, Sie kaufen im Supermarkt ein."],"Да, я делаю покупки в супермаркете.",""],
+  ["Essen und Trinken","Kaffee","Trinken Sie gern Kaffee?",["Trinkt Sie gern Kaffee?","Trinken gern Sie Kaffee?","Essen Sie gern Kaffee?"],"Вы любите кофе?","j",
+   "Ja, ich trinke gern Kaffee.",["Ja, ich trinkt gern Kaffee.","Ja, ich gern trinke Kaffee.","Ja, Sie trinken gern Kaffee."],"Да, я люблю кофе.",""],
+  ["Wohnen","Wohnung","Wie ist Ihre Wohnung?",["Wie ist Ihr Wohnung?","Wie sind Ihre Wohnung?","Wie Ihre Wohnung ist?"],"Какая у вас квартира?","l",
+   "Meine Wohnung ist klein, aber schön.",["Mein Wohnung ist klein, aber schön.","Ihre Wohnung ist klein, aber schön.","Meine Wohnung sind klein, aber schön."],"Моя квартира маленькая, но красивая.",""],
+  ["Wohnen","Miete","Zahlen Sie viel Miete?",["Zahlt Sie viel Miete?","Zahlen viel Sie Miete?","Zahlen Sie viele Miete?"],"Вы много платите за аренду?","j",
+   "Ja, ich zahle viel Miete.",["Ja, ich zahlt viel Miete.","Ja, ich viel zahle Miete.","Ja, Sie zahlen viel Miete."],"Да, я много плачу за аренду.",""],
+  ["Familie","Kinder","Haben Sie Kinder?",["Hat Sie Kinder?","Habt Sie Kinder?","Sind Sie Kinder?"],"У вас есть дети?","h",
+   "Nein, ich habe keine Kinder.",["Nein, ich habe nicht Kinder.","Nein, ich habe kein Kinder.","Nein, ich hat keine Kinder."],"Нет, у меня нет детей.",""],
+  ["Familie","Bruder","Haben Sie einen Bruder?",["Haben Sie ein Bruder?","Hat Sie einen Bruder?","Haben Sie einem Bruder?"],"У вас есть брат?","h",
+   "Ja, ich habe einen Bruder.",["Ja, ich habe ein Bruder.","Ja, ich hat einen Bruder.","Ja, Sie haben einen Bruder."],"Да, у меня есть брат.",""],
+  ["Beruf","arbeiten","Wo arbeiten Sie?",["Wo Sie arbeiten?","Wo arbeitet Sie?","Wo arbeiten?"],"Где вы работаете?","w",
+   "Ich arbeite in einem Büro.",["Ich arbeitet in einem Büro.","Sie arbeiten in einem Büro.","Ich arbeite in ein Büro."],"Я работаю в офисе.",""],
+  ["Tagesablauf","aufstehen","Stehen Sie früh auf?",["Aufstehen Sie früh?","Stehen Sie auf früh?","Steht Sie früh auf?"],"Вы рано встаёте?","j",
+   "Ja, ich stehe um sechs Uhr auf.",["Ja, ich aufstehe um sechs Uhr.","Ja, ich stehe auf um sechs Uhr.","Ja, ich steht um sechs Uhr auf."],"Да, я встаю в шесть.",""],
+  ["Reisen","Urlaub","Fahren Sie im Sommer in Urlaub?",["Fährt Sie im Sommer in Urlaub?","Fahren im Sommer Sie in Urlaub?","Fahren Sie in Sommer in Urlaub?"],"Вы летом ездите в отпуск?","j",
+   "Ja, im Sommer fahre ich nach Italien.",["Ja, im Sommer ich fahre nach Italien.","Ja, im Sommer fährt ich nach Italien.","Ja, im Sommer fahre ich in Italien."],"Да, летом я езжу в Италию.",""],
+  ["Verkehr","Bus","Fahren Sie oft mit dem Bus?",["Fahren Sie oft mit den Bus?","Fährt Sie oft mit dem Bus?","Fahren Sie oft mit der Bus?"],"Вы часто ездите на автобусе?","j",
+   "Nein, ich fahre mit dem Fahrrad.",["Nein, ich fahre mit das Fahrrad.","Nein, ich fährt mit dem Fahrrad.","Nein, ich fahre mit den Fahrrad."],"Нет, я езжу на велосипеде.",""],
+  ["Gesundheit","Arzt","Gehen Sie oft zum Arzt?",["Gehen Sie oft zu Arzt?","Geht Sie oft zum Arzt?","Gehen Sie oft zur Arzt?"],"Вы часто ходите к врачу?","j",
+   "Nein, ich gehe nicht oft zum Arzt.",["Nein, ich gehe kein oft zum Arzt.","Nein, ich geht nicht oft zum Arzt.","Nein, ich nicht gehe oft zum Arzt."],"Нет, я нечасто хожу к врачу.",""]
+];
+
+var SPR_FRAG_HINT={
+  j:"Формула 1 — да/нет: глагол темы первым, сразу за ним Sie. Essen Sie gern …? Kaufen Sie oft …? Время с карточки — внутрь: am Wochenende.",
+  q:"Формула 1 с W-словом впереди, как в официальном примере telc: Was + глагол + Sie. Глагол — второй.",
+  h:"Формула 2, запасная: Haben Sie …? Подходит почти к любому существительному.",
+  w:"Формула 3 — места и покупки: Wo ist …? / Wo kaufen Sie …? Глагол — сразу после Wo.",
+  l:"Формула 4: Was ist Ihr Lieblings…? / Wie ist Ihr(e) …? Ihr — для der и das, Ihre — для die."
+};
+var SPR_ANTW_HINT={
+  j:"Зеркало: глагол из вопроса, Sie → ich, окончание -e. Глагол всегда второй: «im Sommer fahre ich», не «im Sommer ich fahre». Существительное отрицается через kein.",
+  q:"Зеркало: Was essen Sie …? → Ich esse … Можно и совсем коротко, как в официальном примере: «Brot und Obst».",
+  h:"Зеркало: Haben Sie …? → Ich habe … Отрицание существительного — kein: keine Kinder, keinen Bruder.",
+  w:"Зеркало: те же слова в порядке утверждения — Wo ist die Kasse? → Die Kasse ist dort. Коротко тоже можно: «Am Kiosk».",
+  l:"Зеркало: Ihr → Mein, Ihre → Meine, ist остаётся ist."
+};
+
+/* Teil 3: [эмодзи, Bildkarte, верная просьба, [три неверных], перевод] */
+var SPR_BIT=[
+  ["🪟","Fenster","Können Sie bitte das Fenster öffnen?",["Kann Sie bitte das Fenster öffnen?","Können Sie bitte öffnen das Fenster?","Können Sie bitte das Fenster öffne?"],"Откройте, пожалуйста, окно."],
+  ["🧂","Salz","Kannst du mir bitte das Salz geben?",["Kann du mir bitte das Salz geben?","Kannst du mich bitte das Salz geben?","Kannst du mir bitte das Salz gibst?"],"Передай мне, пожалуйста, соль."],
+  ["🖊","Kuli","Geben Sie mir bitte einen Kuli.",["Geben Sie mir bitte ein Kuli.","Geben Sie mich bitte einen Kuli.","Gebt Sie mir bitte einen Kuli."],"Дайте мне, пожалуйста, ручку.","g"],
+  ["💡","Licht","Können Sie bitte das Licht anmachen?",["Können Sie bitte das Licht anmache?","Können Sie bitte anmachen das Licht?","Kannst Sie bitte das Licht anmachen?"],"Включите, пожалуйста, свет."],
+  ["☎️","Telefonnummer","Können Sie mir bitte Ihre Telefonnummer geben?",["Können Sie mich bitte Ihre Telefonnummer geben?","Können Sie mir bitte Ihre Telefonnummer gibt?","Kann Sie mir bitte Ihre Telefonnummer geben?"],"Дайте мне, пожалуйста, ваш номер телефона."],
+  ["🚪","Tür — закрыть","Machen Sie bitte die Tür zu.",["Machen Sie bitte zu die Tür.","Mach Sie bitte die Tür zu.","Machen Sie bitte die Tür zumachen."],"Закройте, пожалуйста, дверь.","m"],
+  ["💧","Wasser","Kannst du mir bitte Wasser bringen?",["Kannst du mich bitte Wasser bringen?","Kann du mir bitte Wasser bringen?","Kannst du mir bitte Wasser bringst?"],"Принеси мне, пожалуйста, воды."],
+  ["📖","Buch","Können Sie mir bitte das Buch geben?",["Können Sie mir bitte der Buch geben?","Können Sie mir bitte das Buch gebt?","Könnt Sie mir bitte das Buch geben?"],"Дайте мне, пожалуйста, книгу."],
+  ["🪑","Stuhl","Kann ich bitte den Stuhl haben?",["Kann ich bitte der Stuhl haben?","Kann ich bitte den Stuhl habe?","Kannst ich bitte den Stuhl haben?"],"Можно мне этот стул?"],
+  ["🎵","Musik","Kannst du bitte die Musik leiser machen?",["Kannst du bitte die Musik leiser machst?","Kann du bitte die Musik leiser machen?","Kannst du bitte leiser machen die Musik?"],"Сделай, пожалуйста, музыку потише."],
+  ["🚕","Taxi","Können Sie bitte ein Taxi rufen?",["Können Sie bitte ein Taxi ruft?","Können Sie bitte rufen ein Taxi?","Kann Sie bitte ein Taxi rufen?"],"Вызовите, пожалуйста, такси."],
+  ["📄","Formular","Können Sie mir bitte das Formular erklären?",["Können Sie mir bitte das Formular erklärt?","Können Sie mich bitte das Formular erklären?","Kann Sie mir bitte das Formular erklären?"],"Объясните мне, пожалуйста, этот бланк."],
+  /* предмет → Geben Sie mir bitte … (винительный: меняется только мужской род) */
+  ["🗺","Stadtplan","Geben Sie mir bitte den Stadtplan.",["Geben Sie mir bitte der Stadtplan.","Geben Sie mich bitte den Stadtplan.","Gib Sie mir bitte den Stadtplan."],"Дайте мне, пожалуйста, карту города.","g"],
+  ["🔑","Schlüssel","Geben Sie mir bitte den Schlüssel.",["Geben Sie mir bitte der Schlüssel.","Geben Sie mir bitte dem Schlüssel.","Geben Sie mich bitte den Schlüssel."],"Дайте мне, пожалуйста, ключ.","g"],
+  ["🍎","Apfel","Geben Sie mir bitte einen Apfel.",["Geben Sie mir bitte ein Apfel.","Geben Sie mir bitte einem Apfel.","Gebt Sie mir bitte einen Apfel."],"Дайте мне, пожалуйста, яблоко.","g"],
+  ["👜","Tasche","Geben Sie mir bitte die Tasche.",["Geben Sie mir bitte den Tasche.","Geben Sie mir bitte der Tasche.","Geben Sie mich bitte die Tasche."],"Дайте мне, пожалуйста, сумку.","g"],
+  ["🚰","Glas Wasser","Geben Sie mir bitte ein Glas Wasser.",["Geben Sie mir bitte einen Glas Wasser.","Geben Sie mir bitte eine Glas Wasser.","Geben Sie mich bitte ein Glas Wasser."],"Дайте мне, пожалуйста, стакан воды.","g"],
+  /* действие → Machen Sie bitte … + частица в самом конце */
+  ["🪟","Fenster — открыть","Machen Sie bitte das Fenster auf.",["Machen Sie bitte das Fenster zu.","Machen Sie bitte auf das Fenster.","Machen Sie bitte das Fenster aufmachen."],"Откройте, пожалуйста, окно.","m"],
+  ["🪟","Fenster — закрыть","Machen Sie bitte das Fenster zu.",["Machen Sie bitte das Fenster auf.","Machen Sie bitte zu das Fenster.","Macht Sie bitte das Fenster zu."],"Закройте, пожалуйста, окно.","m"],
+  ["🚪","Tür — открыть","Machen Sie bitte die Tür auf.",["Machen Sie bitte die Tür an.","Machen Sie bitte auf die Tür.","Machen Sie bitte die Tür aufmachen."],"Откройте, пожалуйста, дверь.","m"],
+  ["💡","Licht — включить","Machen Sie bitte das Licht an.",["Machen Sie bitte das Licht aus.","Machen Sie bitte an das Licht.","Machen Sie bitte das Licht auf."],"Включите, пожалуйста, свет.","m"],
+  ["💡","Licht — выключить","Machen Sie bitte das Licht aus.",["Machen Sie bitte das Licht an.","Machen Sie bitte das Licht zu.","Machen Sie bitte aus das Licht."],"Выключите, пожалуйста, свет.","m"],
+  ["📻","Radio — потише","Machen Sie bitte das Radio leiser.",["Machen Sie bitte das Radio lauter.","Machen Sie bitte leiser das Radio.","Machen Sie bitte das Radio leise machen."],"Сделайте, пожалуйста, радио потише.","m"],
+  ["📺","Fernseher — выключить","Machen Sie bitte den Fernseher aus.",["Machen Sie bitte der Fernseher aus.","Machen Sie bitte den Fernseher an.","Machen Sie bitte aus den Fernseher."],"Выключите, пожалуйста, телевизор.","m"],
+  /* знак запрета → Bitte hier nicht + инфинитив! */
+  ["🚭","Rauchen verboten","Bitte hier nicht rauchen!",["Bitte hier rauchen nicht!","Bitte hier nicht raucht!","Bitte nicht rauchen Sie hier!"],"Здесь, пожалуйста, не курите!","v"],
+  ["📵","Telefonieren verboten","Bitte hier nicht telefonieren!",["Bitte hier telefonieren nicht!","Bitte hier nicht telefoniert!","Bitte nicht telefonieren Sie hier!"],"Здесь, пожалуйста, не звоните!","v"],
+  ["📷🚫","Fotografieren verboten","Bitte hier nicht fotografieren!",["Bitte hier fotografieren nicht!","Bitte hier nicht fotografiert!","Bitte nicht fotografieren Sie hier!"],"Здесь, пожалуйста, не фотографируйте!","v"],
+  ["🍔🚫","Essen verboten","Bitte hier nicht essen!",["Bitte hier essen nicht!","Bitte hier nicht isst!","Bitte nicht essen Sie hier!"],"Здесь, пожалуйста, не ешьте!","v"],
+  ["🅿️🚫","Parken verboten","Bitte hier nicht parken!",["Bitte hier parken nicht!","Bitte hier nicht parkt!","Bitte nicht parken Sie hier!"],"Здесь, пожалуйста, не паркуйтесь!","v"]
+];
+
+/* подсказки по типу карточки: k — с können, g — предмет, m — действие, v — запрет */
+var SPR_BIT_HINT={
+  k:"Модальный глагол по лицу + bitte + инфинитив в конце. Без bitte это приказ, а не просьба.",
+  g:"Предмет → Geben Sie mir bitte … . Меняется только мужской род: der → den, ein → einen.",
+  m:"Действие → Machen Sie bitte … и частица в самом конце: auf / zu, an / aus, leiser.",
+  v:"Знак запрета → Bitte hier nicht + инфинитив! Глагол не спрягается и стоит последним."
+};
+
+/* Реакция: [что нужно сделать, чужая реплика, верная реакция, [три неверных]] */
+var SPR_REAK=[
+  ["согласиться","Können Sie bitte das Fenster öffnen?","Ja, gern.",["Nein, danke.","Bitte schön.","Gern geschehen."]],
+  ["согласиться","Kannst du mir bitte das Salz geben?","Ja, natürlich.",["Nein, danke.","Danke schön.","Bis später."]],
+  ["сделать сразу","Machen Sie bitte die Tür zu.","Ja, sofort.",["Nein, danke.","Bitte sehr.","Danke gleichfalls."]],
+  ["вежливо отказать","Kannst du mir bitte helfen?","Tut mir leid, ich kann nicht.",["Ja, gern.","Bitte schön.","Danke, gut."]],
+  ["вежливо отказать","Können Sie mir bitte Ihren Kuli geben?","Leider nicht, es tut mir leid.",["Ja, natürlich.","Gern geschehen.","Danke sehr."]],
+  ["попросить подождать","Können Sie bitte ein Taxi rufen?","Einen Moment, bitte.",["Ja, bis morgen.","Nein, danke.","Gern geschehen."]],
+  ["ответить на благодарность","Vielen Dank!","Bitte schön.",["Ja, gern.","Tut mir leid.","Einen Moment."]],
+  ["ответить на благодарность","Danke schön!","Gern geschehen.",["Ja, bitte.","Tut mir leid.","Bis später."]],
+  ["отдать предмет","Geben Sie mir bitte den Schlüssel.","Ja, natürlich. Hier, bitte.",["Danke, gleichfalls.","Gern geschehen.","Bis später."]],
+  ["извиниться — вам показали знак","Bitte hier nicht rauchen!","Oh, Entschuldigung!",["Gern geschehen.","Bitte schön.","Guten Appetit!"]],
+  ["извиниться — вам показали знак","Bitte hier nicht telefonieren!","Oh, Entschuldigung!",["Danke, gleichfalls.","Ja, bitte.","Bis später."]]
+];
+
+/* Шпаргалка: [заголовок, [[немецкий, перевод], …]] */
+var SPR_KARTE=[
+  ["Teil 1 · Sich vorstellen",[
+    ["Ich heiße Alexander.","Меня зовут Александр."],
+    ["Mein Name ist Alexander Nowak.","Моё имя — Александр Новак."],
+    ["Ich bin 35 Jahre alt.","Мне 35 лет."],
+    ["Ich komme aus Russland.","Я из России."],
+    ["Ich wohne in Berlin.","Я живу в Берлине."],
+    ["Ich spreche Russisch, Englisch und ein bisschen Deutsch.","Я говорю по-русски, по-английски и немного по-немецки."],
+    ["Ich bin von Beruf Ingenieur.","По профессии я инженер."],
+    ["Meine Hobbys sind Lesen und Sport.","Мои хобби — чтение и спорт."],
+    ["Ich buchstabiere: N wie Nordpol, O wie Otto, W wie Wilhelm.","Диктую по буквам: N как Nordpol, O как Otto, W как Wilhelm."],
+    ["Meine Telefonnummer ist null eins sieben sechs …","Мой номер телефона — 0176…"],
+    ["Wie bitte? Können Sie das bitte wiederholen?","Простите? Повторите, пожалуйста."]
+  ]],
+  ["Teil 2 · Формула 1: да/нет, глагол темы первым",[
+    ["Essen Sie gern Fleisch?","Вы любите мясо?"],
+    ["Trinken Sie gern Kaffee?","Вы любите кофе?"],
+    ["Kaufen Sie oft Schuhe?","Вы часто покупаете обувь?"],
+    ["Machen Sie am Wochenende Sport?","Вы занимаетесь спортом на выходных? — время внутрь"],
+    ["Schwimmen Sie gern?","Вы любите плавать? — глагол с карточки"],
+    ["Was essen Sie gern zum Frühstück?","Что вы любите есть на завтрак? — та же формула с Was"]
+  ]],
+  ["Teil 2 · Формула 2: запасная",[
+    ["Haben Sie Kinder?","У вас есть дети?"],
+    ["Haben Sie nette Kollegen?","У вас хорошие коллеги?"],
+    ["Haben Sie Spaß bei der Arbeit?","Вам нравится ваша работа?"]
+  ]],
+  ["Teil 2 · Формула 3: места и покупки",[
+    ["Wo ist die Kasse?","Где касса?"],
+    ["Wo kaufen Sie einen Stadtplan?","Где вы покупаете карту города?"]
+  ]],
+  ["Teil 2 · Формула 4: любимое и «ваш»",[
+    ["Was ist Ihr Lieblingsessen?","Какое ваше любимое блюдо?"],
+    ["Wie ist Ihre Wohnung?","Какая у вас квартира?"]
+  ]],
+  ["Teil 2 · Глагол берите из темы",[
+    ["Essen und Trinken: essen, trinken","Еда и напитки"],
+    ["Einkaufen: kaufen","Покупки"],
+    ["Sport, Freizeit: spielen, machen, fahren","Спорт, досуг"],
+    ["Beruf: arbeiten, haben","Работа"]
+  ]],
+  ["Teil 2 · Ответ-зеркало — 1 балл",[
+    ["Ja, ich esse gern Fleisch.","Да, я люблю мясо. — Sie → ich, глагол на -e"],
+    ["Nein, ich trinke nicht gern Bier.","Нет, я не люблю пиво."],
+    ["Nein, ich habe keine Kinder.","Нет, у меня нет детей. — существительное → kein"],
+    ["Mein Lieblingsessen ist Pizza.","Моё любимое блюдо — пицца. — Ihr → Mein"],
+    ["Brot und Obst.","Хлеб и фрукты. — короткий ответ, как в официальном примере"]
+  ]],
+  ["Teil 3 · Предмет → Geben Sie mir bitte …",[
+    ["Geben Sie mir bitte den Stadtplan.","Дайте мне, пожалуйста, карту города."],
+    ["Geben Sie mir bitte einen Kuli.","Дайте мне, пожалуйста, ручку."],
+    ["Geben Sie mir bitte die Tasche.","Дайте мне, пожалуйста, сумку."],
+    ["Ein Glas Wasser, bitte!","Стакан воды, пожалуйста! — минимальный вариант"]
+  ]],
+  ["Teil 3 · Действие → Machen Sie bitte … auf / zu / an / aus",[
+    ["Machen Sie bitte das Fenster auf.","Откройте, пожалуйста, окно."],
+    ["Machen Sie bitte die Tür zu.","Закройте, пожалуйста, дверь."],
+    ["Machen Sie bitte das Licht an.","Включите, пожалуйста, свет."],
+    ["Machen Sie bitte das Licht aus.","Выключите, пожалуйста, свет."],
+    ["Machen Sie bitte das Radio leiser.","Сделайте, пожалуйста, радио потише."]
+  ]],
+  ["Teil 3 · Знак запрета → Bitte hier nicht …!",[
+    ["Bitte hier nicht rauchen!","Здесь, пожалуйста, не курите!"],
+    ["Bitte hier nicht telefonieren!","Здесь, пожалуйста, не звоните!"],
+    ["Bitte hier nicht fotografieren!","Здесь, пожалуйста, не фотографируйте!"]
+  ]],
+  ["Teil 3 · Запасной вариант с können",[
+    ["Können Sie bitte das Fenster öffnen?","Не могли бы вы открыть окно?"],
+    ["Kann ich bitte den Stuhl haben?","Можно мне этот стул?"]
+  ]],
+  ["Teil 3 · Реакция — 1 балл",[
+    ["Ja, natürlich. Hier, bitte.","Да, конечно. Вот, пожалуйста. — когда отдаёшь предмет"],
+    ["Ja, gern.","Да, охотно. — на просьбу что-то сделать"],
+    ["Oh, Entschuldigung!","Ой, извините! — когда показали знак запрета"],
+    ["Ja, sofort.","Да, сейчас же."],
+    ["Einen Moment, bitte.","Минуточку."],
+    ["Tut mir leid, ich kann nicht.","Извините, не могу."],
+    ["Bitte schön.","Пожалуйста (в ответ на спасибо)."],
+    ["Gern geschehen.","Не за что."]
+  ]]
+];
+
+function sprState(){
+  if(!S.spr)S.spr={a:0,c:0,miss:{},mode:"vor"};
+  if(!S.spr.miss)S.spr.miss={};
+  if(!S.spr.mode)S.spr.mode="vor";
+  return S.spr;
+}
+var sprQ=null,sprFb=null;
+
+/* треть вопросов — из тех, где ошибался; ключ = режим + номер карточки */
+function sprPickIdx(arr,m,st){
+  var pool=[],k,ix;
+  for(k in st.miss){
+    if(st.miss[k]>0&&k.indexOf(m+"|")===0){
+      ix=+k.slice(m.length+1);
+      if(ix>=0&&ix<arr.length)pool.push(ix);
+    }
+  }
+  if(pool.length&&Math.random()<0.34)return pool[Math.floor(Math.random()*pool.length)];
+  return Math.floor(Math.random()*arr.length);
+}
+
+function sprNew(){
+  var st=sprState(),m=st.mode,i,it,mk;
+  if(m==="vor"){
+    i=sprPickIdx(SPR_VOR,m,st);it=SPR_VOR[i];
+    mk={key:m+"|"+i,tag:"Teil 1 · "+it[4],pre:it[0],ans:it[1],post:it[2],ru:it[3],
+        opts:shuffle([it[1]].concat(it[5])),say:it[0]+it[1]+it[2],
+        hint:"Семь ключевых слов: Name, Alter, Land, Wohnort, Sprachen, Beruf, Hobby. Возраст — bin, не habe."};
+  }else if(m==="frag"){
+    i=sprPickIdx(SPR_FRAG,m,st);it=SPR_FRAG[i];
+    mk={key:m+"|"+i,tag:"Teil 2 · "+it[0]+(it[9]?" · карточка "+it[9]:""),q:it[1],ans:it[2],ru:it[4],
+        opts:shuffle([it[2]].concat(it[3])),say:it[2],hint:SPR_FRAG_HINT[it[5]]};
+  }else if(m==="antw"){
+    i=sprPickIdx(SPR_FRAG,m,st);it=SPR_FRAG[i];
+    mk={key:m+"|"+i,tag:"Teil 2 · вам задают вопрос · "+it[0],q:it[2],listen:true,ans:it[6],ru:it[8],
+        opts:shuffle([it[6]].concat(it[7])),say:it[6],hint:SPR_ANTW_HINT[it[5]]};
+  }else if(m==="bit"){
+    i=sprPickIdx(SPR_BIT,m,st);it=SPR_BIT[i];
+    mk={key:m+"|"+i,tag:"Teil 3 · Bildkarte",q:it[0]+"  "+it[1],ans:it[2],ru:it[4],
+        opts:shuffle([it[2]].concat(it[3])),say:it[2],
+        hint:SPR_BIT_HINT[it[5]||"k"]};
+  }else{
+    i=sprPickIdx(SPR_REAK,m,st);it=SPR_REAK[i];
+    mk={key:m+"|"+i,tag:"Teil 3 · нужно "+it[0],q:it[1],ans:it[2],ru:"",
+        opts:shuffle([it[2]].concat(it[3])),say:it[2],
+        hint:"Реакция — 1 балл за карточку. Достаточно короткой формулы, разворачивать не нужно."};
+  }
+  sprQ=mk;sprFb=null;render();
+}
+
+function sprAnswer(choice){
+  if(!sprQ||sprFb)return;
+  var st=sprState(),ok=(choice===sprQ.ans);
+  st.a++;if(ok)st.c++;
+  if(ok){if(st.miss[sprQ.key])st.miss[sprQ.key]--;}
+  else st.miss[sprQ.key]=(st.miss[sprQ.key]||0)+1;
+  sprFb={ok:ok,given:choice};
+  dlog(ok);save();render();
+  if(S.set.auto)speak(sprQ.say);
+}
+
+function sprKarte(){
+  var h='<div class="mut sm" style="margin-bottom:10px">Формулы, которые стоит довести до автоматизма. 🔊 — послушать.</div>';
+  for(var g=0;g<SPR_KARTE.length;g++){
+    h+='<section class="card"><div class="cardT">'+SPR_KARTE[g][0]+'</div>';
+    var L=SPR_KARTE[g][1];
+    for(var i=0;i<L.length;i++){
+      h+='<div class="wrow slim"><button class="icoBtn" data-act="sprSay" data-t="'+esc(L[i][0])+'">🔊</button>'
+        +'<div class="wmain"><div class="wde serif">'+esc(L[i][0])+'</div>'
+        +'<div class="wru">'+esc(L[i][1])+'</div></div></div>';
+    }
+    h+='</section>';
+  }
+  return h;
+}
+
+function vSpr(){
+  var st=sprState();
+  var h='<div class="pageT">Sprechen</div>';
+  var M=[["vor","о себе"],["frag","вопрос"],["antw","ответ"],["bit","просьба"],["reak","реакция"],["karte","шпаргалка"]];
+  h+='<div class="chips">';
+  for(var k=0;k<M.length;k++)
+    h+='<button class="chip'+(st.mode===M[k][0]?" on":"")+'" data-act="sprMode" data-v="'+M[k][0]+'">'+M[k][1]+'</button>';
+  h+='</div>';
+
+  if(st.mode==="karte")return h+sprKarte();
+
+  if(!sprQ){
+    var D={vor:"Teil 1 — рассказ о себе по семи ключевым словам, потом фамилия по буквам и одно число. 3 балла из 15.",
+           frag:"Teil 2 — тема и слово на карточке → вопрос по одной из четырёх формул, всегда на Sie. Вопрос стоит 2 балла. Пометка telc/Goethe — карточка из официального пробника.",
+           antw:"Teil 2 — вопрос задают вам. Отвечаете зеркалом: глагол из вопроса, Sie → ich, окончание -e. Ответ — 1 балл. 🔊 — послушать вопрос.",
+           bit:"Teil 3 — картинка → тип → шаблон. Предмет: Geben Sie mir bitte … Действие: Machen Sie bitte … auf / zu / an / aus. Знак запрета: Bitte hier nicht …! Сама просьба — 2 балла.",
+           reak:"Teil 3 — короткая реакция на чужую просьбу. Всего 1 балл, но отдавать его даром незачем."};
+    h+='<div class="mut sm" style="margin-bottom:12px">'+D[st.mode]+'</div>';
+    h+='<button class="btn acc big" data-act="sprStart">Начать</button>';
+    if(st.a)h+='<div class="mut sm">Всего ответов: '+st.a+' · верно '+Math.round(100*st.c/st.a)+'%</div>';
+    return h;
+  }
+
+  h+='<div class="prepBox">';
+  h+='<div class="prepTag">'+esc(sprQ.tag)+'</div>';
+  if(sprQ.q)h+='<div class="prepSent serif">'+esc(sprQ.q)
+       +(sprQ.listen?' <button class="icoBtn" data-act="sprSay" data-t="'+esc(sprQ.q)+'">🔊</button>':'')+'</div>';
+  else h+='<div class="prepSent serif">'+esc(sprQ.pre)+'<span class="gap">'
+       +(sprFb?esc(sprQ.ans):"____")+'</span>'+esc(sprQ.post)+'</div>';
+  if(sprQ.ru&&(sprFb||st.mode==="vor"))h+='<div class="mut sm">'+esc(sprQ.ru)+'</div>';
+  h+='</div>';
+
+  h+='<div class="opts">';
+  for(var o=0;o<sprQ.opts.length;o++){
+    var v=sprQ.opts[o],cls="opt";
+    if(sprFb){
+      if(v===sprQ.ans)cls+=" ok";
+      else if(v===sprFb.given)cls+=" bad";
+      else cls+=" dim";
+    }
+    h+='<button class="'+cls+'" data-act="sprAns" data-v="'+esc(v)+'"'+(sprFb?" disabled":"")
+      +'><span class="key">'+(o+1)+'</span><span>'+esc(v)+'</span></button>';
+  }
+  h+='</div>';
+
+  if(sprFb){
+    h+='<div class="fb '+(sprFb.ok?"okB":"badB")+'"><div class="fbT">'+(sprFb.ok?"Верно":"Неверно")+'</div>';
+    h+='<div class="fbW serif" style="font-size:19px;line-height:1.35">'+esc(sprQ.say)
+      +' <button class="icoBtn" data-act="sprSay" data-t="'+esc(sprQ.say)+'">🔊</button></div>';
+    if(sprQ.ru)h+='<div class="fbR">'+esc(sprQ.ru)+'</div>';
+    h+='<div class="fbM">'+sprQ.hint+'</div>';
+    h+='<button class="btn acc big" data-act="sprNext">Дальше ⏎</button></div>';
+  }
+  h+='<div class="mut sm">Ответов: '+st.a+' · верно '+(st.a?Math.round(100*st.c/st.a):0)+'%'
+    +' · треть карточек из тех, где ошибался</div>';
+  h+='<button class="btn" data-act="sprStop">Закончить</button>';
+  return h;
+}
+
 function vCatList(){
   var c=curCat;
   var nn=newIn(c).length;
@@ -3005,6 +3405,12 @@ var A={
   prepAns:function(b){prepAnswer(b.dataset.v);},
   prepNext:function(){prepNew();},
   prepStop:function(){prepQ=null;prepFb=null;render();},
+  sprMode:function(b){sprState().mode=b.dataset.v;sprQ=null;sprFb=null;save();render();},
+  sprStart:function(){sprNew();},
+  sprAns:function(b){sprAnswer(b.dataset.v);},
+  sprNext:function(){sprNew();},
+  sprStop:function(){sprQ=null;sprFb=null;render();},
+  sprSay:function(b){speak(b.dataset.t);},
   numRange:function(b){var st=numState();st.min=+b.dataset.a;st.max=+b.dataset.b;save();render();},
   numMode:function(b){var st=numState();st.mode=b.dataset.v;numQ=null;numFb=null;save();render();},
   numStart:function(){numNew();},
@@ -3069,6 +3475,7 @@ function render(){
   else if(view==="train")h=vTrain();
   else if(view==="num")h=vNum();
   else if(view==="prep")h=vPrep();
+  else if(view==="spr")h=vSpr();
   else if(view==="stats")h=vStats();
   else if(view==="set")h=vSet();
   else if(view==="learn")h=vLearn();
@@ -3140,6 +3547,15 @@ document.addEventListener("keydown",function(e){
   }
   if(view==="prep"){
     if(e.key==="Enter"&&prepFb){e.preventDefault();prepNew();}
+    return;
+  }
+  if(view==="spr"){
+    if(!sprQ)return;
+    if(e.key==="Enter"&&sprFb){e.preventDefault();sprNew();return;}
+    if(!sprFb&&["1","2","3","4"].indexOf(e.key)>=0){
+      var oi=+e.key-1;
+      if(oi<sprQ.opts.length)sprAnswer(sprQ.opts[oi]);
+    }
     return;
   }
   if(view!=="session"||!sess)return;
