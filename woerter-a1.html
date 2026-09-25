@@ -102,6 +102,12 @@ main{max-width:640px;margin:0 auto;padding:8px 16px 90px}
 .typoBox{margin:10px 0;padding:9px 11px;border-radius:8px;background:#0003;font-size:13.5px;
   display:flex;flex-wrap:wrap;gap:9px;align-items:center}
 .typoBox .btn{margin:0;font-size:12.5px;padding:6px 11px}
+.pk{width:28px;height:28px;flex:0 0 auto;border:2px solid var(--line,#999);border-radius:7px;
+  background:transparent;color:transparent;font-size:16px;font-weight:700;line-height:1;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;padding:0}
+.pk.on{background:#4E2E78;border-color:#4E2E78;color:#fff}
+.pickBar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0 10px}
+.pickBar .btn{margin:0;padding:8px 12px;font-size:13px}
 .srch{width:100%;box-sizing:border-box;font-size:16px;padding:10px 12px;margin-bottom:10px;
   border:1.5px solid var(--line,#999);background:var(--bg2,#fff);color:inherit;border-radius:10px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
@@ -1847,7 +1853,7 @@ var KEY="de_a1_trainer_v1";
 var S={w:{},daily:{},set:{voice:"",rate:0.9,auto:true},mem:false};
 var view="review",curCat=null,sess=null,learn=null,resetArm=false;
 var allQ="",allSort="rank",allFilt="all";
-var trainCfg={type:"mcDeRu",cats:null,len:20,learned:true};
+var trainCfg={type:"mcDeRu",cats:null,len:20,learned:true,picked:false};
 function $(s){return document.querySelector(s);}
 function $$(s){return document.querySelectorAll(s);}
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
@@ -2275,15 +2281,18 @@ function prio(i,ti){
   return er*2+Math.random()*0.5;
 }
 function startTrain(){
-  var pool=[],i;
+  var pool=[],i,PK=pickMap();
   for(i=0;i<W.length;i++){
-    if(!trainCfg.cats.has(W[i][4]))continue;
+    if(trainCfg.picked){ if(!PK[kid(i)])continue; }
+    else if(!trainCfg.cats.has(W[i][4]))continue;
     var x=wg(i);
     if(trainCfg.learned&&(!x||x.b[0]+x.b[1]+x.b[2]===0))continue;
     if(noWrite(i)&&(trainCfg.type==="wrRuDe"||trainCfg.type==="wrAu"))continue;
     pool.push(i);
   }
-  if(!pool.length){toast("Сначала изучи слова в выбранных категориях");return;}
+  if(!pool.length){toast(trainCfg.picked
+      ?"Среди отмеченных нет слов для этого режима — сними «только изученные» или отметь другие"
+      :"Сначала изучи слова в выбранных категориях");return;}
   var ti=TYPES.indexOf(trainCfg.type);
   pool.sort(function(a,b){return prio(b,ti)-prio(a,ti);});
   var take=shuffle(pool.slice(0,trainCfg.len));
@@ -2356,25 +2365,44 @@ function wAcc(i){
   for(var t=0;t<x.a.length;t++){a+=x.a[t];c+=x.c[t];}
   return a>=3?c/a:-1;
 }
+/* ---------- отмеченные для изучения слова ----------
+   Хранятся ключами слов в S.set.pick: настройки синхронизируются целиком,
+   поэтому отметки сами переезжают между устройствами. */
+function pickSet(){ if(!S.set.pick)S.set.pick=[]; return S.set.pick; }
+function pickMap(){ var m={},ps=pickSet(); for(var k=0;k<ps.length;k++)m[ps[k]]=1; return m; }
+function pickedIdx(){ var m=pickMap(),r=[]; for(var i=0;i<W.length;i++)if(m[kid(i)])r.push(i); return r; }
+function pickBarHtml(){
+  var P=pickedIdx(),n=P.length,nw=0,k;
+  for(k=0;k<n;k++)if(wStatus(P[k])==="new")nw++;
+  if(!n)return '<div class="mut sm">Отмечай слова квадратиком слева, чтобы учить и тренировать их отдельно.</div>';
+  return '<div class="pickBar"><b>Отмечено: '+n+'</b>'
+    +'<button class="btn acc" data-act="learnPick"'+(nw?'':' disabled')+'>Учить новые ('+nw+')</button>'
+    +'<button class="btn" data-act="trainPick">Тренировать</button>'
+    +'<button class="btn" data-act="clearPick">Снять все</button></div>';
+}
+function pickRefresh(){ var b=$("#pickBar"); if(b)b.innerHTML=pickBarHtml();
+  var c=$("#pickChipN"); if(c)c.textContent=pickSet().length; }
 function vAll(){
   var h='<div class="row head"><button class="icoBtn" data-act="back">←</button><div class="pageT" style="margin:0">Все слова</div></div>';
 
   h+='<input id="allSearch" class="srch" type="search" placeholder="Поиск по немецкому или русскому" value="'+esc(allQ)+'">';
 
   h+='<div class="chips">';
-  var FL=[["all","все"],["new","новые"],["work","в работе"],["weak","слабые"],["done","освоено"]];
+  var FL=[["all","все"],["pick","отмеченные"],["new","новые"],["work","в работе"],["weak","слабые"],["done","освоено"]];
   for(var f=0;f<FL.length;f++)
-    h+='<button class="chip'+(allFilt===FL[f][0]?" on":"")+'" data-act="allFilt" data-v="'+FL[f][0]+'">'+FL[f][1]+'</button>';
+    h+='<button class="chip'+(allFilt===FL[f][0]?" on":"")+'" data-act="allFilt" data-v="'+FL[f][0]+'">'+FL[f][1]
+      +(FL[f][0]==="pick"?' <span id="pickChipN">'+pickSet().length+'</span>':'')+'</button>';
   h+='</div><div class="chips">';
   var SL=[["rank","по важности"],["abc","по алфавиту"],["weak","слабые сначала"]];
   for(var s2=0;s2<SL.length;s2++)
     h+='<button class="chip'+(allSort===SL[s2][0]?" on":"")+'" data-act="allSort" data-v="'+SL[s2][0]+'">'+SL[s2][1]+'</button>';
   h+='</div>';
 
-  var q=allQ.trim().toLowerCase(),idx=[];
+  var q=allQ.trim().toLowerCase(),idx=[],PM=pickMap();
   for(var i=0;i<W.length;i++){
     var st=wStatus(i),ac=wAcc(i);
-    if(allFilt==="weak"){ if(!(ac>=0&&ac<0.75))continue; }
+    if(allFilt==="pick"){ if(!PM[kid(i)])continue; }
+    else if(allFilt==="weak"){ if(!(ac>=0&&ac<0.75))continue; }
     else if(allFilt!=="all"&&st!==allFilt)continue;
     if(q&&(kid(i)+" "+W[i][3]).toLowerCase().indexOf(q)<0)continue;
     idx.push(i);
@@ -2386,11 +2414,13 @@ function vAll(){
     return ap-ar||(RK[p]||999)-(RK[r]||999);});
   else idx.sort(function(p,r){return (RK[p]||999)-(RK[r]||999);});
 
+  h+='<div id="pickBar">'+pickBarHtml()+'</div>';
   h+='<div class="mut sm">Показано: '+idx.length+' из '+W.length+'</div>';
   h+='<div class="wlist">';
   for(var z=0;z<idx.length;z++){
     var j=idx[z],w=W[j],ac2=wAcc(j);
-    h+='<div class="wrow slim"><button class="icoBtn" data-act="play" data-i="'+j+'">🔊</button>'
+    h+='<div class="wrow slim"><button class="pk'+(PM[kid(j)]?" on":"")+'" data-act="pick" data-i="'+j+'" aria-label="отметить">✓</button>'
+      +'<button class="icoBtn" data-act="play" data-i="'+j+'">🔊</button>'
       +'<div class="wmain"><div class="wde serif">'+deHtml(j)
       +'<span class="tier t'+tierOf(j)+'" title="важность №'+RK[j]+' · '+TIERN[tierOf(j)]+'">'+RK[j]+'</span></div>'
       +'<div class="wru">'+esc(w[3])
@@ -3162,6 +3192,9 @@ function vTrain(){
     h+='<button class="chip'+(trainCfg.len===lens[j]?" on":"")+'" data-act="setLen" data-n="'+lens[j]+'">'+lens[j]+'</button>';
   }
   h+='</div>';
+  var np=pickSet().length;
+  h+='<label class="ckRow"><input type="checkbox" id="onlyP"'+(trainCfg.picked?" checked":"")+(np?"":" disabled")+'> только отмеченные слова ('+np+')'
+    +(trainCfg.picked?' — категории не учитываются':'')+'</label>';
   h+='<label class="ckRow"><input type="checkbox" id="onlyL"'+(trainCfg.learned?" checked":"")+'> только изученные слова</label>';
   h+='<button class="btn acc big" data-act="goTrain">Начать</button>';
   h+='<div class="mut sm">Слова с большим числом ошибок в выбранном режиме попадают в серию первыми.</div>';
@@ -3400,7 +3433,24 @@ var A={
   tglCat:function(b){var c=b.dataset.c;if(trainCfg.cats.has(c))trainCfg.cats.delete(c);else trainCfg.cats.add(c);render();},
   allCats:function(){var ks=Object.keys(CATS);trainCfg.cats=(trainCfg.cats.size===ks.length)?new Set():new Set(ks);render();},
   setLen:function(b){trainCfg.len=+b.dataset.n;render();},
-  goTrain:function(){var ck=$("#onlyL");if(ck)trainCfg.learned=ck.checked;startTrain();},
+  goTrain:function(){var ck=$("#onlyL");if(ck)trainCfg.learned=ck.checked;
+    var cp=$("#onlyP");if(cp)trainCfg.picked=cp.checked&&!cp.disabled;startTrain();},
+  pick:function(b){
+    var i=+b.dataset.i,k=kid(i),ps=pickSet(),p=ps.indexOf(k);
+    if(p>=0)ps.splice(p,1);else ps.push(k);
+    b.classList.toggle("on",p<0);          /* без перерисовки: список не прыгает */
+    save();pickRefresh();
+  },
+  learnPick:function(){
+    var m=pickMap(),list=newIn("all").filter(function(i){return m[kid(i)];});
+    if(!list.length){toast("Все отмеченные уже в работе — их можно тренировать");return;}
+    learn={list:list.slice(0,7),i:0};show("learn");
+  },
+  trainPick:function(){trainCfg.picked=true;show("train");},
+  clearPick:function(){
+    if(!confirm("Снять отметки со всех "+pickSet().length+" слов?"))return;
+    S.set.pick=[];save();render();
+  },
   opt:function(b){answerChoice(+b.dataset.k);},
   submitW:function(){submitWrite();},
   ins:function(b){insCh(b.dataset.ch);},
