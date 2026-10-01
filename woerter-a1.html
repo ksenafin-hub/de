@@ -2228,6 +2228,7 @@ function finishAns(ok,msg){
 function acceptTypo(){
   var u=sess&&sess.undo;
   if(!u||u.wasOk)return;
+  var q0=curQ(),isMc=q0.type.indexOf("mc")===0;
   var x=ws(u.wid),snap=JSON.parse(u.snap),k;
   for(k in snap)x[k]=snap[k];          /* состояние слова до ответа */
   var d=drec();d.a--;                   /* и дневная статистика */
@@ -2236,7 +2237,11 @@ function acceptTypo(){
   applyAns(u.wid,u.ti,true,sess.mode==="review"?"review":"train");
   sess.c++;
   sess.undo.wasOk=true;
-  sess.fb={ok:true,msg:"Засчитано как опечатка."};
+  if(isMc){
+    /* подсветка переезжает на верный вариант — красного больше нет */
+    for(var o=0;o<q0.opts.length;o++)if(q0.opts[o].wid===q0.wid){sess.chosen=o;break;}
+  }
+  sess.fb={ok:true,msg:isMc?"Засчитано: промахнулся пальцем.":"Засчитано как опечатка."};
   render();
 }
 function nextQ(){
@@ -2689,9 +2694,20 @@ function prepNew(){
   prepQ=mk;prepFb=null;render();
 }
 
+var prepUndo=null;
+function prepMisclick(){
+  if(!prepQ||!prepFb||prepFb.ok||!prepUndo)return;
+  var st=prepState();
+  st.c++;                                         /* попытка остаётся, но верной */
+  if(prepUndo.miss>0)st.miss[prepQ.key]=prepUndo.miss-1; else delete st.miss[prepQ.key];
+  var d=drec();d.c++;                             /* в дневной статистике тоже верно */
+  prepFb={ok:true,given:prepQ.ans,mis:true};prepUndo=null;
+  save();render();
+}
 function prepAnswer(choice){
   if(!prepQ||prepFb)return;
   var st=prepState(),ok=(choice===prepQ.ans);
+  prepUndo=ok?null:{miss:st.miss[prepQ.key]||0};
   st.a++;if(ok)st.c++;
   if(ok){if(st.miss[prepQ.key])st.miss[prepQ.key]--;}
   else st.miss[prepQ.key]=(st.miss[prepQ.key]||0)+1;
@@ -2745,6 +2761,8 @@ function vPrep(){
   if(prepFb){
     h+='<div class="fb '+(prepFb.ok?"okB":"badB")+'"><div class="fbT">'+(prepFb.ok?"Верно":"Неверно")+'</div>';
     h+='<div class="fbM">'+prepQ.hint+'</div>';
+    if(prepFb.mis)h+='<div class="fbM hl">Засчитано: промахнулся пальцем.</div>';
+    else if(!prepFb.ok&&prepUndo)h+='<div class="typoBox">Нажал не туда?<button class="btn" data-act="prepMis">Мисклик — засчитать</button></div>';
     h+='<button class="btn acc big" data-act="prepNext">Дальше ⏎</button></div>';
   }
   h+='<div class="mut sm">Ответов: '+st.a+' · верно '+(st.a?Math.round(100*st.c/st.a):0)+'%'
@@ -3354,9 +3372,13 @@ function vSession(){
     if(ex)h+='<div class="exB"><button class="icoBtn" data-act="playEx" data-i="'+q.wid+'">🔊</button><div class="exTxt"><div class="exDe serif">'+esc(ex[0])+'</div><div class="exRu">'+esc(ex[1])+'</div></div></div>';
     h+=conjHtml(q.wid,false);
     if(fb.msg)h+='<div class="fbM hl">'+fb.msg+'</div>';
-    if(!fb.ok&&(q.type==="wrRuDe"||q.type==="wrAu")&&s.undo&&!s.undo.wasOk){
-      h+='<div class="typoBox">Ответ: <b>'+esc(s.userText||"")+'</b>'
-        +'<button class="btn" data-act="typo">Это опечатка — засчитать</button></div>';
+    if(!fb.ok&&s.undo&&!s.undo.wasOk){
+      if(q.type==="wrRuDe"||q.type==="wrAu")
+        h+='<div class="typoBox">Ответ: <b>'+esc(s.userText||"")+'</b>'
+          +'<button class="btn" data-act="typo">Это опечатка — засчитать</button></div>';
+      else if(q.opts)
+        h+='<div class="typoBox">Нажал не туда?'
+          +'<button class="btn" data-act="typo">Мисклик — засчитать</button></div>';
     }
     h+='<button class="btn acc big" data-act="next">Дальше ⏎</button></div>';
   }
@@ -3457,6 +3479,7 @@ var A={
   prepMode:function(b){prepState().mode=b.dataset.v;prepQ=null;prepFb=null;save();render();},
   prepStart:function(){prepNew();},
   prepAns:function(b){prepAnswer(b.dataset.v);},
+  prepMis:function(){prepMisclick();},
   prepNext:function(){prepNew();},
   prepStop:function(){prepQ=null;prepFb=null;render();},
   sprMode:function(b){sprState().mode=b.dataset.v;sprQ=null;sprFb=null;save();render();},
