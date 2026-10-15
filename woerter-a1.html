@@ -108,6 +108,8 @@ main{max-width:640px;margin:0 auto;padding:8px 16px 90px}
 .pk.on{background:#4E2E78;border-color:#4E2E78;color:#fff}
 .pickBar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0 10px}
 .pickBar .btn{margin:0;padding:8px 12px;font-size:13px}
+.qtag{display:inline-block;margin-left:8px;font-size:10.5px;font-weight:600;letter-spacing:.06em;
+  padding:2px 7px;border-radius:9px;background:#4e2e7833;color:#c9b6e8;vertical-align:middle;text-transform:none}
 .srch{width:100%;box-sizing:border-box;font-size:16px;padding:10px 12px;margin-bottom:10px;
   border:1.5px solid var(--line,#999);background:var(--bg2,#fff);color:inherit;border-radius:10px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
@@ -2218,8 +2220,15 @@ function finishAns(ok,msg){
   /* снимок до применения: позволяет пересчитать ответ как верный (опечатка) */
   sess.undo={wid:q.wid,ti:ti,snap:JSON.stringify(x),wasOk:ok};
   sess.ans=true;sess.fb={ok:ok,msg:msg};
-  applyAns(q.wid,ti,ok,sess.mode==="review"?"review":"train");
+  applyAns(q.wid,ti,ok,ansMode(q));
   if(ok)sess.c++;else sess.mist.push(q.wid);
+  /* в повторении ошибка возвращается в этой же сессии, не более двух раз */
+  if(!ok&&sess.mode==="review"&&(q.rt||0)<2){
+    var rq=makeQ(q.wid,q.type);rq.prac=true;rq.rt=(q.rt||0)+1;
+    var at=Math.min(sess.i+1+3+Math.floor(Math.random()*3),sess.qs.length);
+    sess.qs.splice(at,0,rq);
+    sess.undo.retry=rq;
+  }
   render();
   if(S.set.auto)autoSpeak(q.wid,200);
 }
@@ -2234,7 +2243,8 @@ function acceptTypo(){
   var d=drec();d.a--;                   /* и дневная статистика */
   var ix=sess.mist.lastIndexOf(u.wid);
   if(ix>=0)sess.mist.splice(ix,1);
-  applyAns(u.wid,u.ti,true,sess.mode==="review"?"review":"train");
+  if(u.retry){var ri=sess.qs.indexOf(u.retry);if(ri>sess.i)sess.qs.splice(ri,1);u.retry=null;}
+  applyAns(u.wid,u.ti,true,ansMode(q0));
   sess.c++;
   sess.undo.wasOk=true;
   if(isMc){
@@ -2250,10 +2260,56 @@ function nextQ(){
   sess.i++;
   render();
 }
-function startReview(){
-  var d=spreadPairs(duePairs()).slice(0,24);
-  startSession(d.map(function(p){return makeQ(p.i,typeForTrack(p.t,wg(p.i).b[p.t]));}),"review","Повторение","review");
+/* Вес карточки (слово × трек) при отборе в повторение.
+   Растёт с ошибками именно в этом треке и падает с номером коробки:
+   крепкая карточка ≈0.4, слабая — 5–10. Ошибки сглажены, чтобы одна
+   случайная ошибка у новой карточки не перевешивала всё. */
+var REV_LEN=24, WEAK_W=3;
+function cardW(i,t){
+  var x=wg(i);if(!x)return 1;
+  var a=x.a[2*t]+x.a[2*t+1],c=x.c[2*t]+x.c[2*t+1];
+  var err=(a-c+0.5)/(a+2);
+  var bw=[6,6,4,2.5,1.6,1,0.7][x.b[t]]||1;
+  return bw*(0.2+3*err)*(1+Math.min(x.lap||0,10)*0.08);
 }
+/* взвешенный отбор без повторов: ключ u^(1/w), берём n наибольших */
+function pickWeighted(arr,n){
+  return arr.map(function(p){return {p:p,k:Math.pow(Math.random(),1/Math.max(cardW(p.i,p.t),1e-3))};})
+    .sort(function(a,b){return b.k-a.k;}).slice(0,n).map(function(z){return z.p;});
+}
+function buildReview(){
+  var due=duePairs(),take=pickWeighted(due,REV_LEN);
+  /* Очередь короткая — добираем слабыми карточками, у которых срок ещё не настал.
+     Они идут как закрепление: на коробки и сроки не влияют. */
+  var extra=Math.min(REV_LEN-take.length,Math.max(3,Math.ceil(take.length/2)));
+  if(take.length&&extra>0){
+    var now=Date.now(),inQ={},cand=[];
+    take.forEach(function(p){inQ[p.i]=1;});
+    for(var i=0;i<W.length;i++){
+      if(inQ[i])continue;
+      var x=wg(i);if(!x)continue;
+      for(var t=0;t<3;t++){
+        if(t===2&&noWrite(i))continue;
+        if(x.b[t]>=1&&x.d[t]>now&&cardW(i,t)>=WEAK_W)cand.push({i:i,t:t,prac:true});
+      }
+    }
+    var seen={};
+    pickWeighted(cand,cand.length).forEach(function(p){
+      if(extra>0&&!seen[p.i]){seen[p.i]=1;take.push(p);extra--;}
+    });
+  }
+  return spreadPairs(take).map(function(p){
+    var q=makeQ(p.i,typeForTrack(p.t,wg(p.i).b[p.t]));
+    if(p.prac)q.prac=true;
+    return q;
+  });
+}
+function startReview(){
+  startSession(buildReview(),"review","Повторение","review");
+}
+/* режим записи ответа для конкретной карточки: закрепление и повтор ошибки
+   не двигают коробки, даже внутри сессии повторения */
+function ansMode(q){ return (sess.mode==="review"&&!q.prac)?"review":"train"; }
 function introduce(i){
   var x=ws(i),now=Date.now(),ch=false;
   for(var t=0;t<3;t++)if(x.b[t]===0){x.b[t]=1;x.d[t]=now+IV[1];ch=true;}
@@ -2325,7 +2381,7 @@ function vReview(){
   var h='<section class="hero"><div class="eyebrow">Интервальные повторения</div>';
   h+='<div class="heroN">'+due+'</div><div class="heroSub">'+plural(due,"карточка ждёт","карточки ждут","карточек ждут")+(due?' · '+un+' '+plural(un,"слово","слова","слов"):"")+'</div>';
   h+='<button class="btn acc big" data-act="startReview"'+(due?"":" disabled")+'>'+(due?"Начать повторение":"Всё повторено ✓")+'</button>';
-  h+='<div class="mut xs" style="margin-top:9px">карточка = слово × навык (чтение · слух · письмо)</div></section>';
+  h+='<div class="mut xs" style="margin-top:9px">карточка = слово × навык (чтение · слух · письмо) · слабые карточки выпадают чаще, ошибка возвращается в той же сессии</div></section>';
   h+='<section class="card"><div class="cardT">Новые слова</div><div class="row">';
   h+='<select id="newCat" class="sel grow"><option value="all">Все категории</option>';
   for(var c in CATS)h+='<option value="'+c+'">'+CATS[c][0]+' '+CATS[c][1]+'</option>';
@@ -3334,7 +3390,8 @@ function vSession(){
   var pr=Math.round(100*s.i/s.qs.length);
   var audioQ=(q.type==="mcAuRu"||q.type==="mcAuDe"||q.type==="wrAu");
   var h='<div class="shead"><button class="icoBtn" data-act="quit">✕</button><div class="sbar"><i style="width:'+pr+'%"></i></div><div class="scount">'+(s.i+1)+'/'+s.qs.length+'</div></div>';
-  h+='<div class="stitle">'+TNAME[q.type]+'</div>';
+  h+='<div class="stitle">'+TNAME[q.type]
+    +(q.rt?'<span class="qtag">повтор ошибки</span>':(q.prac?'<span class="qtag">слабое · сверх очереди</span>':''))+'</div>';
   if(q.type==="mcDeRu")h+='<div class="qde serif">'+deHtml(q.wid)+' <button class="icoBtn" data-act="play" data-i="'+q.wid+'">🔊</button></div>';
   if(q.type==="mcRuDe"||q.type==="wrRuDe")h+='<div class="qru">'+esc(w[3])+'</div>';
   if(audioQ)h+='<div class="center"><button class="bigPlay" data-act="play" data-i="'+q.wid+'">🔊</button><div class="mut sm">нажми, чтобы послушать ещё раз</div></div>';
@@ -3505,8 +3562,9 @@ var A={
     var um=[],tp={},i;
     for(i=0;i<sess.mist.length;i++)if(um.indexOf(sess.mist[i])<0)um.push(sess.mist[i]);
     for(i=0;i<sess.qs.length;i++)tp[sess.qs[i].wid]=sess.qs[i].type;
-    var mode=sess.mode,title=sess.title,back=sess.back;
-    startSession(um.map(function(i){return makeQ(i,tp[i]);}),mode,title,back);
+    var title=sess.title,back=sess.back;
+    /* только что ошибся — повторение здесь закрепляет, но не возвращает коробку наверх */
+    startSession(um.map(function(i){return makeQ(i,tp[i]);}),"train",title+" · ошибки",back);
   },
   fin:function(){var back=sess.back;sess=null;show(back);},
   testV:function(){speak("Guten Tag! Ich lerne deutsche Wörter.");},
