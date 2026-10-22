@@ -150,6 +150,10 @@ main{max-width:640px;margin:0 auto;padding:8px 16px 90px}
 .szmode{display:flex;align-items:center;justify-content:space-between;gap:10px;
   padding:10px 0;border-top:1px solid var(--line)}
 .szmode .btn{flex:0 0 auto}
+.szrun{display:flex;align-items:center;gap:5px;justify-content:center;margin:6px 0 2px}
+.szrun i{width:9px;height:9px;border-radius:99px;border:1px solid var(--line);display:block}
+.szrun i.on{background:var(--acc);border-color:var(--acc)}
+.szrun span{margin-left:8px}
 .szrate{display:flex;gap:8px;margin-top:14px}
 .szrate .btn{flex:1}
 .btn.good{border-color:#245a41;background:#12271e;color:#8ddcc6}
@@ -4212,6 +4216,12 @@ var SMODE=[
   {k:"bau", n:"Русский → немецкий",d:"собираешь немецкую фразу из слов по переводу"}
 ];
 var SZD=null,szLoadErr=false,szess=null;
+/* Шаблон — это процедура, а не ассоциация: одного верного ответа мало.
+   Ступень берётся только после трёх верных подряд на разных фразах,
+   а последняя коробка не закрывает шаблон, а держит его на 60 днях. */
+var SZ_RUN=3;
+var SIV=[0,600000,86400000,259200000,604800000,1382400000,3024000000,5184000000];
+var SZ_MAXB=7;
 function szLoad(){
   if(SZD||szLoadErr)return;
   fetch("saetze.json").then(function(r){
@@ -4225,8 +4235,9 @@ function szText(ti){return SZD.t[ti];}
 /* ---- прогресс по шаблонам ---- */
 function sps(pid){
   var x=S.p[pid];
-  if(!x){x=S.p[pid]={b:[0,0,0,0],d:[0,0,0,0],a:[0,0,0,0],c:[0,0,0,0],lap:0,seen:[]};}
+  if(!x){x=S.p[pid]={b:[0,0,0,0],d:[0,0,0,0],a:[0,0,0,0],c:[0,0,0,0],st:[0,0,0,0],lap:0,seen:[]};}
   if(!x.seen)x.seen=[];
+  if(!x.st)x.st=[0,0,0,0];
   return x;
 }
 function spg(pid){return S.p[pid]||null;}
@@ -4263,15 +4274,26 @@ function szApply(pi,tr,ok){
   dlog(ok);
   if(window.myDE)window.myDE.logAnswer("saetze",{item:p.id,track:tr,mode:SMODE[tr].k,correct:ok});
   if(ok){
-    if(x.b[tr]===0){x.b[tr]=1;x.d[tr]=now+IV[1];}
-    else{x.b[tr]=Math.min(6,x.b[tr]+1);x.d[tr]=now+IV[x.b[tr]];}
+    x.st[tr]++;
+    if(x.b[tr]===0)x.b[tr]=1;
+    if(x.st[tr]>=SZ_RUN){                 /* три верных подряд — следующая ступень */
+      x.st[tr]=0;
+      x.b[tr]=Math.min(SZ_MAXB,x.b[tr]+1);
+      x.d[tr]=now+SIV[x.b[tr]];
+    }else{
+      x.d[tr]=now+SIV[1];                 /* серия набирается близко по времени */
+    }
   }else{
-    x.lap++;
-    x.b[tr]=Math.max(1,x.b[tr]-1);
-    x.d[tr]=now+IV[1];
+    x.lap++;x.st[tr]=0;
+    /* минус две ступени: одна опечатка не должна стоить месяца работы */
+    x.b[tr]=Math.max(1,x.b[tr]-2);
+    x.d[tr]=now+SIV[1];
   }
   save();
 }
+/* сколько верных подряд набрано на текущей ступени */
+function szRun(pi,tr){var x=spg(szPats()[pi].id);return x&&x.st?x.st[tr]:0;}
+function szBox(pi,tr){var x=spg(szPats()[pi].id);return x?x.b[tr]:0;}
 /* ---- разбор фразы ---- */
 function szWords(s){return s.replace(/[.,!?;:]/g," ").split(/\s+/).filter(Boolean);}
 function szGapWord(c){var w=szWords(c.de);return w[c.slot]||"";}
@@ -4411,7 +4433,11 @@ function vSzs(){
   var h='<div class="shead"><button class="icoBtn" data-act="szBack">✕</button>'
     +'<div class="sbar"><i style="width:'+Math.round(100*szess.i/szess.list.length)+'%"></i></div>'
     +'<div class="scount">'+(szess.i+1)+'/'+szess.list.length+'</div></div>';
-  h+='<div class="lcard"><div class="eyebrow">'+esc(m.n)+' '+szBadge(szess.list[szess.i])+'</div>';
+  var pi=szess.list[szess.i];
+  h+='<div class="lcard"><div class="eyebrow">'+esc(m.n)+' '+szBadge(pi)+'</div>';
+  h+='<div class="szrun" title="ступень '+szBox(pi,tr)+' из '+SZ_MAXB+'; для следующей нужно '+SZ_RUN+' верных подряд">';
+  for(var r=0;r<SZ_RUN;r++)h+='<i class="'+(r<szRun(pi,tr)?"on":"")+'"></i>';
+  h+='<span class="mut sm">ступень '+szBox(pi,tr)+'/'+SZ_MAXB+'</span></div>';
 
   if(tr===0){
     h+='<button class="bigPlay" data-act="szSay">🔊</button>';
