@@ -125,6 +125,30 @@ main{max-width:640px;margin:0 auto;padding:8px 16px 90px}
 .t3{background:#c9bcdd;color:#241436}.t4{background:#e2dcec;color:#4a3a5c}
 .t5{background:#eceaf0;color:#7b7488}
 .t6{background:#0d5c54;color:#fff}
+/* --- предложения --- */
+.szstat{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mut);margin-bottom:10px}
+.szstat b{color:var(--text);font-variant-numeric:tabular-nums}
+.szcell{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:none;
+  background:#1d2e2b;color:#5fcab9;border-radius:5px;padding:3px 7px;margin-left:8px;vertical-align:middle}
+.szrow{padding:8px 0;border-bottom:1px solid var(--line)}
+.szrow:last-child{border-bottom:none}
+.szin{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;color:var(--text);
+  font-size:17px;padding:13px 12px;margin:12px 0 4px;font-family:inherit}
+.szin:focus{outline:none;border-color:var(--acc)}
+.szuser{font-size:17px;color:var(--mut);margin:10px 0 2px;word-break:break-word}
+.szdiff{margin-top:12px;font-size:16px;line-height:1.9;word-break:break-word}
+.szdiff .d-ok{color:var(--text)}
+.szdiff .d-extra{color:#ff9aa4;text-decoration:line-through}
+.szdiff .d-miss{color:#8ddcc6;text-decoration:underline;text-underline-offset:3px}
+.szslot{min-height:46px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;
+  background:var(--card2);border:1px dashed var(--line);border-radius:12px;padding:10px;margin-bottom:10px}
+.szpool{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:10px}
+.szslot .chip,.szpool .chip{font-size:15px;padding:8px 13px}
+.szrate{display:flex;gap:8px;margin-top:14px}
+.szrate .btn{flex:1}
+.btn.good{border-color:#245a41;background:#12271e;color:#8ddcc6}
+.btn.bad{border-color:#5c2a31;background:#291418;color:#ff9aa4}
+
 .wnote{color:#6f7d93;font-size:12px;margin-top:1px}
 .wnote.exI{font-style:italic;color:#8391a8}
 .exRuI{font-style:normal;color:#66738a}
@@ -242,6 +266,7 @@ input[type=range].full{width:100%;margin-bottom:6px;accent-color:var(--acc)}
   <button class="tab act" data-v="review">Повтор<span id="dueBadge" class="badge" style="display:none"></span></button>
   <button class="tab" data-v="words">Слова</button>
   <button class="tab" data-v="train">Тренировка</button>
+  <button class="tab" data-v="satz">Предложения</button>
   <button class="tab" data-v="num">Числа</button>
   <button class="tab" data-v="prep">Предлоги</button>
   <button class="tab" data-v="spr">Sprechen</button>
@@ -1656,6 +1681,75 @@ var W=[
 ["","zurückgehen","","идти обратно","verb","er geht zurück · ist zurückgegangen"],
 ["","zurückkommen","","возвращаться","verb","er kommt zurück · ist zurückgekommen"],
 ["","zum Beispiel","","например","core","сокращённо z. B."]];
+/* ================= ПРЕДЛОЖЕНИЯ ================= */
+/* Ячейки структурной сетки: что именно тренирует фраза. */
+var SCELL={
+  v2:   ["Простое V2","глагол на втором месте, рамки нет"],
+  inv:  ["Инверсия","впереди обстоятельство, подлежащее после глагола"],
+  trenn:["Отделяемая приставка","приставка уезжает в конец"],
+  modal:["Модальный + инфинитив","инфинитив в конце"],
+  perf: ["Perfekt","haben/sein + Partizip II в конце"],
+  dat:  ["Датив-носитель","русское подлежащее становится немецким дативом"],
+  frage:["Вопрос","глагол первым или сразу после W-слова"],
+  neben:["Придаточное","глагол уходит в самый конец"]
+};
+/* Ступени: от фразы без рамки к рамке и дальше к придаточному. */
+var SLV=["","без рамки","рамка","придаточное"];
+/* [немецкий, перевод, ячейка, ступень, слова под проверку] */
+var SZ=[
+["Ich nehme den Bus zur Arbeit.","Я езжу на работу на автобусе.","v2",1,["nehmen"]],
+["Wir wohnen seit drei Jahren in Berlin.","Мы живём в Берлине три года.","v2",1,["wohnen"]],
+["Ich kenne diesen Mann nicht.","Я не знаю этого человека.","v2",1,["kennen"]],
+["Sie weiß die Antwort nicht.","Она не знает ответа.","v2",1,["wissen"]],
+["Das Wetter wird morgen besser.","Завтра погода станет лучше.","v2",1,["werden"]],
+["Ich brauche noch etwas Zeit.","Мне нужно ещё немного времени.","v2",1,["brauchen","etwas"]],
+["Er bleibt heute zu Hause.","Он сегодня остаётся дома.","v2",1,["bleiben"]],
+["Ich bezahle die Rechnung.","Я оплачиваю счёт.","v2",1,["bezahlen","Rechnung"]],
+["Der Zucker steht auf dem Tisch.","Сахар стоит на столе.","v2",1,["Zucker"]],
+["Ich verstehe dich gut.","Я тебя хорошо понимаю.","v2",1,["verstehen"]],
+
+["Gestern war ich im Kino.","Вчера я был в кино.","inv",1,["gestern"]],
+["Manchmal nehme ich das Fahrrad.","Иногда я беру велосипед.","inv",1,["manchmal","nehmen"]],
+["Morgen bleibe ich im Büro.","Завтра я останусь в офисе.","inv",1,["bleiben"]],
+["Später brauche ich deine Hilfe.","Позже мне понадобится твоя помощь.","inv",1,["später","brauchen"]],
+["Vielleicht kennt er den Weg.","Может быть, он знает дорогу.","inv",1,["vielleicht","kennen"]],
+["Heute bezahle ich das Essen.","Сегодня я плачу за еду.","inv",1,["bezahlen"]],
+
+["Die Stadt gefällt mir sehr.","Город мне очень нравится.","dat",1,["gefallen"]],
+["Der Kuchen schmeckt mir nicht.","Торт мне не нравится на вкус.","dat",1,["schmecken"]],
+["Mir tut der Kopf weh.","У меня болит голова.","dat",1,["wehtun"]],
+["Gehört dir dieses Buch?","Эта книга твоя?","dat",1,["gehören"]],
+["Mir ist heute kalt.","Мне сегодня холодно.","dat",1,[]],
+["Wie geht es dir heute?","Как ты сегодня?","dat",1,["Wie geht es dir?"]],
+
+["Ich stehe jeden Tag um sieben auf.","Я встаю каждый день в семь.","trenn",2,["aufstehen"]],
+["Der Zug fährt um acht Uhr ab.","Поезд отправляется в восемь.","trenn",2,["abfahren"]],
+["Ich rufe dich heute Abend an.","Я позвоню тебе сегодня вечером.","trenn",2,["anrufen"]],
+["Wir kaufen am Samstag ein.","Мы закупаемся в субботу.","trenn",2,["einkaufen"]],
+["Sie lädt uns zum Essen ein.","Она приглашает нас поесть.","trenn",2,["einladen"]],
+["Wann fängt der Film an?","Когда начинается фильм?","trenn",2,["anfangen"]],
+
+["Ich muss die Rechnung heute bezahlen.","Я должен сегодня оплатить счёт.","modal",2,["müssen","bezahlen","Rechnung"]],
+["Kannst du mir bitte helfen?","Можешь мне помочь?","modal",2,["können","helfen"]],
+["Wir wollen am Wochenende nach Hamburg fahren.","Мы хотим на выходных поехать в Гамбург.","modal",2,["wollen"]],
+["Ich möchte noch etwas Wasser nehmen.","Я хотел бы взять ещё воды.","modal",2,["möchten","nehmen","etwas"]],
+["Hier darf man nicht rauchen.","Здесь нельзя курить.","modal",2,["dürfen"]],
+["Du musst das nicht sofort verstehen.","Тебе не нужно понимать это сразу.","modal",2,["müssen","verstehen"]],
+
+["Ich habe gestern einen Brief geschrieben.","Я вчера написал письмо.","perf",2,["gestern","schreiben"]],
+["Wir haben den Zug verpasst.","Мы опоздали на поезд.","perf",2,["verpassen"]],
+["Hast du das verstanden?","Ты это понял?","perf",2,["verstehen"]],
+["Er ist zu Hause geblieben.","Он остался дома.","perf",2,["bleiben"]],
+["Ich habe die Rechnung schon bezahlt.","Я уже оплатил счёт.","perf",2,["bezahlen","Rechnung"]],
+["Was hast du gestern gesagt?","Что ты вчера сказал?","perf",2,["sagen","gestern"]],
+["Sie ist Ärztin geworden.","Она стала врачом.","perf",2,["werden"]],
+
+["Weißt du, wo der Bahnhof ist?","Ты знаешь, где вокзал?","neben",3,["wissen"]],
+["Ich weiß nicht, ob er heute kommt.","Я не знаю, придёт ли он сегодня.","neben",3,["wissen"]],
+["Er bleibt zu Hause, weil er krank ist.","Он остаётся дома, потому что болен.","neben",3,["bleiben"]],
+["Ich hoffe, dass du mich verstehst.","Надеюсь, что ты меня понимаешь.","neben",3,["verstehen"]]
+];
+
 /* примеры употребления: ключ = артикль + слово */
 var EX={
 "Hallo":["Hallo, ich bin Anna.","Привет, я Анна."],
@@ -2529,7 +2623,7 @@ var IV=[0,600000,86400000,259200000,604800000,1382400000,3024000000];
 var BOXLBL=["новое","10 мин","1 день","3 дня","7 дней","16 дней","35 дней"];
 var KEY="de_a1_trainer_v1";
 /* ================= СОСТОЯНИЕ ================= */
-var S={w:{},daily:{},set:{voice:"",rate:0.9,auto:true},mem:false};
+var S={w:{},s:{},daily:{},set:{voice:"",rate:0.9,auto:true},mem:false};
 var view="review",curCat=null,sess=null,learn=null,resetArm=false;
 var allQ="",allSort="rank",allFilt="all";
 var trainCfg={type:"mcDeRu",cats:null,len:20,learned:true,picked:false};
@@ -2608,18 +2702,20 @@ function localLoad(){
     var d=JSON.parse(raw);
     if(d&&typeof d==="object"){
       if(d.w)S.w=d.w;
+      if(d.s)S.s=d.s;
       if(d.daily)S.daily=d.daily;
       if(d.set)S.set=Object.assign(S.set,d.set);
     }
   }catch(e){}
 }
 function localSave(){
-  try{localStorage.setItem(KEY,JSON.stringify({w:S.w,daily:S.daily,set:S.set}));S.mem=false;}
+  try{localStorage.setItem(KEY,JSON.stringify({w:S.w,s:S.s,daily:S.daily,set:S.set}));S.mem=false;}
   catch(e){if(!S.mem){S.mem=true;render();}}
 }
 function snapshot(){
   snap={};
   for(var k in S.w)snap["w:"+k]=JSON.stringify(S.w[k]);
+  for(var k2 in S.s)snap["s:"+k2]=JSON.stringify(S.s[k2]);
   snap["daily"]=JSON.stringify(S.daily);
   snap["set"]=JSON.stringify(S.set);
 }
@@ -2628,6 +2724,10 @@ function syncPush(){
   for(var k in S.w){
     var id="w:"+k,j=JSON.stringify(S.w[k]);
     if(snap[id]!==j){Progress.touch(id,{d:S.w[k]});snap[id]=j;}
+  }
+  for(var k2 in S.s){
+    var id2="s:"+k2,j2=JSON.stringify(S.s[k2]);
+    if(snap[id2]!==j2){Progress.touch(id2,{d:S.s[k2]});snap[id2]=j2;}
   }
   var dj=JSON.stringify(S.daily);
   if(snap["daily"]!==dj){Progress.touch("daily",{d:S.daily});snap["daily"]=dj;}
@@ -2649,6 +2749,7 @@ function loadS(){
       var v=st[id]&&st[id].d;
       if(!v)continue;
       if(id.slice(0,2)==="w:")S.w[id.slice(2)]=v;
+      else if(id.slice(0,2)==="s:")S.s[id.slice(2)]=v;
       else if(id==="daily")S.daily=v;
       else if(id==="set")S.set=Object.assign(S.set,v);
     }
@@ -4162,7 +4263,238 @@ function toast(m){
   var t=$("#toast");t.textContent=m;t.classList.add("on");
   clearTimeout(toT);toT=setTimeout(function(){t.classList.remove("on");},2400);
 }
+/* Режимы. Первые два оцениваешь сам, вторые два проверяются автоматически. */
+var SMODE=[
+  {k:"hoer",n:"Слушаю",d:"слышишь фразу, вспоминаешь — потом сверяешь с текстом"},
+  {k:"lese",n:"Читаю",d:"читаешь фразу, понимаешь — потом сверяешь с переводом"},
+  {k:"dikt",n:"Диктант",d:"слышишь фразу и записываешь её"},
+  {k:"bau", n:"Сборка",d:"собираешь фразу из перемешанных слов"}
+];
+var szess=null;
+function szKey(j){return SZ[j][0];}
+function szs(j){
+  var k=szKey(j),x=S.s[k];
+  if(!x){x=S.s[k]={b:[0,0,0,0],d:[0,0,0,0],a:[0,0,0,0],c:[0,0,0,0],lap:0};}
+  return x;
+}
+function szg(j){return S.s[szKey(j)]||null;}
+function szDue(tr){
+  var now=Date.now(),r=[];
+  for(var j=0;j<SZ.length;j++){var x=szg(j);if(x&&x.b[tr]>0&&x.d[tr]<=now)r.push(j);}
+  return r;
+}
+function szNew(tr){
+  var r=[];
+  for(var j=0;j<SZ.length;j++){var x=szg(j);if(!x||x.b[tr]===0)r.push(j);}
+  /* сначала простые ступени: фраза без рамки, потом рамка, потом придаточное */
+  r.sort(function(p,q){return SZ[p][3]-SZ[q][3];});
+  return r;
+}
+/* Лейтнер для предложений: те же интервалы, что у слов, но свои коробки по режимам. */
+function szApply(j,tr,ok){
+  var x=szs(j),now=Date.now();
+  x.a[tr]++;if(ok)x.c[tr]++;
+  dlog(ok);
+  if(window.myDE)window.myDE.logAnswer("saetze",{item:szKey(j),track:tr,mode:SMODE[tr].k,correct:ok});
+  if(ok){
+    if(x.b[tr]===0){x.b[tr]=1;x.d[tr]=now+IV[1];}
+    else{x.b[tr]=Math.min(6,x.b[tr]+1);x.d[tr]=now+IV[x.b[tr]];}
+  }else{
+    x.lap++;
+    x.b[tr]=Math.max(1,x.b[tr]-1);
+    x.d[tr]=now+IV[1];
+  }
+  save();
+}
+function szWords(j){return SZ[j][0].replace(/[.,!?;]/g,"").split(/\s+/).filter(Boolean);}
+/* Нормализация для сверки: знаки и лишние пробелы не считаются ошибкой, регистр — считается. */
+function szNorm(s){return String(s).replace(/[.,!?;:]/g,"").replace(/\s+/g," ").trim();}
+/* Пословное выравнивание через наибольшую общую подпоследовательность. */
+function szDiff(user,corr){
+  var a=szNorm(user).split(" ").filter(Boolean),b=szNorm(corr).split(" ").filter(Boolean);
+  var n=a.length,m=b.length,L=[],i,k;
+  for(i=0;i<=n;i++){L.push([]);for(k=0;k<=m;k++)L[i][k]=0;}
+  for(i=n-1;i>=0;i--)for(k=m-1;k>=0;k--)
+    L[i][k]=(a[i]===b[k])?L[i+1][k+1]+1:Math.max(L[i+1][k],L[i][k+1]);
+  var out=[];i=0;k=0;
+  while(i<n&&k<m){
+    if(a[i]===b[k]){out.push({t:"ok",w:b[k]});i++;k++;}
+    else if(L[i+1][k]>=L[i][k+1]){out.push({t:"extra",w:a[i]});i++;}
+    else{out.push({t:"miss",w:b[k]});k++;}
+  }
+  for(;i<n;i++)out.push({t:"extra",w:a[i]});
+  for(;k<m;k++)out.push({t:"miss",w:b[k]});
+  return out;
+}
+function szStart(tr,n){
+  /* просроченное вперёд и вперемешку, следом новое — от простых ступеней к сложным */
+  var due=shuffle(szDue(tr)),fresh=szNew(tr),list=due.concat(fresh).slice(0,n||12);
+  if(!list.length){toast("Здесь пока нечего повторять");return;}
+  szess={tr:tr,list:list,i:0,c:0,ans:false,fb:null,shown:false,text:"",pick:[],pool:[]};
+  szPrep();
+  show("szs");
+}
+function szPrep(){
+  szess.ans=false;szess.fb=null;szess.shown=false;szess.text="";szess.pick=[];
+  if(szess.tr===3&&szess.i<szess.list.length)szess.pool=shuffle(szWords(szess.list[szess.i]).slice());
+}
+function szCur(){return szess.list[szess.i];}
+function szReveal(){ if(szess&&!szess.ans){szess.shown=true;render();} }
+function szRate(ok){
+  if(!szess||szess.ans)return;
+  szess.ans=true;szess.fb={ok:ok};
+  if(ok)szess.c++;
+  szApply(szCur(),szess.tr,ok);
+  render();
+}
+function szCheckText(){
+  if(!szess||szess.ans)return;
+  var inp=$("#szInp");if(!inp||!inp.value.trim())return;
+  var j=szCur(),corr=SZ[j][0],val=inp.value;
+  var ok=szNorm(val)===szNorm(corr);
+  var caseOnly=!ok&&szNorm(val).toLowerCase()===szNorm(corr).toLowerCase();
+  szess.text=val;szess.ans=true;
+  szess.fb={ok:ok||caseOnly,msg:caseOnly?"Слова верны — различается только регистр. В немецком существительные с большой буквы.":"",
+            diff:(ok?null:szDiff(val,corr))};
+  if(ok||caseOnly)szess.c++;
+  inp.blur();
+  szApply(j,szess.tr,ok||caseOnly);
+  render();
+}
+function szPick(k){
+  if(!szess||szess.ans)return;
+  szess.pick.push(szess.pool[k]);szess.pool.splice(k,1);render();
+}
+function szUnpick(k){
+  if(!szess||szess.ans)return;
+  szess.pool.push(szess.pick[k]);szess.pick.splice(k,1);render();
+}
+function szCheckBau(){
+  if(!szess||szess.ans||szess.pool.length)return;
+  var j=szCur(),ok=szess.pick.join(" ")===szWords(j).join(" ");
+  szess.ans=true;
+  szess.fb={ok:ok,diff:ok?null:szDiff(szess.pick.join(" "),SZ[j][0])};
+  if(ok)szess.c++;
+  szApply(j,szess.tr,ok);
+  render();
+}
+function szNext(){
+  if(!szess)return;
+  szess.i++;
+  if(szess.i<szess.list.length)szPrep();
+  render();
+}
+function szSpeak(){var j=szCur();if(j!=null)speak(SZ[j][0]);}
+function szCellHtml(j){
+  var c=SCELL[SZ[j][2]]||["",""];
+  return '<span class="szcell" title="'+esc(c[1])+'">'+esc(c[0])+'</span>';
+}
+function szDiffHtml(d){
+  if(!d)return"";
+  var h='<div class="szdiff">';
+  for(var i=0;i<d.length;i++)
+    h+='<span class="d-'+d[i].t+'">'+esc(d[i].w)+'</span> ';
+  return h+'</div><div class="mut sm">зачёркнуто — лишнее, подчёркнуто — пропущено</div>';
+}
+/* ---- экраны ---- */
+function vSatz(){
+  var h='<div class="pageT">Предложения · '+SZ.length+'</div>';
+  h+='<div class="mut sm" style="margin-bottom:14px">Фразы собраны на словах, которые чаще всего срываются, '
+    +'и разложены по структурам: от простого порядка слов к рамке и придаточному.</div>';
+  for(var t=0;t<SMODE.length;t++){
+    var due=szDue(t).length,fresh=szNew(t).length,done=SZ.length-fresh;
+    h+='<section class="card"><div class="cardT">'+esc(SMODE[t].n)+'</div>'
+      +'<div class="mut sm" style="margin-bottom:10px">'+esc(SMODE[t].d)+'</div>'
+      +'<div class="szstat"><span>к повтору: <b>'+due+'</b></span><span>новых: <b>'+fresh+'</b></span>'
+      +'<span>начато: <b>'+done+'</b></span></div>'
+      +'<button class="btn acc" data-act="szGo" data-t="'+t+'">Начать</button></section>';
+  }
+  h+='<section class="card"><div class="cardT">Что внутри</div><div class="szcells">';
+  var cnt={},j;
+  for(j=0;j<SZ.length;j++)cnt[SZ[j][2]]=(cnt[SZ[j][2]]||0)+1;
+  for(var k in SCELL)if(cnt[k])
+    h+='<div class="szrow"><b>'+esc(SCELL[k][0])+'</b> · '+cnt[k]+'<div class="mut sm">'+esc(SCELL[k][1])+'</div></div>';
+  return h+'</div></section>';
+}
+function vSzs(){
+  if(!szess)return'<div class="mut">Сессия не запущена.</div>';
+  if(szess.i>=szess.list.length){
+    var pc=Math.round(100*szess.c/szess.list.length);
+    return'<div class="lcard center"><div class="cardT">Готово</div>'
+      +'<div class="numBig">'+szess.c+'/'+szess.list.length+'</div>'
+      +'<div class="mut">'+pc+'% верно</div>'
+      +'<button class="btn acc big" data-act="szBack" style="margin-top:16px">К режимам</button></div>';
+  }
+  var j=szCur(),tr=szess.tr,m=SMODE[tr];
+  var h='<div class="shead"><button class="icoBtn" data-act="szBack">✕</button>'
+    +'<div class="sbar"><i style="width:'+Math.round(100*szess.i/szess.list.length)+'%"></i></div>'
+    +'<div class="scount">'+(szess.i+1)+'/'+szess.list.length+'</div></div>';
+  h+='<div class="lcard"><div class="eyebrow">'+esc(m.n)+' '+szCellHtml(j)+'</div>';
+
+  if(tr===0){                                   /* слушаю → сверяю с текстом */
+    h+='<button class="bigPlay" data-act="szSay">🔊</button>';
+    if(!szess.shown&&!szess.ans)
+      h+='<div class="mut sm center">Прослушай и восстанови фразу про себя.</div>'
+        +'<button class="btn acc big" data-act="szReveal">Показать текст</button>';
+    else h+='<div class="lde serif">'+esc(SZ[j][0])+'</div><div class="lru">'+esc(SZ[j][1])+'</div>';
+  }else if(tr===1){                             /* читаю → сверяю с переводом */
+    h+='<div class="lde serif">'+esc(SZ[j][0])+'</div>';
+    if(!szess.shown&&!szess.ans)
+      h+='<div class="mut sm center">Пойми фразу, потом проверь себя.</div>'
+        +'<button class="btn acc big" data-act="szReveal">Показать перевод</button>';
+    else h+='<div class="lru">'+esc(SZ[j][1])+'</div>';
+  }else if(tr===2){                             /* диктант */
+    h+='<button class="bigPlay" data-act="szSay">🔊</button>';
+    if(!szess.ans)
+      h+= '<input id="szInp" class="szin" autocomplete="off" autocorrect="off" '
+        +'autocapitalize="off" spellcheck="false" placeholder="Запиши фразу">'
+        +'<button class="btn acc big" data-act="szCheck">Проверить</button>';
+    else{
+      h+='<div class="szuser">'+esc(szess.text)+'</div>';
+      h+='<div class="lde serif">'+esc(SZ[j][0])+'</div><div class="lru">'+esc(SZ[j][1])+'</div>';
+      h+=szDiffHtml(szess.fb.diff);
+    }
+  }else{                                        /* сборка из слов */
+    h+='<div class="lru" style="margin-bottom:10px">'+esc(SZ[j][1])+'</div>';
+    h+='<div class="szslot">'+(szess.pick.length?"":'<span class="mut sm">нажимай слова по порядку</span>');
+    for(var p=0;p<szess.pick.length;p++)
+      h+='<button class="chip on" data-act="szUnpick" data-k="'+p+'"'+(szess.ans?" disabled":"")+'>'+esc(szess.pick[p])+'</button>';
+    h+='</div>';
+    if(!szess.ans){
+      h+='<div class="szpool">';
+      for(var q=0;q<szess.pool.length;q++)
+        h+='<button class="chip" data-act="szPick" data-k="'+q+'">'+esc(szess.pool[q])+'</button>';
+      h+='</div>';
+      h+='<button class="btn acc big" data-act="szBau"'+(szess.pool.length?" disabled":"")+'>Проверить</button>';
+    }else{
+      h+='<div class="lde serif">'+esc(SZ[j][0])+'</div>';
+      h+=szDiffHtml(szess.fb.diff);
+    }
+  }
+
+  if(szess.ans){
+    h+='<div class="fb '+(szess.fb.ok?"okB":"badB")+'">'+(szess.fb.ok?"Верно":"Не совпало")
+      +(szess.fb.msg?'<div class="mut sm">'+esc(szess.fb.msg)+'</div>':"")+'</div>';
+    h+='<button class="btn acc big" data-act="szNext">Дальше</button>';
+  }else if(szess.shown&&tr<2){
+    h+='<div class="szrate"><button class="btn good" data-act="szYes">Да, так и '+(tr?"понял":"услышал")+'</button>'
+      +'<button class="btn bad" data-act="szNo">Нет, иначе</button></div>';
+  }
+  return h+'</div>';
+}
+
 var A={
+  szGo:function(b){szStart(+b.dataset.t,12);},
+  szBack:function(){szess=null;show("satz");},
+  szSay:function(){szSpeak();},
+  szReveal:function(){szReveal();},
+  szYes:function(){szRate(true);},
+  szNo:function(){szRate(false);},
+  szCheck:function(){szCheckText();},
+  szPick:function(b){szPick(+b.dataset.k);},
+  szUnpick:function(b){szUnpick(+b.dataset.k);},
+  szBau:function(){szCheckBau();},
+  szNext:function(){szNext();},
   doWeak:function(){
     var out=[],i,k,x,a,c,mn,acc;
     for(i=0;i<W.length;i++){
@@ -4286,7 +4618,7 @@ var A={
 function show(v){view=v;render();}
 function render(){
   var badge=duePairs().length;
-  var backMap={catlist:"words",all:"words",learn:"review",session:(sess?sess.back:"review")};
+  var backMap={catlist:"words",all:"words",learn:"review",session:(sess?sess.back:"review"),szs:"satz"};
   var actV=backMap[view]||view;
   $$(".tab").forEach(function(b){b.classList.toggle("act",b.dataset.v===actV);});
   var bd=$("#dueBadge");
@@ -4298,6 +4630,8 @@ function render(){
   else if(view==="catlist")h=vCatList();
   else if(view==="all")h=vAll();
   else if(view==="train")h=vTrain();
+  else if(view==="satz")h=vSatz();
+  else if(view==="szs")h=vSzs();
   else if(view==="num")h=vNum();
   else if(view==="prep")h=vPrep();
   else if(view==="spr")h=vSpr();
@@ -4330,6 +4664,20 @@ function afterRender(){
       };
       inp.onkeyup=function(e){if(e.key==="Enter")e.stopPropagation();};
       setTimeout(function(){inp.focus();},60);
+    }
+  }
+  if(view==="szs"&&szess&&szess.i<szess.list.length){
+    if(!szess.ans&&S.set.auto&&(szess.tr===0||szess.tr===2))
+      setTimeout(function(){if(szess&&!szess.ans)szSpeak();},250);
+    var si=$("#szInp");
+    if(si){
+      si.onkeydown=function(e){
+        if(e.key!=="Enter")return;
+        e.preventDefault();e.stopPropagation();
+        if(!szess.ans)szCheckText();
+      };
+      si.onkeyup=function(e){if(e.key==="Enter")e.stopPropagation();};
+      setTimeout(function(){si.focus();},60);
     }
   }
   if(view==="num"){
