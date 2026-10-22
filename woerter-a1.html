@@ -147,6 +147,9 @@ main{max-width:640px;margin:0 auto;padding:8px 16px 90px}
 .szsent{font-size:22px;line-height:1.5;margin:10px 0 2px;word-break:break-word}
 .szgap{display:inline-block;min-width:62px;border-bottom:2px solid var(--acc);margin:0 2px}
 .szslow{display:block;margin:0 auto 6px;font-size:13px;padding:6px 14px}
+.szmode{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 0;border-top:1px solid var(--line)}
+.szmode .btn{flex:0 0 auto}
 .szrate{display:flex;gap:8px;margin-top:14px}
 .szrate .btn{flex:1}
 .btn.good{border-color:#245a41;background:#12271e;color:#8ddcc6}
@@ -4267,6 +4270,11 @@ function toast(m){
   clearTimeout(toT);toT=setTimeout(function(){t.classList.remove("on");},2400);
 }
 /* Режимы. Первые два оцениваешь сам, вторые два проверяются автоматически. */
+/* Две коробки на фразу, а не четыре: режимы сгруппированы по тому,
+   что они на самом деле тренируют. Внутри группы интервал общий —
+   фраза, узнанная на слух, не спрашивается отдельно на чтении. */
+var SGRP=[["Узнавание","слушаю и читаю"],["Производство","вставляю слово и собираю фразу"]];
+var MG=[0,0,1,1];
 var SMODE=[
   {k:"hoer",n:"Слушаю",d:"слышишь фразу, вспоминаешь — потом сверяешь с текстом"},
   {k:"lese",n:"Читаю",d:"читаешь фразу, понимаешь — потом сверяешь с переводом"},
@@ -4277,35 +4285,40 @@ var szess=null;
 function szKey(j){return SZ[j][0];}
 function szs(j){
   var k=szKey(j),x=S.s[k];
-  if(!x){x=S.s[k]={b:[0,0,0,0],d:[0,0,0,0],a:[0,0,0,0],c:[0,0,0,0],lap:0};}
+  if(!x){x=S.s[k]={b:[0,0],d:[0,0],a:[0,0,0,0],c:[0,0,0,0],lap:0};}
+  if(x.b.length>2){                        /* перенос со старой схемы на четыре коробки */
+    x.b=[Math.max(x.b[0],x.b[1]),Math.max(x.b[2],x.b[3])];
+    x.d=[Math.min.apply(null,[x.d[0],x.d[1]].filter(Boolean))||0,
+         Math.min.apply(null,[x.d[2],x.d[3]].filter(Boolean))||0];
+  }
   return x;
 }
 function szg(j){return S.s[szKey(j)]||null;}
 function szDue(tr){
-  var now=Date.now(),r=[];
-  for(var j=0;j<SZ.length;j++){var x=szg(j);if(x&&x.b[tr]>0&&x.d[tr]<=now)r.push(j);}
+  var now=Date.now(),g=MG[tr],r=[];
+  for(var j=0;j<SZ.length;j++){var x=szg(j);if(x&&x.b&&x.b[g]>0&&x.d[g]<=now)r.push(j);}
   return r;
 }
 function szNew(tr){
-  var r=[];
-  for(var j=0;j<SZ.length;j++){var x=szg(j);if(!x||x.b[tr]===0)r.push(j);}
+  var g=MG[tr],r=[];
+  for(var j=0;j<SZ.length;j++){var x=szg(j);if(!x||!x.b||!x.b[g])r.push(j);}
   /* сначала простые ступени: фраза без рамки, потом рамка, потом придаточное */
   r.sort(function(p,q){return SZ[p][3]-SZ[q][3];});
   return r;
 }
 /* Лейтнер для предложений: те же интервалы, что у слов, но свои коробки по режимам. */
 function szApply(j,tr,ok){
-  var x=szs(j),now=Date.now();
+  var x=szs(j),now=Date.now(),g=MG[tr];
   x.a[tr]++;if(ok)x.c[tr]++;
   dlog(ok);
-  if(window.myDE)window.myDE.logAnswer("saetze",{item:szKey(j),track:tr,mode:SMODE[tr].k,correct:ok});
+  if(window.myDE)window.myDE.logAnswer("saetze",{item:szKey(j),track:g,mode:SMODE[tr].k,correct:ok});
   if(ok){
-    if(x.b[tr]===0){x.b[tr]=1;x.d[tr]=now+IV[1];}
-    else{x.b[tr]=Math.min(6,x.b[tr]+1);x.d[tr]=now+IV[x.b[tr]];}
+    if(x.b[g]===0){x.b[g]=1;x.d[g]=now+IV[1];}
+    else{x.b[g]=Math.min(6,x.b[g]+1);x.d[g]=now+IV[x.b[g]];}
   }else{
     x.lap++;
-    x.b[tr]=Math.max(1,x.b[tr]-1);
-    x.d[tr]=now+IV[1];
+    x.b[g]=Math.max(1,x.b[g]-1);
+    x.d[g]=now+IV[1];
   }
   save();
 }
@@ -4411,13 +4424,19 @@ function vSatz(){
   var h='<div class="pageT">Предложения · '+SZ.length+'</div>';
   h+='<div class="mut sm" style="margin-bottom:14px">Фразы собраны на словах, которые чаще всего срываются, '
     +'и разложены по структурам: от простого порядка слов к рамке и придаточному.</div>';
-  for(var t=0;t<SMODE.length;t++){
-    var due=szDue(t).length,fresh=szNew(t).length,done=SZ.length-fresh;
-    h+='<section class="card"><div class="cardT">'+esc(SMODE[t].n)+'</div>'
-      +'<div class="mut sm" style="margin-bottom:10px">'+esc(SMODE[t].d)+'</div>'
+  for(var g=0;g<SGRP.length;g++){
+    var first=MG.indexOf(g);
+    var due=szDue(first).length,fresh=szNew(first).length,done=SZ.length-fresh;
+    h+='<section class="card"><div class="cardT">'+esc(SGRP[g][0])+'</div>'
       +'<div class="szstat"><span>к повтору: <b>'+due+'</b></span><span>новых: <b>'+fresh+'</b></span>'
-      +'<span>начато: <b>'+done+'</b></span></div>'
-      +'<button class="btn acc" data-act="szGo" data-t="'+t+'">Начать</button></section>';
+      +'<span>начато: <b>'+done+'</b></span></div>';
+    for(var t=0;t<SMODE.length;t++){
+      if(MG[t]!==g)continue;
+      h+='<div class="szmode"><div><b>'+esc(SMODE[t].n)+'</b>'
+        +'<div class="mut sm">'+esc(SMODE[t].d)+'</div></div>'
+        +'<button class="btn acc" data-act="szGo" data-t="'+t+'">Начать</button></div>';
+    }
+    h+='<div class="mut sm" style="margin-top:8px">Коробка общая на группу: ответ в любом из двух режимов двигает срок повтора.</div></section>';
   }
   h+='<section class="card"><div class="cardT">Что внутри</div><div class="szcells">';
   var cnt={},j;
