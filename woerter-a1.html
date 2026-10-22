@@ -144,6 +144,9 @@ main{max-width:640px;margin:0 auto;padding:8px 16px 90px}
   background:var(--card2);border:1px dashed var(--line);border-radius:12px;padding:10px;margin-bottom:10px}
 .szpool{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:10px}
 .szslot .chip,.szpool .chip{font-size:15px;padding:8px 13px}
+.szsent{font-size:22px;line-height:1.5;margin:10px 0 2px;word-break:break-word}
+.szgap{display:inline-block;min-width:62px;border-bottom:2px solid var(--acc);margin:0 2px}
+.szslow{display:block;margin:0 auto 6px;font-size:13px;padding:6px 14px}
 .szrate{display:flex;gap:8px;margin-top:14px}
 .szrate .btn{flex:1}
 .btn.good{border-color:#245a41;background:#12271e;color:#8ddcc6}
@@ -1695,59 +1698,59 @@ var SCELL={
 };
 /* Ступени: от фразы без рамки к рамке и дальше к придаточному. */
 var SLV=["","без рамки","рамка","придаточное"];
-/* [немецкий, перевод, ячейка, ступень, слова под проверку] */
+/* [немецкий, перевод, ячейка, ступень, слова под проверку, слово в пропуск] */
 var SZ=[
-["Ich nehme den Bus zur Arbeit.","Я езжу на работу на автобусе.","v2",1,["nehmen"]],
-["Wir wohnen seit drei Jahren in Berlin.","Мы живём в Берлине три года.","v2",1,["wohnen"]],
-["Ich kenne diesen Mann nicht.","Я не знаю этого человека.","v2",1,["kennen"]],
-["Sie weiß die Antwort nicht.","Она не знает ответа.","v2",1,["wissen"]],
-["Das Wetter wird morgen besser.","Завтра погода станет лучше.","v2",1,["werden"]],
-["Ich brauche noch etwas Zeit.","Мне нужно ещё немного времени.","v2",1,["brauchen","etwas"]],
-["Er bleibt heute zu Hause.","Он сегодня остаётся дома.","v2",1,["bleiben"]],
-["Ich bezahle die Rechnung.","Я оплачиваю счёт.","v2",1,["bezahlen","Rechnung"]],
-["Der Zucker steht auf dem Tisch.","Сахар стоит на столе.","v2",1,["Zucker"]],
-["Ich verstehe dich gut.","Я тебя хорошо понимаю.","v2",1,["verstehen"]],
+["Ich nehme den Bus zur Arbeit.","Я езжу на работу на автобусе.","v2",1,["nehmen"],"den"],
+["Wir wohnen seit drei Jahren in Berlin.","Мы живём в Берлине три года.","v2",1,["wohnen"],"seit"],
+["Ich kenne diesen Mann nicht.","Я не знаю этого человека.","v2",1,["kennen"],"diesen"],
+["Sie weiß die Antwort nicht.","Она не знает ответа.","v2",1,["wissen"],"weiß"],
+["Das Wetter wird morgen besser.","Завтра погода станет лучше.","v2",1,["werden"],"wird"],
+["Ich brauche noch etwas Zeit.","Мне нужно ещё немного времени.","v2",1,["brauchen","etwas"],"brauche"],
+["Er bleibt heute zu Hause.","Он сегодня остаётся дома.","v2",1,["bleiben"],"bleibt"],
+["Ich bezahle die Rechnung.","Я оплачиваю счёт.","v2",1,["bezahlen","Rechnung"],"die"],
+["Der Zucker steht auf dem Tisch.","Сахар стоит на столе.","v2",1,["Zucker"],"dem"],
+["Ich verstehe dich gut.","Я тебя хорошо понимаю.","v2",1,["verstehen"],"dich"],
 
-["Gestern war ich im Kino.","Вчера я был в кино.","inv",1,["gestern"]],
-["Manchmal nehme ich das Fahrrad.","Иногда я беру велосипед.","inv",1,["manchmal","nehmen"]],
-["Morgen bleibe ich im Büro.","Завтра я останусь в офисе.","inv",1,["bleiben"]],
-["Später brauche ich deine Hilfe.","Позже мне понадобится твоя помощь.","inv",1,["später","brauchen"]],
-["Vielleicht kennt er den Weg.","Может быть, он знает дорогу.","inv",1,["vielleicht","kennen"]],
-["Heute bezahle ich das Essen.","Сегодня я плачу за еду.","inv",1,["bezahlen"]],
+["Gestern war ich im Kino.","Вчера я был в кино.","inv",1,["gestern"],"war"],
+["Manchmal nehme ich das Fahrrad.","Иногда я беру велосипед.","inv",1,["manchmal","nehmen"],"nehme"],
+["Morgen bleibe ich im Büro.","Завтра я останусь в офисе.","inv",1,["bleiben"],"bleibe"],
+["Später brauche ich deine Hilfe.","Позже мне понадобится твоя помощь.","inv",1,["später","brauchen"],"brauche"],
+["Vielleicht kennt er den Weg.","Может быть, он знает дорогу.","inv",1,["vielleicht","kennen"],"kennt"],
+["Heute bezahle ich das Essen.","Сегодня я плачу за еду.","inv",1,["bezahlen"],"bezahle"],
 
-["Die Stadt gefällt mir sehr.","Город мне очень нравится.","dat",1,["gefallen"]],
-["Der Kuchen schmeckt mir nicht.","Торт мне не нравится на вкус.","dat",1,["schmecken"]],
-["Mir tut der Kopf weh.","У меня болит голова.","dat",1,["wehtun"]],
-["Gehört dir dieses Buch?","Эта книга твоя?","dat",1,["gehören"]],
-["Mir ist heute kalt.","Мне сегодня холодно.","dat",1,[]],
-["Wie geht es dir heute?","Как ты сегодня?","dat",1,["Wie geht es dir?"]],
+["Die Stadt gefällt mir sehr.","Город мне очень нравится.","dat",1,["gefallen"],"mir"],
+["Der Kuchen schmeckt mir nicht.","Торт мне не нравится на вкус.","dat",1,["schmecken"],"mir"],
+["Mir tut der Kopf weh.","У меня болит голова.","dat",1,["wehtun"],"Mir"],
+["Gehört dir dieses Buch?","Эта книга твоя?","dat",1,["gehören"],"dir"],
+["Mir ist heute kalt.","Мне сегодня холодно.","dat",1,[],"Mir"],
+["Wie geht es dir heute?","Как ты сегодня?","dat",1,["Wie geht es dir?"],"dir"],
 
-["Ich stehe jeden Tag um sieben auf.","Я встаю каждый день в семь.","trenn",2,["aufstehen"]],
-["Der Zug fährt um acht Uhr ab.","Поезд отправляется в восемь.","trenn",2,["abfahren"]],
-["Ich rufe dich heute Abend an.","Я позвоню тебе сегодня вечером.","trenn",2,["anrufen"]],
-["Wir kaufen am Samstag ein.","Мы закупаемся в субботу.","trenn",2,["einkaufen"]],
-["Sie lädt uns zum Essen ein.","Она приглашает нас поесть.","trenn",2,["einladen"]],
-["Wann fängt der Film an?","Когда начинается фильм?","trenn",2,["anfangen"]],
+["Ich stehe jeden Tag um sieben auf.","Я встаю каждый день в семь.","trenn",2,["aufstehen"],"auf"],
+["Der Zug fährt um acht Uhr ab.","Поезд отправляется в восемь.","trenn",2,["abfahren"],"ab"],
+["Ich rufe dich heute Abend an.","Я позвоню тебе сегодня вечером.","trenn",2,["anrufen"],"an"],
+["Wir kaufen am Samstag ein.","Мы закупаемся в субботу.","trenn",2,["einkaufen"],"ein"],
+["Sie lädt uns zum Essen ein.","Она приглашает нас поесть.","trenn",2,["einladen"],"ein"],
+["Wann fängt der Film an?","Когда начинается фильм?","trenn",2,["anfangen"],"an"],
 
-["Ich muss die Rechnung heute bezahlen.","Я должен сегодня оплатить счёт.","modal",2,["müssen","bezahlen","Rechnung"]],
-["Kannst du mir bitte helfen?","Можешь мне помочь?","modal",2,["können","helfen"]],
-["Wir wollen am Wochenende nach Hamburg fahren.","Мы хотим на выходных поехать в Гамбург.","modal",2,["wollen"]],
-["Ich möchte noch etwas Wasser nehmen.","Я хотел бы взять ещё воды.","modal",2,["möchten","nehmen","etwas"]],
-["Hier darf man nicht rauchen.","Здесь нельзя курить.","modal",2,["dürfen"]],
-["Du musst das nicht sofort verstehen.","Тебе не нужно понимать это сразу.","modal",2,["müssen","verstehen"]],
+["Ich muss die Rechnung heute bezahlen.","Я должен сегодня оплатить счёт.","modal",2,["müssen","bezahlen","Rechnung"],"bezahlen"],
+["Kannst du mir bitte helfen?","Можешь мне помочь?","modal",2,["können","helfen"],"helfen"],
+["Wir wollen am Wochenende nach Hamburg fahren.","Мы хотим на выходных поехать в Гамбург.","modal",2,["wollen"],"fahren"],
+["Ich möchte noch etwas Wasser nehmen.","Я хотел бы взять ещё воды.","modal",2,["möchten","nehmen","etwas"],"nehmen"],
+["Hier darf man nicht rauchen.","Здесь нельзя курить.","modal",2,["dürfen"],"rauchen"],
+["Du musst das nicht sofort verstehen.","Тебе не нужно понимать это сразу.","modal",2,["müssen","verstehen"],"verstehen"],
 
-["Ich habe gestern einen Brief geschrieben.","Я вчера написал письмо.","perf",2,["gestern","schreiben"]],
-["Wir haben den Zug verpasst.","Мы опоздали на поезд.","perf",2,["verpassen"]],
-["Hast du das verstanden?","Ты это понял?","perf",2,["verstehen"]],
-["Er ist zu Hause geblieben.","Он остался дома.","perf",2,["bleiben"]],
-["Ich habe die Rechnung schon bezahlt.","Я уже оплатил счёт.","perf",2,["bezahlen","Rechnung"]],
-["Was hast du gestern gesagt?","Что ты вчера сказал?","perf",2,["sagen","gestern"]],
-["Sie ist Ärztin geworden.","Она стала врачом.","perf",2,["werden"]],
+["Ich habe gestern einen Brief geschrieben.","Я вчера написал письмо.","perf",2,["gestern","schreiben"],"geschrieben"],
+["Wir haben den Zug verpasst.","Мы опоздали на поезд.","perf",2,["verpassen"],"verpasst"],
+["Hast du das verstanden?","Ты это понял?","perf",2,["verstehen"],"verstanden"],
+["Er ist zu Hause geblieben.","Он остался дома.","perf",2,["bleiben"],"ist"],
+["Ich habe die Rechnung schon bezahlt.","Я уже оплатил счёт.","perf",2,["bezahlen","Rechnung"],"bezahlt"],
+["Was hast du gestern gesagt?","Что ты вчера сказал?","perf",2,["sagen","gestern"],"gesagt"],
+["Sie ist Ärztin geworden.","Она стала врачом.","perf",2,["werden"],"ist"],
 
-["Weißt du, wo der Bahnhof ist?","Ты знаешь, где вокзал?","neben",3,["wissen"]],
-["Ich weiß nicht, ob er heute kommt.","Я не знаю, придёт ли он сегодня.","neben",3,["wissen"]],
-["Er bleibt zu Hause, weil er krank ist.","Он остаётся дома, потому что болен.","neben",3,["bleiben"]],
-["Ich hoffe, dass du mich verstehst.","Надеюсь, что ты меня понимаешь.","neben",3,["verstehen"]]
+["Weißt du, wo der Bahnhof ist?","Ты знаешь, где вокзал?","neben",3,["wissen"],"ist"],
+["Ich weiß nicht, ob er heute kommt.","Я не знаю, придёт ли он сегодня.","neben",3,["wissen"],"kommt"],
+["Er bleibt zu Hause, weil er krank ist.","Он остаётся дома, потому что болен.","neben",3,["bleiben"],"ist"],
+["Ich hoffe, dass du mich verstehst.","Надеюсь, что ты меня понимаешь.","neben",3,["verstehen"],"verstehst"]
 ];
 
 /* примеры употребления: ключ = артикль + слово */
@@ -2783,7 +2786,7 @@ if(synth){
     if(!voices.length)loadVoices();
   },{passive:true});
 }
-function speak(txt){
+function speak(txt,rate){
   if(!synth)return;
   try{
     synth.cancel();
@@ -2793,7 +2796,7 @@ function speak(txt){
     for(var i=0;i<voices.length;i++){if(voices[i].voiceURI===S.set.voice){v=voices[i];break;}}
     if(!v&&voices.length)v=voices[0];
     if(v)u.voice=v;
-    u.rate=S.set.rate;
+    u.rate=rate||S.set.rate;
     var started=false;
     u.onstart=function(){started=true;probeDone=true;speechBroken=false;};
     u.onerror=function(){if(!probeDone){probeDone=true;speechBroken=true;}};
@@ -4267,8 +4270,8 @@ function toast(m){
 var SMODE=[
   {k:"hoer",n:"Слушаю",d:"слышишь фразу, вспоминаешь — потом сверяешь с текстом"},
   {k:"lese",n:"Читаю",d:"читаешь фразу, понимаешь — потом сверяешь с переводом"},
-  {k:"dikt",n:"Диктант",d:"слышишь фразу и записываешь её"},
-  {k:"bau", n:"Сборка",d:"собираешь фразу из перемешанных слов"}
+  {k:"dikt",n:"Пропуск",d:"слышишь фразу и вставляешь пропущенное слово"},
+  {k:"bau", n:"Русский → немецкий",d:"собираешь немецкую фразу из слов по переводу"}
 ];
 var szess=null;
 function szKey(j){return SZ[j][0];}
@@ -4307,6 +4310,13 @@ function szApply(j,tr,ok){
   save();
 }
 function szWords(j){return SZ[j][0].replace(/[.,!?;]/g,"").split(/\s+/).filter(Boolean);}
+/* Пропуск: прячем слово, несущее грамматику — падеж, форму глагола,
+   приставку, вспомогательный глагол или глагол в конце придаточного. */
+function szGap(j){return SZ[j][5]||"";}
+function szGapHtml(j){
+  var g=szGap(j),src=SZ[j][0],re2=new RegExp("(^|[\\s])"+g.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"(?=$|[\\s.,!?;])");
+  return esc(src).replace(re2,function(m,p1){return p1+'<span class="szgap">\u00A0\u00A0\u00A0\u00A0</span>';});
+}
 /* Нормализация для сверки: знаки и лишние пробелы не считаются ошибкой, регистр — считается. */
 function szNorm(s){return String(s).replace(/[.,!?;:]/g,"").replace(/\s+/g," ").trim();}
 /* Пословное выравнивание через наибольшую общую подпоследовательность. */
@@ -4350,12 +4360,12 @@ function szRate(ok){
 function szCheckText(){
   if(!szess||szess.ans)return;
   var inp=$("#szInp");if(!inp||!inp.value.trim())return;
-  var j=szCur(),corr=SZ[j][0],val=inp.value;
-  var ok=szNorm(val)===szNorm(corr);
-  var caseOnly=!ok&&szNorm(val).toLowerCase()===szNorm(corr).toLowerCase();
+  var j=szCur(),corr=szGap(j),val=inp.value.trim().replace(/[.,!?;:]/g,"");
+  var ok=val===corr;
+  var caseOnly=!ok&&val.toLowerCase()===corr.toLowerCase();
   szess.text=val;szess.ans=true;
-  szess.fb={ok:ok||caseOnly,msg:caseOnly?"Слова верны — различается только регистр. В немецком существительные с большой буквы.":"",
-            diff:(ok?null:szDiff(val,corr))};
+  szess.fb={ok:ok||caseOnly,
+            msg:caseOnly?"Слово верное — различается только регистр.":(ok?"":"Правильно: "+corr)};
   if(ok||caseOnly)szess.c++;
   inp.blur();
   szApply(j,szess.tr,ok||caseOnly);
@@ -4384,7 +4394,7 @@ function szNext(){
   if(szess.i<szess.list.length)szPrep();
   render();
 }
-function szSpeak(){var j=szCur();if(j!=null)speak(SZ[j][0]);}
+function szSpeak(slow){var j=szCur();if(j!=null)speak(SZ[j][0],slow?Math.max(0.5,S.set.rate-0.3):0);}
 function szCellHtml(j){
   var c=SCELL[SZ[j][2]]||["",""];
   return '<span class="szcell" title="'+esc(c[1])+'">'+esc(c[0])+'</span>';
@@ -4443,16 +4453,17 @@ function vSzs(){
       h+='<div class="mut sm center">Пойми фразу, потом проверь себя.</div>'
         +'<button class="btn acc big" data-act="szReveal">Показать перевод</button>';
     else h+='<div class="lru">'+esc(SZ[j][1])+'</div>';
-  }else if(tr===2){                             /* диктант */
+  }else if(tr===2){                             /* пропуск */
     h+='<button class="bigPlay" data-act="szSay">🔊</button>';
+    h+='<button class="btn szslow" data-act="szSlow">Медленнее</button>';
     if(!szess.ans)
-      h+= '<input id="szInp" class="szin" autocomplete="off" autocorrect="off" '
-        +'autocapitalize="off" spellcheck="false" placeholder="Запиши фразу">'
+      h+='<div class="szsent serif">'+szGapHtml(j)+'</div>'
+        +'<input id="szInp" class="szin" autocomplete="off" autocorrect="off" '
+        +'autocapitalize="off" spellcheck="false" placeholder="Пропущенное слово">'
         +'<button class="btn acc big" data-act="szCheck">Проверить</button>';
     else{
-      h+='<div class="szuser">'+esc(szess.text)+'</div>';
-      h+='<div class="lde serif">'+esc(SZ[j][0])+'</div><div class="lru">'+esc(SZ[j][1])+'</div>';
-      h+=szDiffHtml(szess.fb.diff);
+      h+='<div class="szsent serif">'+esc(SZ[j][0])+'</div><div class="lru">'+esc(SZ[j][1])+'</div>';
+      if(!szess.fb.ok)h+='<div class="szuser">ты вписал: '+esc(szess.text)+'</div>';
     }
   }else{                                        /* сборка из слов */
     h+='<div class="lru" style="margin-bottom:10px">'+esc(SZ[j][1])+'</div>';
@@ -4486,7 +4497,8 @@ function vSzs(){
 var A={
   szGo:function(b){szStart(+b.dataset.t,12);},
   szBack:function(){szess=null;show("satz");},
-  szSay:function(){szSpeak();},
+  szSay:function(){szSpeak(false);},
+  szSlow:function(){szSpeak(true);},
   szReveal:function(){szReveal();},
   szYes:function(){szRate(true);},
   szNo:function(){szRate(false);},
