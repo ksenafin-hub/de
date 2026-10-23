@@ -150,6 +150,15 @@ main{max-width:640px;margin:0 auto;padding:8px 16px 90px}
 .szmode{display:flex;align-items:center;justify-content:space-between;gap:10px;
   padding:10px 0;border-top:1px solid var(--line)}
 .szmode .btn{flex:0 0 auto}
+.szgrp{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--mut);margin:14px 0 6px}
+.szlink{display:block;width:100%;text-align:left;background:var(--card2);border:1px solid var(--line);
+  border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer;color:var(--text)}
+.szlinkN{display:block;font-size:14.5px;font-weight:600}
+.szlinkM{display:block;font-size:12px;color:var(--mut);margin-top:2px}
+.szexp{font-size:14.5px;line-height:1.55}
+.szex{font-size:17px;margin-bottom:2px}
+.szhl{color:var(--acc)}
 .szrun{display:flex;align-items:center;gap:5px;justify-content:center;margin:6px 0 2px}
 .szrun i{width:9px;height:9px;border-radius:99px;border:1px solid var(--line);display:block}
 .szrun i.on{background:var(--acc);border-color:var(--acc)}
@@ -4327,11 +4336,18 @@ function szDiffHtml(d){
   return h+'</div><div class="mut sm">зачёркнуто — лишнее, подчёркнуто — пропущено</div>';
 }
 /* ---- сессия ---- */
-function szStart(tr,n){
+function szStart(tr,n,only){
   if(!SZD){toast("Фразы ещё не загрузились");return;}
-  var due=shuffle(szDue(tr)),fresh=szNew(tr),list=due.concat(fresh).slice(0,n||12);
+  var list;
+  if(only!=null){                       /* отработка одного шаблона */
+    if(!szPats()[only].s.length){toast("У этого шаблона пока нет фраз");return;}
+    list=[];for(var q=0;q<(n||10);q++)list.push(only);
+  }else{
+    var due=shuffle(szDue(tr)),fresh=szNew(tr);
+    list=due.concat(fresh).slice(0,n||12);
+  }
   if(!list.length){toast("Здесь пока нечего повторять");return;}
-  szess={tr:tr,list:list,i:0,c:0,ans:false,fb:null,shown:false,text:"",pick:[],pool:[],cur:null};
+  szess={tr:tr,list:list,i:0,c:0,ans:false,fb:null,shown:false,text:"",pick:[],pool:[],cur:null,only:only};
   szPrep();
   show("szs");
 }
@@ -4408,17 +4424,59 @@ function vSatz(){
       +'<span>в работе: <b>'+work+'</b></span></div>'
       +'<button class="btn acc" data-act="szGo" data-t="'+t+'">Начать</button></section>';
   }
-  h+='<section class="card"><div class="cardT">Шаблоны</div>';
-  var grp={},k;
-  for(i=0;i<P.length;i++){(grp[P[i].g]=grp[P[i].g]||[]).push(P[i]);}
-  for(k in grp){
-    h+='<div class="szrow"><b>'+esc(k)+'</b><div class="mut sm">';
-    var names=[];
-    for(i=0;i<grp[k].length;i++)names.push(esc(grp[k][i].n)+' · '+grp[k][i].s.length);
-    h+=names.join(' | ')+'</div></div>';
+  h+='<section class="card"><div class="cardT">Шаблоны · разбор и отработка</div>'
+    +'<div class="mut sm" style="margin-bottom:8px">Нажми на шаблон, чтобы прочитать разбор и погонять только его.</div>';
+  var grp={},k,order=[];
+  for(i=0;i<P.length;i++){
+    if(!grp[P[i].g]){grp[P[i].g]=[];order.push(P[i].g);}
+    grp[P[i].g].push(i);
+  }
+  for(var gi=0;gi<order.length;gi++){
+    k=order[gi];
+    h+='<div class="szgrp">'+esc(k)+'</div>';
+    for(i=0;i<grp[k].length;i++){
+      var pi=grp[k][i],pp=P[pi],done=0;
+      for(var t2=0;t2<4;t2++)done+=szBox(pi,t2);
+      h+='<button class="szlink" data-act="szOpen" data-p="'+pi+'">'
+        +'<span class="szlinkN">'+esc(pp.n)+'</span>'
+        +'<span class="szlinkM">'+(pp.s.length?pp.s.length+' фраз':'нет фраз')
+        +' · A'+pp.lv+(done?' · ступеней '+done:'')+'</span></button>';
+    }
   }
   h+='</section><div class="mut sm center">Фразы: '+esc(SZD.src)+'</div>';
   return h;
+}
+var curPat=null;
+function vPat(){
+  if(!SZD||curPat==null)return'<div class="mut">Шаблон не выбран.</div>';
+  var p=szPats()[curPat],e=p.e||["","","",""];
+  var h='<div class="shead"><button class="icoBtn" data-act="szBack">←</button>'
+    +'<div class="scount">'+esc(p.g)+' · A'+p.lv+'</div></div>';
+  h+='<div class="pageT">'+esc(p.n)+'</div>';
+  h+='<section class="card"><div class="cardT">Что происходит</div><div class="szexp">'+esc(e[0])+'</div></section>';
+  h+='<section class="card"><div class="cardT">Почему так</div><div class="szexp">'+esc(e[1])+'</div></section>';
+  h+='<section class="card warn"><div class="cardT">Ловушка</div><div class="szexp">'+esc(e[2])+'</div></section>';
+  h+='<section class="card"><div class="cardT">Что прячется в пропуске</div><div class="szexp">'+esc(e[3])+'</div></section>';
+  if(p.s.length){
+    h+='<section class="card"><div class="cardT">Примеры</div>';
+    var lim=Math.min(3,p.s.length);
+    for(var i=0;i<lim;i++){
+      var pair=p.s[Math.floor(i*p.s.length/lim)],t=szText(pair[0]),w=szWords(t[0]),out=[];
+      for(var j=0;j<w.length;j++)
+        out.push(j===pair[1]?'<b class="szhl">'+esc(w[j])+'</b>':esc(w[j]));
+      h+='<div class="szrow"><div class="szex serif">'+out.join(" ")+'</div>'
+        +'<div class="mut sm">'+esc(t[1])+'</div></div>';
+    }
+    h+='<div class="mut sm" style="margin-top:8px">Выделено слово, которое прячется в режиме «Пропуск».</div></section>';
+  }
+  h+='<section class="card"><div class="cardT">Отработать этот шаблон</div><div class="szstat">';
+  for(var t=0;t<SMODE.length;t++)
+    h+='<span>'+esc(SMODE[t].n)+': <b>ступень '+szBox(curPat,t)+'</b></span>';
+  h+='</div>';
+  for(t=0;t<SMODE.length;t++)
+    h+='<div class="szmode"><div><b>'+esc(SMODE[t].n)+'</b><div class="mut sm">'+esc(SMODE[t].d)+'</div></div>'
+      +'<button class="btn acc" data-act="szOne" data-t="'+t+'"'+(p.s.length?"":" disabled")+'>Погнали</button></div>';
+  return h+'</section>';
 }
 function vSzs(){
   if(!szess)return'<div class="mut">Сессия не запущена.</div>';
@@ -4492,7 +4550,12 @@ function vSzs(){
 
 var A={
   szGo:function(b){szStart(+b.dataset.t,12);},
-  szBack:function(){szess=null;show("satz");},
+  szBack:function(){
+    if(view==="szs"&&szess&&szess.only!=null){szess=null;show("pat");return;}
+    szess=null;curPat=null;show("satz");
+  },
+  szOpen:function(b){curPat=+b.dataset.p;show("pat");},
+  szOne:function(b){szStart(+b.dataset.t,10,curPat);},
   szSay:function(){szSpeak(false);},
   szSlow:function(){szSpeak(true);},
   szReveal:function(){szReveal();},
@@ -4626,7 +4689,7 @@ var A={
 function show(v){view=v;render();}
 function render(){
   var badge=duePairs().length;
-  var backMap={catlist:"words",all:"words",learn:"review",session:(sess?sess.back:"review"),szs:"satz"};
+  var backMap={catlist:"words",all:"words",learn:"review",session:(sess?sess.back:"review"),szs:"satz",pat:"satz"};
   var actV=backMap[view]||view;
   $$(".tab").forEach(function(b){b.classList.toggle("act",b.dataset.v===actV);});
   var bd=$("#dueBadge");
@@ -4640,6 +4703,7 @@ function render(){
   else if(view==="train")h=vTrain();
   else if(view==="satz"){szLoad();h=vSatz();}
   else if(view==="szs")h=vSzs();
+  else if(view==="pat")h=vPat();
   else if(view==="num")h=vNum();
   else if(view==="prep")h=vPrep();
   else if(view==="spr")h=vSpr();
