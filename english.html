@@ -283,6 +283,7 @@ input[type=range].full{width:100%;margin-bottom:6px;accent-color:var(--acc)}
 .ivgrid .winp{font-size:17px}
 .center .szgap,.prepSent .szgap{min-width:56px}
 .srch{background:var(--card2);color:var(--text);border-color:var(--line)}
+.knB{flex:0 0 auto;font-size:11px;font-weight:700;padding:5px 8px;border-radius:8px;border:1px solid #245a41;background:#12271e;color:#8ddcc6;cursor:pointer}
 </style>
 </head>
 <body>
@@ -9414,6 +9415,7 @@ function conjHtml(i,open){return "";}
 var TRKL=["Чтение","Аудирование","Письмо"];
 function triHtml(i){
   var x=wg(i),L=["Ч","С","П"],h='<span class="tri">';
+  if(x&&x.kn)return '<button class="knB" data-act="unknow" data-i="'+i+'" title="отмечено как известное — нажми, чтобы вернуть в изучение">знаю ✕</button>';
   for(var t=0;t<3;t++){
     var b=x?x.b[t]:0;
     h+='<span class="box mini b'+b+'" title="'+TRKL[t]+': '+BOXLBL[b]+'">'+L[t]+b+'</span>';
@@ -9668,7 +9670,7 @@ function newIn(cat){
   var r=[];
   for(var i=0;i<W.length;i++){
     if(cat!=="all"&&W[i][4]!==cat)continue;
-    var x=wg(i);if(!x||x.b[0]+x.b[1]+x.b[2]===0)r.push(i);
+    var x=wg(i);if(!x||(x.b[0]+x.b[1]+x.b[2]===0&&!x.kn))r.push(i);
   }
   /* сначала весь A1 по частотности, потом A2, потом B1 — уровень весомее ранга */
   r.sort(function(p,q){return (lvOf(p)-lvOf(q))||(RK[p]||999)-(RK[q]||999);});
@@ -9779,6 +9781,7 @@ function finishAns(ok,msg){
   sess.undo={wid:q.wid,ti:ti,snap:JSON.stringify(x),wasOk:ok};
   sess.ans=true;sess.fb={ok:ok,msg:msg};
   applyAns(q.wid,ti,ok,ansMode(q));
+  if(q.kc){knownCheck(q.wid,ok);if(!ok)sess.fb.msg="Слово было отмечено как известное — возвращаю его в изучение.";}
   if(ok)sess.c++;else sess.mist.push(q.wid);
   /* в повторении ошибка возвращается в этой же сессии, не более двух раз */
   if(!ok&&sess.mode==="review"&&(q.rt||0)<2){
@@ -9856,9 +9859,17 @@ function buildReview(){
       if(extra>0&&!seen[p.i]){seen[p.i]=1;take.push(p);extra--;}
     });
   }
+  /* выборочная проверка слов, отмеченных «знаю» */
+  if(take.length){
+    var kq=[],kn=Date.now();
+    for(var ki=0;ki<W.length;ki++){var kx=wg(ki);if(kx&&kx.kn&&kn-(kx.kc||0)>KN_GAP)kq.push(ki);}
+    shuffle(kq);
+    for(var kk=0;kk<Math.min(KN_N,kq.length);kk++)take.push({i:kq[kk],t:Math.floor(Math.random()*3),prac:true,kc:true});
+  }
   return spreadPairs(take).map(function(p){
     var q=makeQ(p.i,typeForTrack(p.t,wg(p.i).b[p.t]));
     if(p.prac)q.prac=true;
+    if(p.kc)q.kc=true;
     return q;
   });
 }
@@ -9876,13 +9887,46 @@ function introduce(i){
 function startLearn(cat,n){
   var list=newIn(cat).slice(0,n);
   if(!list.length){toast("Новых слов здесь больше нет");return;}
-  learn={list:list,i:0};
+  learn={list:list,i:0,cat:cat,known:0};
   show("learn");
+}
+var KN_N=2,KN_GAP=14*86400000;
+function markKnown(i,on){
+  var x=ws(i);
+  if(on){x.kn=1;x.b=[0,0,0];x.d=[0,0,0];x.kc=Date.now();}
+  else{delete x.kn;delete x.kc;}
+  save();
+}
+function knownCount(){var n=0;for(var i=0;i<W.length;i++){var x=wg(i);if(x&&x.kn)n++;}return n;}
+function knownCheck(i,ok){
+  var x=ws(i),now=Date.now();
+  if(ok){x.kc=now;}
+  else{delete x.kn;delete x.kc;for(var t=0;t<3;t++){x.b[t]=1;x.d[t]=now+IV[1];}}
+  save();
+}
+/* «Знаю» на карточке нового слова: вместо него подставляется следующее новое из той же
+   категории, так что «Учить 7» по-прежнему даёт семь действительно новых слов. */
+function learnKnow(){
+  if(!learn)return;
+  var i=learn.list[learn.i],rp=null;
+  markKnown(i,true);
+  learn.known=(learn.known||0)+1;
+  if(learn.cat!==undefined){
+    var nx=newIn(learn.cat);
+    for(var k=0;k<nx.length;k++)if(learn.list.indexOf(nx[k])<0){rp=nx[k];break;}
+  }
+  if(rp!==null){learn.list[learn.i]=rp;render();return;}
+  learn.list.splice(learn.i,1);
+  if(!learn.list.length){learn=null;toast("Новых слов здесь больше нет");show("review");return;}
+  if(learn.i>=learn.list.length)learnFinish();else render();
 }
 function learnNext(){
   introduce(learn.list[learn.i]);
   learn.i++;
-  if(learn.i>=learn.list.length){
+  if(learn.i>=learn.list.length)learnFinish();else render();
+}
+function learnFinish(){
+  {
     var ids=learn.list.slice();
     var p1=shuffle(ids.slice()),p2=shuffle(ids.slice());
     /* второй проход не должен начинаться словом, которым кончился первый */
@@ -9891,7 +9935,7 @@ function learnNext(){
       .concat(p2.map(function(i){return makeQ(i,"mcRuDe");}));
     learn=null;
     startSession(qs,"train","Закрепление новых слов","review");
-  }else render();
+  }
 }
 function prio(i,ti){
   var x=wg(i);
@@ -9905,7 +9949,7 @@ function startTrain(){
     if(trainCfg.picked){ if(!PK[kid(i)])continue; }
     else if(!trainCfg.cats.has(W[i][4]))continue;
     var x=wg(i);
-    if(trainCfg.learned&&(!x||x.b[0]+x.b[1]+x.b[2]===0))continue;
+    if(trainCfg.learned&&(!x||(x.b[0]+x.b[1]+x.b[2]===0&&!x.kn)))continue;
     if(noWrite(i)&&(trainCfg.type==="wrRuDe"||trainCfg.type==="wrAu"))continue;
     pool.push(i);
   }
@@ -9923,8 +9967,8 @@ function catStats(c){
   for(var i=0;i<W.length;i++){
     if(W[i][4]!==c)continue;tot++;
     var x=wg(i);
-    if(x&&x.b[0]+x.b[1]+x.b[2]>0)st++;
-    if(isDone(i,x))ms++;
+    if(x&&(x.kn||x.b[0]+x.b[1]+x.b[2]>0))st++;
+    if(x&&x.kn||isDone(i,x))ms++;
   }
   return {tot:tot,st:st,ms:ms};
 }
@@ -9945,7 +9989,8 @@ function vReview(){
   for(var c in CATS)h+='<option value="'+c+'">'+CATS[c][0]+' '+CATS[c][1]+'</option>';
   h+='</select><select id="newN" class="sel"><option>5</option><option selected>7</option><option>10</option><option>15</option></select>';
   h+='<button class="btn" data-act="learnGo">Учить</button></div>';
-  h+='<div class="mut sm">В работе: '+learned+' из '+W.length+' слов</div></section>';
+  var kc0=knownCount();
+  h+='<div class="mut sm">В работе: '+learned+' из '+W.length+' слов'+(kc0?' · известны: '+kc0:'')+'</div></section>';
   h+='<section class="card"><div class="cardT">Сегодня</div><div class="trio">';
   h+='<div><b>'+t.a+'</b><span>'+plural(t.a,"ответ","ответа","ответов")+'</span></div>';
   h+='<div><b>'+(t.a?Math.round(100*t.c/t.a):0)+'%</b><span>точность</span></div>';
@@ -9974,6 +10019,7 @@ function vWords(){
 }
 function wStatus(i){
   var x=wg(i);
+  if(x&&x.kn)return "known";
   if(!x||x.b[0]+x.b[1]+x.b[2]===0)return "new";
   if(isDone(i,x))return "done";
   return "work";
@@ -9997,6 +10043,8 @@ function pickBarHtml(){
   return '<div class="pickBar"><b>Отмечено: '+n+'</b>'
     +'<button class="btn acc" data-act="learnPick"'+(nw?'':' disabled')+'>Учить новые ('+nw+')</button>'
     +'<button class="btn" data-act="trainPick">Тренировать</button>'
+    +'<button class="btn" data-act="knowPick">Знаю все</button>'
+    +(P.some(function(i){return wStatus(i)==="known";})?'<button class="btn" data-act="unknowPick">Вернуть в изучение</button>':'')
     +'<button class="btn" data-act="clearPick">Снять все</button></div>';
 }
 function pickRefresh(){ var b=$("#pickBar"); if(b)b.innerHTML=pickBarHtml();
@@ -10007,7 +10055,7 @@ function vAll(){
   h+='<input id="allSearch" class="srch" type="search" placeholder="Поиск по английскому или русскому" value="'+esc(allQ)+'">';
 
   h+='<div class="chips">';
-  var FL=[["all","все"],["a1","A1"],["a2","A2"],["b1","B1"],["pick","отмеченные"],["new","новые"],["work","в работе"],["weak","слабые"],["done","освоено"]];
+  var FL=[["all","все"],["a1","A1"],["a2","A2"],["b1","B1"],["pick","отмеченные"],["new","новые"],["work","в работе"],["weak","слабые"],["done","освоено"],["known","знаю"]];
   for(var f=0;f<FL.length;f++)
     h+='<button class="chip'+(allFilt===FL[f][0]?" on":"")+'" data-act="allFilt" data-v="'+FL[f][0]+'">'+FL[f][1]
       +(FL[f][0]==="pick"?' <span id="pickChipN">'+pickSet().length+'</span>':'')+'</button>';
@@ -10617,6 +10665,8 @@ function vStats(){
   hard.sort(function(x,y){return y.er-x.er;});
   var h='<div class="pageT">Статистика</div>';
   h+='<div class="trio wide"><div><b>'+learned+'</b><span>в работе</span></div><div><b>'+mast+'</b><span>освоено полностью</span></div><div><b>'+(ta?Math.round(100*tc/ta):0)+'%</b><span>точность · '+ta+' отв.</span></div></div>';
+  var kc1=knownCount();
+  if(kc1)h+='<div class="mut sm" style="margin:-4px 0 12px">Отмечено «знаю»: '+kc1+' — их нет в повторении, по '+KN_N+' за сессию проверяются выборочно</div>';
   h+='<section class="card"><div class="cardT">Навыки</div>';
   var skills=[["Чтение",[0,1]],["Аудирование",[2,3]],["Письмо",[4,5]]];
   for(i=0;i<skills.length;i++){
@@ -10710,7 +10760,10 @@ function vLearn(){
   var ex=exOf(i);
   if(ex)h+='<div class="exB"><button class="icoBtn" data-act="playEx" data-i="'+i+'">🔊</button><div class="exTxt"><div class="exDe serif">'+esc(ex[0])+'</div><div class="exRu">'+esc(ex[1])+'</div></div></div>';
   h+=conjHtml(i,true);
-  h+='</div><button class="btn acc big" data-act="lNext">'+(learn.i+1>=learn.list.length?"К закреплению →":"Дальше")+'</button>';
+  h+='</div><div class="szrate"><button class="btn good" data-act="lKnow">Знаю ✓</button>'
+    +'<button class="btn acc" data-act="lNext">'+(learn.i+1>=learn.list.length?"К закреплению →":"Учу →")+'</button></div>';
+  h+='<div class="mut xs center" style="margin-top:8px">«Знаю» убирает слово из очереди; изредка оно попадётся в повторении на проверку'
+    +(learn.known?' · пропущено: '+learn.known:'')+'</div>';
   return h;
 }
 function vSession(){
@@ -10721,7 +10774,7 @@ function vSession(){
   var audioQ=(q.type==="mcAuRu"||q.type==="mcAuDe"||q.type==="wrAu");
   var h='<div class="shead"><button class="icoBtn" data-act="quit">✕</button><div class="sbar"><i style="width:'+pr+'%"></i></div><div class="scount">'+(s.i+1)+'/'+s.qs.length+'</div></div>';
   h+='<div class="stitle">'+TNAME[q.type]
-    +(q.rt?'<span class="qtag">повтор ошибки</span>':(q.prac?'<span class="qtag">слабое · сверх очереди</span>':''))+'</div>';
+    +(q.kc?'<span class="qtag">проверка «знаю»</span>':q.rt?'<span class="qtag">повтор ошибки</span>':(q.prac?'<span class="qtag">слабое · сверх очереди</span>':''))+'</div>';
   if(q.type==="mcDeRu")h+='<div class="qde serif">'+deHtml(q.wid)+' <button class="icoBtn" data-act="play" data-i="'+q.wid+'">🔊</button></div>';
   if(q.type==="mcRuDe"||q.type==="wrRuDe")h+='<div class="qru">'+esc(w[3])+'</div>';
   if(audioQ)h+='<div class="center"><button class="bigPlay" data-act="play" data-i="'+q.wid+'">🔊</button><div class="mut sm">нажми, чтобы послушать ещё раз</div></div>';
@@ -11211,6 +11264,20 @@ var A={
   opt:function(b){answerChoice(+b.dataset.k);},
   submitW:function(){submitWrite();},
   ins:function(b){insCh(b.dataset.ch);},
+  lKnow:function(){learnKnow();},
+  unknow:function(b){markKnown(+b.dataset.i,false);render();},
+  knowPick:function(){
+    var P=pickedIdx().filter(function(i){return wStatus(i)!=="known";});
+    if(!P.length){toast("Все отмеченные уже известны");return;}
+    if(!confirm("Отметить "+P.length+" "+plural(P.length,"слово","слова","слов")+" как известные? Они уйдут из очереди и повторения."))return;
+    P.forEach(function(i){markKnown(i,true);});
+    S.set.pick=[];save();render();
+  },
+  unknowPick:function(){
+    var P=pickedIdx().filter(function(i){return wStatus(i)==="known";});
+    P.forEach(function(i){markKnown(i,false);});
+    S.set.pick=[];save();render();toast("Возвращено в изучение: "+P.length);
+  },
   ivGo:function(b){var m=b.dataset.m,n=m==="new"?+($("#ivN")||{value:5}).value:15;ivStart(m,n);},
   ivTbl:function(){ivTable=!ivTable;render();},
   ivSay:function(b){ivSayForms(+b.dataset.i);},
